@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roofing AI Assistant Demo - Real Estate Agent Partnership System</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .demo-header h1 {
+            color: #e67e22;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .demo-header .subtitle {
+            font-size: 1.2em;
+            color: #95a5a6;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .demo-section {
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(231, 126, 34, 0.3);
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                0 8px 32px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .demo-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 12px 40px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        
+        .demo-section h3 {
+            color: #e67e22;
+            margin-top: 0;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .voice-demo {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .voice-demo:hover {
+            background: #2ecc71;
+            transform: translateY(-2px);
+        }
+        
+        .chat-interface {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            min-height: 200px;
+            border: 1px solid #e67e22;
+        }
+        
+        .chat-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e67e22;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            margin-top: 10px;
+        }
+        
+        .chat-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .send-btn {
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .response-area {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            border-left: 4px solid #e67e22;
+            display: none;
+        }
+        
+        .response-area.active {
+            display: block;
+        }
+        
+        .demo-scenario {
+            background: rgba(39, 174, 96, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .metrics-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .metric-card {
+            background: rgba(231, 126, 34, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e67e22;
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e67e22;
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            color: #95a5a6;
+        }
+        
+        .integration-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(39, 174, 96, 0.2);
+            border-radius: 8px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #27ae60;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        .language-toggle {
+            background: #9b59b6;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .roofing-lexicon {
+            background: rgba(155, 89, 182, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 3px solid #9b59b6;
+            font-size: 0.9em;
+        }
+        
+        .voice-profile {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .voice-profile:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .voice-avatar {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .voice-selector {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(39,174,96,0.1);
+            border-radius: 8px;
+            border-left: 3px solid #27ae60;
+        }
+        
+        .voice-selector select {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+        
+        .spatial-metrics {
+            perspective: 1000px;
+            margin: 20px 0;
+        }
+        
+        .metric-card-3d {
+            background: linear-gradient(135deg, 
+                rgba(231,126,34,0.2) 0%, 
+                rgba(230,126,34,0.1) 50%, 
+                rgba(229,126,34,0.05) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(231,126,34,0.3);
+            backdrop-filter: blur(15px);
+            transform: rotateX(5deg) rotateY(5deg);
+            transition: all 0.4s ease;
+            box-shadow: 
+                0 10px 20px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        
+        .metric-card-3d:hover {
+            transform: rotateX(0deg) rotateY(0deg) translateZ(20px);
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.4),
+                inset 0 2px 0 rgba(255,255,255,0.2);
+        }
+        
+        .dashboard-preview {
+            background: linear-gradient(135deg, 
+                rgba(52,152,219,0.15) 0%, 
+                rgba(155,89,182,0.15) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid rgba(52,152,219,0.3);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(52,152,219,0.8) 50%, 
+                transparent 100%);
+        }
+        
+        .ar-hint {
+            background: rgba(155,89,182,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 3px solid #9b59b6;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <h1>🏠 Roofing AI Assistant Demo</h1>
+        <div class="subtitle">Real Estate Agent Partnership & Business Automation System</div>
+        <div style="margin-top: 15px; color: #e67e22;">
+            ⚡ ElevenLabs Voice AI • 🏗️ AccuLynx Integration • 🌎 Bilingual Support
+        </div>
+    </div>
+
+    <div class="demo-grid">
+        <!-- Voice Selection Showcase -->
+        <div class="demo-section" style="grid-column: 1 / -1; background: linear-gradient(135deg, rgba(39,174,96,0.15), rgba(46,204,113,0.1));">
+            <h3>🎙️ ElevenLabs Custom Voice Portfolio</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
+                <div class="voice-profile">
+                    <div class="voice-avatar">👨‍💼</div>
+                    <div><strong>Professional Mike</strong></div>
+                    <div style="font-size: 0.9em; color: #95a5a6;">Real Estate Agent Outreach</div>
+                    <button class="voice-demo" onclick="playVoice('professional')">▶️ Listen</button>
+                </div>
+                <div class="voice-profile">
+                    <div class="voice-avatar">👩‍🔧</div>
+                    <div><strong>Bilingual Sofia</strong></div>
+                    <div style="font-size: 0.9em; color: #95a5a6;">Customer Service EN/ES</div>
+                    <button class="voice-demo" onclick="playVoice('bilingual')">▶️ Escuchar</button>
+                </div>
+                <div class="voice-profile">
+                    <div class="voice-avatar">👨‍🏭</div>
+                    <div><strong>Foreman José</strong></div>
+                    <div style="font-size: 0.9em; color: #95a5a6;">Crew Coordination</div>
+                    <button class="voice-demo" onclick="playVoice('foreman')">▶️ Play</button>
+                </div>
+                <div class="voice-profile">
+                    <div class="voice-avatar">📞</div>
+                    <div><strong>Supply Chain AI</strong></div>
+                    <div style="font-size: 0.9em; color: #95a5a6;">Material Orders</div>
+                    <button class="voice-demo" onclick="playVoice('supply')">▶️ Demo</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real Estate Agent Outreach -->
+        <div class="demo-section">
+            <h3>🤝 Real Estate Agent Partnership System</h3>
+            <div class="voice-selector">
+                <label>Select Voice: </label>
+                <select id="realtorVoice" onchange="updateVoiceDemo('realtor')">
+                    <option value="professional">Professional Mike</option>
+                    <option value="friendly">Friendly Sarah</option>
+                    <option value="expert">Expert David</option>
+                </select>
+            </div>
+            <div class="demo-scenario">
+                <strong>Live Scenario:</strong> AI calls realtor about insurance law changes affecting their pending closings
+            </div>
+            
+            <button class="voice-demo" onclick="playRealtorOutreach()">▶️ Play Agent Outreach Call</button>
+            <button class="voice-demo" onclick="playInsuranceLawUpdate()">▶️ Insurance Law Update</button>
+            
+            <div class="chat-interface">
+                <div><strong>AI Agent:</strong> "Hi Sarah, this is the roofing specialist AI for ABC Roofing. I wanted to share some critical updates about the new insurance inspection requirements that could impact your upcoming closings..."</div>
+            </div>
+            
+            <input class="chat-input" placeholder="Realtor Response: 'Tell me more about these changes...'" id="realtorInput">
+            <button class="send-btn" onclick="handleRealtorChat()">Send Response</button>
+            <div class="response-area" id="realtorResponse"></div>
+        </div>
+
+        <!-- Material Order Management -->
+        <div class="demo-section">
+            <h3>📦 Material Order & Crew Scheduling</h3>
+            <div class="integration-status">
+                <div class="status-indicator"></div>
+                <span>AccuLynx Integration Active</span>
+            </div>
+            
+            <button class="voice-demo" onclick="playMaterialOrder()">▶️ Material Order Call</button>
+            <button class="voice-demo" onclick="playCrewScheduling()">▶️ Crew Scheduling</button>
+            
+            <div class="chat-interface">
+                <div><strong>Scheduling AI:</strong> "I need to order materials for the Johnson roof project. 30 squares of architectural shingles, delivery by Thursday..."</div>
+            </div>
+            
+            <input class="chat-input" placeholder="Ask: 'Schedule my crew for next week...'" id="scheduleInput">
+            <button class="send-btn" onclick="handleScheduling()">Process Request</button>
+            <div class="response-area" id="scheduleResponse"></div>
+        </div>
+
+        <!-- Bilingual Communication -->
+        <div class="demo-section">
+            <h3>🌎 Bilingual Roofing Communication</h3>
+            <div class="language-toggle" onclick="toggleLanguage('en')">English</div>
+            <div class="language-toggle" onclick="toggleLanguage('es')">Español</div>
+            
+            <div class="roofing-lexicon">
+                <strong>Roofing Lexicon:</strong> Shingles/Tejas • Flashing/Tapajuntas • Underlayment/Barrera • Ridge/Caballete
+            </div>
+            
+            <button class="voice-demo" onclick="playBilingualDemo()">▶️ Bilingual Customer Call</button>
+            
+            <div class="chat-interface" id="bilingualChat">
+                <div><strong>AI (English):</strong> "We'll need to replace the flashing around your chimney..."</div>
+                <div><strong>AI (Español):</strong> "Necesitaremos reemplazar las tapajuntas alrededor de su chimenea..."</div>
+            </div>
+            
+            <input class="chat-input" placeholder="Customer question in English or Spanish..." id="customerInput">
+            <button class="send-btn" onclick="handleCustomerChat()">Respond</button>
+            <div class="response-area" id="customerResponse"></div>
+        </div>
+
+        <!-- Business Metrics -->
+        <div class="demo-section">
+            <h3>📊 Real-Time Business Dashboard</h3>
+            <div class="dashboard-preview">
+                <h4 style="color: #3498db; margin-top: 0;">🔮 Next-Gen Dashboard Preview</h4>
+                <div class="ar-hint">
+                    💡 <strong>Coming Soon:</strong> Spatial AR dashboard where metrics float in 3D space. 
+                    Customize views per client - some see revenue, others see efficiency gains.
+                </div>
+            </div>
+            
+            <div class="spatial-metrics">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;">
+                    <div class="metric-card-3d">
+                        <div class="metric-value">47</div>
+                        <div class="metric-label">Realtor Partnerships</div>
+                    </div>
+                    <div class="metric-card-3d">
+                        <div class="metric-value">$180K</div>
+                        <div class="metric-label">Monthly Revenue</div>
+                    </div>
+                    <div class="metric-card-3d">
+                        <div class="metric-value">94%</div>
+                        <div class="metric-label">Customer Satisfaction</div>
+                    </div>
+                    <div class="metric-card-3d">
+                        <div class="metric-value">23%</div>
+                        <div class="metric-label">Cost Reduction</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="integration-status">
+                <div class="status-indicator"></div>
+                <span>AccuLynx CRM Sync: Real-time</span>
+            </div>
+            <div class="integration-status">
+                <div class="status-indicator"></div>
+                <span>ElevenLabs Voice: 12 Active Agents</span>
+            </div>
+            <div class="integration-status" style="background: rgba(52,152,219,0.2);">
+                <div class="status-indicator" style="background: #3498db;"></div>
+                <span>Custom Dashboard Engine: Ready for AR deployment</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5069';
+        let currentLanguage = 'en';
+        
+        // Voice Demo Functions
+        function playVoice(voiceType) {
+            const voiceMessages = {
+                'professional': "🎵 Professional Mike: 'Good morning Sarah, this is Mike from ABC Roofing AI. I have critical updates on insurance requirements that could affect your pending closings...'",
+                'bilingual': "🎵 Sofia: 'Hola, this is Sofia. We can help with roof inspections in English and Spanish. ¿Necesita ayuda con inspección de techo?'",
+                'foreman': "🎵 Foreman José: 'Crew Alpha is ready for Johnson job site. Materials loaded, safety check complete. ETA 8:00 AM.'",
+                'supply': "🎵 Supply Chain AI: 'Ordering 25 squares architectural shingles, delivery Thursday. Job #RF-2024-0847 confirmed in AccuLynx.'"
+            };
+            
+            showVoiceResponse(voiceMessages[voiceType] || "🎵 Playing voice demo...");
+        }
+        
+        function playRealtorOutreach() {
+            const voice = document.getElementById('realtorVoice').value;
+            showVoiceResponse(`🎵 ${voice.charAt(0).toUpperCase() + voice.slice(1)} Mike: "Hi Sarah, this is your roofing partner. New insurance laws require pre-closing roof certifications. I can expedite inspections for your deals..."`);
+        }
+        
+        function playInsuranceLawUpdate() {
+            showVoiceResponse("🎵 Playing: 'The new state requirements mandate certified roof inspections within 48 hours of closing. Here's how we ensure your transactions stay on schedule...'");
+        }
+        
+        function playMaterialOrder() {
+            showVoiceResponse("🎵 Playing: AI calling supplier with AccuLynx integration - 'Job #RF-2024-0847 needs 25 squares delivered Thursday 7AM to 1247 Oak Street...'");
+        }
+        
+        function playCrewScheduling() {
+            showVoiceResponse("🎵 Playing: Bilingual crew coordination - 'Equipo Alpha, trabajo en Oak Street mañana 8:00 AM. Team Alpha, Oak Street job tomorrow 8:00 AM.'");
+        }
+        
+        function playBilingualDemo() {
+            showVoiceResponse("🎵 Playing: Seamless language switching - 'We'll repair the flashing... Vamos a reparar las tapajuntas alrededor de la chimenea...'");
+        }
+        
+        function updateVoiceDemo(section) {
+            // Update voice selection feedback
+            const voice = document.getElementById(section + 'Voice').value;
+            showVoiceResponse(`🔄 Voice changed to: ${voice.charAt(0).toUpperCase() + voice.slice(1)} for ${section} interactions`);
+        }
+        
+        function showVoiceResponse(message) {
+            // Create temporary voice feedback
+            const feedback = document.createElement('div');
+            feedback.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #27ae60; color: white; padding: 15px; border-radius: 10px; z-index: 1000;';
+            feedback.textContent = message;
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                document.body.removeChild(feedback);
+            }, 3000);
+        }
+        
+        // Chat Handlers
+        async function handleRealtorChat() {
+            const input = document.getElementById('realtorInput');
+            const response = document.getElementById('realtorResponse');
+            
+            if (!input.value.trim()) return;
+            
+            response.className = 'response-area active';
+            response.innerHTML = '🤖 Processing realtor inquiry...';
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/agents/roofing_specialist`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: `Real estate agent asks: "${input.value}". Respond as roofing industry expert focusing on insurance law changes, roof inspection requirements, and partnership opportunities. Include specific value propositions for realtors.`
+                    })
+                });
+                
+                const data = await res.json();
+                response.innerHTML = `<strong>🏠 Roofing AI Specialist:</strong><br>${data.script || data.content || 'I understand your concern about the new insurance requirements. Let me explain how our partnership can help ensure your closings go smoothly...'}`;
+                input.value = '';
+                
+            } catch (error) {
+                response.innerHTML = `<strong>🏠 Roofing AI Specialist (Demo):</strong><br>These new insurance requirements mean properties need certified roof inspections before closing. As your roofing partner, we can provide same-day inspections and expedited repairs to keep your deals on track. This saves you time and protects your commission.`;
+            }
+        }
+        
+        async function handleScheduling() {
+            const input = document.getElementById('scheduleInput');
+            const response = document.getElementById('scheduleResponse');
+            
+            if (!input.value.trim()) return;
+            
+            response.className = 'response-area active';
+            response.innerHTML = '📅 Processing AccuLynx integration...';
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/workflow/execute`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        workflow_type: 'crew_scheduling',
+                        parameters: { request: input.value, integration: 'acculynx' }
+                    })
+                });
+                
+                const data = await res.json();
+                response.innerHTML = `<strong>📦 AccuLynx Integration:</strong><br>Crew scheduled for Tuesday 8AM. Materials ordered: 25 squares architectural shingles, delivery Wednesday. Job #RF-2024-0847 created in AccuLynx. Bilingual foreman assigned.`;
+                input.value = '';
+                
+            } catch (error) {
+                response.innerHTML = `<strong>📦 AccuLynx Integration (Demo):</strong><br>Crew scheduled for Tuesday 8AM. Materials ordered: 25 squares architectural shingles, delivery Wednesday. Job #RF-2024-0847 created in AccuLynx. Bilingual foreman assigned.`;
+            }
+        }
+        
+        async function handleCustomerChat() {
+            const input = document.getElementById('customerInput');
+            const response = document.getElementById('customerResponse');
+            
+            if (!input.value.trim()) return;
+            
+            response.className = 'response-area active';
+            response.innerHTML = '🌎 Processing bilingual response...';
+            
+            const isSpanish = /[ñáéíóúü]/.test(input.value.toLowerCase()) || 
+                             input.value.toLowerCase().includes('que') || 
+                             input.value.toLowerCase().includes('como');
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/agents/roofing_specialist`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: `Customer asks: "${input.value}". Respond in ${isSpanish ? 'Spanish' : 'English'} as bilingual roofing expert. Use appropriate roofing terminology and be helpful about roofing services.`
+                    })
+                });
+                
+                const data = await res.json();
+                response.innerHTML = `<strong>🌎 Bilingual Roofing AI:</strong><br>${data.script || data.content || (isSpanish ? 'Entiendo su pregunta sobre el techo. Podemos ayudarle con una inspección gratuita...' : 'I understand your roofing question. We can help with a free inspection...')}`;
+                input.value = '';
+                
+            } catch (error) {
+                const demoResponse = isSpanish ? 
+                    'Entiendo su pregunta sobre el techo. Podemos ayudarle con una inspección gratuita y un presupuesto detallado. Nuestro equipo bilingüe está disponible para explicar todo el proceso.' :
+                    'I understand your roofing question. We can help with a free inspection and detailed estimate. Our bilingual team is available to explain the entire process.';
+                response.innerHTML = `<strong>🌎 Bilingual Roofing AI (Demo):</strong><br>${demoResponse}`;
+            }
+        }
+        
+        function toggleLanguage(lang) {
+            currentLanguage = lang;
+            const chat = document.getElementById('bilingualChat');
+            
+            if (lang === 'es') {
+                chat.innerHTML = `
+                    <div><strong>AI (Español):</strong> "Necesitaremos reemplazar las tapajuntas alrededor de su chimenea y revisar el sistema de drenaje..."</div>
+                    <div><strong>Cliente:</strong> "¿Cuánto tiempo tomará el trabajo?"</div>
+                    <div><strong>AI (Español):</strong> "El proyecto tomará 2-3 días dependiendo del clima. Usaremos materiales de alta calidad..."</div>
+                `;
+            } else {
+                chat.innerHTML = `
+                    <div><strong>AI (English):</strong> "We'll need to replace the flashing around your chimney and check the drainage system..."</div>
+                    <div><strong>Customer:</strong> "How long will the work take?"</div>
+                    <div><strong>AI (English):</strong> "The project will take 2-3 days depending on weather. We'll use high-quality materials..."</div>
+                `;
+            }
+        }
+        
+        // Initialize metrics animation
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate metrics on load
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach(metric => {
+                const finalValue = metric.textContent;
+                metric.textContent = '0';
+                
+                let current = 0;
+                const target = parseInt(finalValue.replace(/[^0-9]/g, '')) || 94;
+                const increment = target / 50;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        metric.textContent = finalValue;
+                        clearInterval(timer);
+                    } else {
+                        metric.textContent = Math.floor(current) + (finalValue.includes('$') ? 'K' : finalValue.includes('%') ? '%' : '');
+                    }
+                }, 50);
+            });
+        });
+    </script>
+</body>
+</html>

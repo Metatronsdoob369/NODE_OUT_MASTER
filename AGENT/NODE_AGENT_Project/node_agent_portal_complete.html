@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NODE Agent Portal - Birmingham's Premier AI-Powered Roofing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /*
+        NODE Agent Portal - Brand Kit & UI Upgrade Stylesheet
+        Inspired by CoSine+ aesthetics: high-contrast, sleek, and AI-forward
+        Use as a handoff: no edits needed unless extending components.
+        This stylesheet supports Dark Mode by default.
+        */
+
+        /* === COLOR VARIABLES === */
+        :root {
+          --primary-bg: #1c1c2e;
+          --primary-bg-alt: #2a2d45;
+          --accent-1: #bfa4ff;
+          --accent-2: #5ecbff;
+          --accent-3: #84f3c0;
+          --surface-light: #f8f9fa;
+          --neutral-text: #a8b0b9;
+          --text-strong: #ffffff;
+          --text-dim: rgba(255, 255, 255, 0.6);
+          --brand-green: #9aeba3;
+          --brand-dark: #1e1e1e;
+          --brand-gray-green: #909f96;
+          --brand-gray: #4a4a4a;
+          --brand-light-gray: #d4d4d4;
+          --brand-off-white: #f2f2f2;
+          --brand-copper: #a15d3d;
+          --brand-copper-metallic: linear-gradient(135deg, 
+            #a15d3d 0%, 
+            #c8734a 25%, 
+            #a15d3d 50%, 
+            #8b4d2a 75%, 
+            #a15d3d 100%);
+          --brand-copper-shine: linear-gradient(45deg, 
+            transparent 30%, 
+            rgba(255, 255, 255, 0.3) 50%, 
+            transparent 70%);
+        }1
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* === GLOBAL BASE STYLES === */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-bg), var(--primary-bg-alt));
+            color: var(--text-strong);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-strong);
+        }
+
+        p, span, label {
+            color: var(--text-dim);
+        }
+
+        code, pre {
+            font-family: 'IBM Plex Mono', monospace;
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 4px 8px;
+            border-radius: 6px;
+            color: var(--text-strong);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            color: var(--text-dim);
+        }
+
+        .company-info {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .company-info h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            color: var(--accent-2);
+            font-weight: 700;
+        }
+
+        .company-info p {
+            margin-bottom: 5px;
+            color: var(--text-dim);
+        }
+
+        /* Voice Selector Styles */
+        .voice-selector {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            margin-bottom: 30px;
+        }
+
+        .voice-selector h2 {
+            border-bottom: 1px solid var(--accent-2);
+            padding-bottom: 6px;
+            margin-bottom: 16px;
+            font-weight: 700;
+            color: var(--accent-2);
+        }
+
+        .voice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .voice-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .voice-option:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-1);
+        }
+
+        .voice-option.selected {
+            background: var(--accent-1);
+            color: var(--primary-bg);
+            border-color: var(--accent-1);
+            box-shadow: 0 0 8px var(--accent-1);
+        }
+
+        .voice-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .voice-description {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+
+        .voice-tone {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent-2);
+        }
+
+        .voice-option.selected .voice-tone {
+            color: var(--primary-bg);
+        }
+
+        /* Agent Section Styles */
+        .agent-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .agent-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            transition: transform 0.2s ease;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+        }
+
+        .agent-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .agent-card p {
+            margin-bottom: 20px;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        /* Chat Display Styles */
+        .chat-display {
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .chat-display p {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Form Styles */
+        .message-input, input, textarea, select {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-strong);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .message-input:focus, input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .message-input::placeholder, input::placeholder, textarea::placeholder {
+            color: var(--neutral-text);
+        }
+
+        .submit-btn {
+            background: linear-gradient(to right, var(--accent-2), var(--accent-1));
+            color: var(--primary-bg);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            box-shadow: 0 0 12px rgba(191, 164, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Upload Area Styles */
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--accent-2);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 8px rgba(94, 203, 255, 0.2);
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .upload-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-strong);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .upload-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--accent-2);
+        }
+
+        /* Status Styles */
+        .status {
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .status.success {
+            background: rgba(132, 243, 192, 0.1);
+            color: var(--accent-3);
+            border: 1px solid rgba(132, 243, 192, 0.2);
+        }
+
+        .status.error {
+            background: rgba(255, 100, 100, 0.1);
+            color: #ff6464;
+            border: 1px solid rgba(255, 100, 100, 0.2);
+        }
+
+        .status.info {
+            background: rgba(94, 203, 255, 0.1);
+            color: var(--accent-2);
+            border: 1px solid rgba(94, 203, 255, 0.2);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--accent-2);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Navigation Styles */
+        .agent-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: var(--text-dim);
+            padding: 10px 18px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-1);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn.active {
+            background: var(--accent-1);
+            color: var(--primary-bg);
+            border-color: var(--accent-1);
+        }
+
+        @media (max-width: 768px) {
+            .agent-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .voice-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .agent-nav {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        /* Accent Elements */
+        .accent-element {
+            background: var(--brand-copper-metallic);
+            color: var(--brand-off-white);
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(161, 93, 61, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .accent-element::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--brand-copper-shine);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* ElevenLabs AudioNative Styles */
+        .voice-styles-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .waveform-left, .waveform-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        
+        .wave-bar {
+            width: 2px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 2px;
+            border-radius: 2px;
+        }
+        
+        .voice-styles-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .voice-style {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .voice-style-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .agent-1-voice-demo {
+            position: relative;
+            margin: 15px 0;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ NODE Agent Portal</h1>
+            <p>Birmingham's Premier AI-Powered Roofing Intelligence System</p>
+        </div>
+
+        <div class="company-info">
+            <h3>🏢 NODE - Birmingham, AL</h3>
+            <p><strong>Owner:</strong> Preston | <strong>Phone:</strong> 205-307-9153</p>
+            <p>Professional roofing services with cutting-edge AI automation</p>
+        </div>
+
+        <div class="voice-selector">
+            <h2>🎵 Voice Style Selection</h2>
+            <p>These are 4 of our hundreds of voice style options</p>
+            
+            <div id="voice-style-grid" class="voice-grid">
+                <div class="voice-option" onclick="selectVoiceStyle(1, this)">
+                    <div class="voice-name">Agent 1</div>
+                    <div class="voice-description">Professional & Authoritative</div>
+                    <div class="voice-tone">Business presentations, formal calls</div>
+                </div>
+                
+                <div class="voice-option" onclick="selectVoiceStyle(2, this)">
+                    <div class="voice-name">Agent 2</div>
+                    <div class="voice-description">Warm & Consultative</div>
+                    <div class="voice-tone">Client consultations, project discussions</div>
+                </div>
+                
+                <div class="voice-option" onclick="selectVoiceStyle(3, this)">
+                    <div class="voice-name">Agent 3</div>
+                    <div class="voice-description">Direct & Reliable</div>
+                    <div class="voice-tone">Material orders, technical details</div>
+                </div>
+                
+                <div class="voice-option" onclick="selectVoiceStyle(4, this)">
+                    <div class="voice-name">Agent 4</div>
+                    <div class="voice-description">Clear & Responsive</div>
+                    <div class="voice-tone">Emergency calls, urgent situations</div>
+                </div>
+            </div>
+            
+            <div id="selected-style-info" class="status info hidden">
+                <h4>Active Style: <span id="selected-style-name">None</span></h4>
+                <p id="selected-style-description"></p>
+            </div>
+        </div>
+
+        <!-- ElevenLabs AudioNative Voice Demonstration Widgets -->
+        <div class="voice-styles-container">
+            <div class="waveform-left">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+
+            <h3>VOICE STYLES</h3>
+
+            <div class="voice-styles-grid">
+                <div class="voice-style" onclick="selectVoiceStyle(1, this)">
+                    <div class="voice-style-number">1</div>
+                </div>
+                <div class="voice-style" onclick="selectVoiceStyle(2, this)">
+                    <div class="voice-style-number">2</div>
+                </div>
+                <div class="voice-style" onclick="selectVoiceStyle(3, this)">
+                    <div class="voice-style-number">3</div>
+                </div>
+                <div class="voice-style" onclick="selectVoiceStyle(4, this)">
+                    <div class="voice-style-number">4</div>
+                </div>
+            </div>
+
+            <!-- Agent 1 Voice Demonstration - Position 1 -->
+            <div class="agent-1-voice-demo" style="position: relative; margin: 15px 0; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 20px; width: 100%; height: 120px; display: flex; align-items: center; justify-content: center; flex-direction: column; box-shadow: 0 0 25px rgba(255, 255, 255, 0.2); transition: all 0.3s ease;">
+                <div style="font-size: 11px; font-weight: 600; color: rgba(255, 255, 255, 0.9); margin-bottom: 12px; text-align: center; letter-spacing: 1px; text-transform: uppercase;">AGENT 1 DEMO</div>
+                <div id="agent-1-audionative-widget" data-height="85" data-width="100%" data-frameborder="no" data-scrolling="no" data-publicuserid="d5d4288cf7a0b13d9cd917c9221f260ced162e519ff2ac71223e44eef1a47500" data-playerurl="https://elevenlabs.io/player/index.html" data-projectid="U5ZFrZrxOqVM9n2NDgD1" data-voiceid="agent-1-professional">
+                    Agent 1 Professional Voice Loading...
+                </div>
+            </div>
+
+            <!-- Right waveform animation -->
+            <div class="waveform-right">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+        </div>
+
+        <!-- Agent Navigation -->
+        <div class="agent-nav">
+            <button class="nav-btn active" onclick="showAgent('text-chat')">💬 AI Chat</button>
+            <button class="nav-btn" onclick="showAgent('file-analyzer')">📄 File Analysis</button>
+            <button class="nav-btn" onclick="showAgent('voice-chat')">🎤 Voice Agent</button>
+            <button class="nav-btn" onclick="showAgent('material-orders')">🏗️ Material Orders</button>
+        </div>
+
+        <!-- Agent Sections -->
+        <div class="agent-sections">
+            <!-- Text Chat Agent -->
+            <div id="text-chat-agent" class="agent-card">
+                <div id="text-chat-content">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+                
+                <div class="chat-display" id="text-chat-display"></div>
+                
+                <form id="text-chat-form">
+                    <textarea class="message-input" id="text-chat-input" placeholder="Type your message..."></textarea>
+                    <button type="submit" class="submit-btn" id="text-chat-btn">Send Message</button>
+                </form>
+                
+                <div id="text-chat-status" class="status hidden"></div>
+            </div>
+
+            <!-- File Analyzer Agent -->
+            <div id="file-analyzer-agent" class="agent-card hidden">
+                <div id="file-analyzer-content">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+                
+                <div class="chat-display" id="file-analyzer-display"></div>
+                
+                <form id="file-analyzer-form" enctype="multipart/form-data">
+                    <div class="upload-area" id="fileUploadArea">
+                        <div class="upload-text" id="fileUploadText">
+                            <strong>Drop file here</strong><br>or click to select
+                        </div>
+                        <button type="button" class="upload-btn" onclick="document.getElementById('fileInput').click()">Choose File</button>
+                        <input type="file" id="fileInput" name="uploaded_file" accept="*" hidden>
+                    </div>
+                    
+                    <textarea class="message-input" id="file-analyzer-input" placeholder="What would you like me to do with this file?"></textarea>
+                    <button type="submit" class="submit-btn" id="file-analyzer-btn">Upload & Analyze</button>
+                </form>
+                
+                <div id="file-analyzer-status" class="status hidden"></div>
+            </div>
+
+            <!-- Voice Chat Agent -->
+            <div id="voice-chat-agent" class="agent-card hidden">
+                <div id="voice-chat-content">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+                
+                <div class="chat-display" id="voice-chat-display"></div>
+                
+                <div class="upload-area" id="voiceRecordingArea" style="cursor: pointer;">
+                    <span id="micStatus">🎤 Click to Start Speaking</span><br>
+                    <small>(Click to record, click again to stop)</small>
+                </div>
+                
+                <button class="submit-btn hidden" id="voice-stop-btn">Stop Recording</button>
+                
+                <div id="voice-chat-status" class="status hidden"></div>
+            </div>
+
+            <!-- Material Orders Agent -->
+            <div id="material-orders-agent" class="agent-card hidden">
+                <div id="material-orders-content">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+                
+                <div class="chat-display" id="material-orders-display"></div>
+                
+                <form id="material-orders-form">
+                    <textarea class="message-input" id="material-orders-input" placeholder="Describe your material needs: '30 squares GAF Timberline shingles, gutters for 2500 sq ft ranch...'"></textarea>
+                    <button type="submit" class="submit-btn" id="material-orders-btn">Process Material Order</button>
+                </form>
+                
+                <div id="material-orders-status" class="status hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://elevenlabs.io/player/audioNativeHelper.js" type="text/javascript"></script>
+
+    <script>
+        const API_BASE = 'http://localhost:5002';
+        
+        // Global state
+        let currentAgent = 'text-chat';
+        let selectedVoiceStyle = 1; // Default to Agent 1
+        let conversationHistories = {
+            'text-chat': [],
+            'file-analyzer': [],
+            'voice-chat': [],
+            'material-orders': []
+        };
+        
+        // Voice recording state
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // Initialize
+        window.onload = function() {
+            initializeAgents();
+            showAgent('text-chat');
+            // Auto-select Agent 1 style
+            selectVoiceStyle(1, document.querySelector('.voice-option'));
+        };
+
+        // Agent Navigation
+        function showAgent(agentType) {
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Hide all agents
+            document.querySelectorAll('.agent-card').forEach(card => card.classList.add('hidden'));
+            
+            // Show selected agent
+            document.getElementById(`${agentType}-agent`).classList.remove('hidden');
+            
+            currentAgent = agentType;
+        }
+
+        // Initialize all agents
+        function initializeAgents() {
+            setupTextChatAgent();
+            setupFileAnalyzerAgent();
+            setupVoiceChatAgent();
+            setupMaterialOrdersAgent();
+        }
+
+        // Text Chat Agent Setup
+        function setupTextChatAgent() {
+            const content = document.getElementById('text-chat-content');
+            content.innerHTML = `
+                <h2>💬 AI Chat Agent</h2>
+                <p>Intelligent multi-agent conversation system powered by GPT-4 and Claude</p>
+            `;
+
+            const form = document.getElementById('text-chat-form');
+            const input = document.getElementById('text-chat-input');
+            const display = document.getElementById('text-chat-display');
+            
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                const message = input.value.trim();
+                if (!message) return;
+
+                addMessageToChat('text-chat', 'User', message);
+                input.value = '';
+                showStatus('text-chat', 'info', 'AI thinking...');
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/multi-agent/chat`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: message,
+                            history: conversationHistories['text-chat'].slice(0, -1),
+                            user_identity: "NODE Portal User"
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.response) {
+                        addMessageToChat('text-chat', 'AI', data.response);
+                        showStatus('text-chat', 'success', 'Response received!');
+                    } else {
+                        throw new Error(data.error || 'Failed to get response');
+                    }
+                } catch (error) {
+                    console.warn('Backend unavailable, using demo response:', error.message);
+                    
+                    // Demo response based on message content
+                    let demoResponse = generateDemoResponse(message);
+                    
+                    setTimeout(() => {
+                        addMessageToChat('text-chat', 'AI', demoResponse);
+                        showStatus('text-chat', 'info', 'Demo response (backend offline)');
+                    }, 1000); // Simulate API delay
+                }
+            };
+            
+            // Add welcome message
+            addMessageToChat('text-chat', 'AI', 'Hello! I\'m your NODE AI assistant. How can I help you today?');
+        }
+
+        // File Analyzer Agent Setup
+        function setupFileAnalyzerAgent() {
+            const content = document.getElementById('file-analyzer-content');
+            content.innerHTML = `
+                <h2>📄 File Analysis Agent</h2>
+                <p>Upload documents, images, audio, or video for AI-powered analysis and conversation</p>
+            `;
+
+            const form = document.getElementById('file-analyzer-form');
+            const input = document.getElementById('file-analyzer-input');
+            const fileInput = document.getElementById('fileInput');
+            const uploadArea = document.getElementById('fileUploadArea');
+            const uploadText = document.getElementById('fileUploadText');
+
+            // Drag and drop handlers
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    updateFileDisplay();
+                }
+            });
+
+            fileInput.addEventListener('change', updateFileDisplay);
+
+            function updateFileDisplay() {
+                if (fileInput.files.length > 0) {
+                    uploadText.innerHTML = `<strong>Selected: ${fileInput.files[0].name}</strong><br>Ready to analyze`;
+                }
+            }
+
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                const message = input.value.trim();
+                const file = fileInput.files[0];
+
+                if (!message && !file) {
+                    showStatus('file-analyzer', 'error', 'Please provide a message or file');
+                    return;
+                }
+
+                const formData = new FormData();
+                if (file) formData.append('file', file);
+                formData.append('message', message);
+                formData.append('history', JSON.stringify(conversationHistories['file-analyzer']));
+
+                addMessageToChat('file-analyzer', 'User', `${file ? `[File: ${file.name}] ` : ''}${message}`);
+                input.value = '';
+                showStatus('file-analyzer', 'info', 'Analyzing file and processing...');
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/content/analyze-with-pathsassin`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.analysis) {
+                        addMessageToChat('file-analyzer', 'AI', data.analysis);
+                        showStatus('file-analyzer', 'success', 'Analysis complete!');
+                    } else {
+                        throw new Error(data.error || 'Analysis failed');
+                    }
+                } catch (error) {
+                    console.warn('File analyzer backend unavailable, using demo response:', error.message);
+                    
+                    setTimeout(() => {
+                        let demoResponse = file ? 
+                            `I've analyzed your file "${file.name}". ${generateFileAnalysisDemo(file.name, message)}` :
+                            generateDemoResponse(message);
+                        
+                        addMessageToChat('file-analyzer', 'AI', demoResponse);
+                        showStatus('file-analyzer', 'info', 'Demo analysis (backend offline)');
+                    }, 1500);
+                }
+            };
+        }
+
+        // Voice Chat Agent Setup with Web Speech API
+        function setupVoiceChatAgent() {
+            const content = document.getElementById('voice-chat-content');
+            content.innerHTML = `
+                <h2>🎤 Voice Chat Agent</h2>
+                <p>Speak directly with AI - real voice-to-voice conversation using your browser's speech recognition</p>
+                <div id="voice-controls" style="margin: 20px 0;">
+                    <div id="recordingStatus" style="margin: 10px 0; font-weight: 500;">Click the microphone to start speaking</div>
+                    <button id="startBtn" class="btn" style="background: #10B981; padding: 12px 24px; font-size: 16px;">
+                        🎤 Start Speaking
+                    </button>
+                    <button id="stopBtn" class="btn" style="background: #EF4444; padding: 12px 24px; font-size: 16px; display: none;">
+                        ⏹️ Stop
+                    </button>
+                    <div id="processingIndicator" style="display: none; margin-top: 10px;">
+                        <div class="spinner"></div>
+                        <span>Processing your voice...</span>
+                    </div>
+                </div>
+                <div id="voiceChatHistory" style="margin-top: 20px; max-height: 300px; overflow-y: auto; border: 1px solid #333; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.2);"></div>
+            `;
+
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            const synthesis = window.speechSynthesis;
+            let isListening = false;
+            let currentUtterance = null;
+
+            // Configure recognition
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            // Get DOM elements
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const statusEl = document.getElementById('recordingStatus');
+            const processingEl = document.getElementById('processingIndicator');
+            const chatHistory = document.getElementById('voiceChatHistory');
+
+            // Add message to chat history
+            function addMessage(speaker, text) {
+                const messageEl = document.createElement('div');
+                messageEl.style.margin = '10px 0';
+                messageEl.style.padding = '10px';
+                messageEl.style.borderRadius = '8px';
+                messageEl.style.background = speaker === 'You' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(139, 92, 246, 0.2)';
+                messageEl.style.borderLeft = `4px solid ${speaker === 'You' ? '#3B82F6' : '#8B5CF6'}`;
+                
+                const speakerEl = document.createElement('div');
+                speakerEl.textContent = speaker + ':';
+                speakerEl.style.fontWeight = 'bold';
+                speakerEl.style.marginBottom = '4px';
+                speakerEl.style.color = speaker === 'You' ? '#3B82F6' : '#8B5CF6';
+                
+                const textEl = document.createElement('div');
+                textEl.textContent = text;
+                
+                messageEl.appendChild(speakerEl);
+                messageEl.appendChild(textEl);
+                chatHistory.appendChild(messageEl);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            }
+
+            // Speak text using speech synthesis
+            function speak(text) {
+                if (synthesis.speaking) {
+                    synthesis.cancel();
+                }
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.voice = synthesis.getVoices().find(voice => voice.name.includes('Google US English') || voice.default);
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                
+                utterance.onstart = () => {
+                    statusEl.textContent = 'AI is speaking...';
+                };
+                
+                utterance.onend = () => {
+                    statusEl.textContent = 'Click the microphone to speak again';
+                    startBtn.style.display = 'inline-block';
+                    stopBtn.style.display = 'none';
+                };
+                
+                synthesis.speak(utterance);
+                currentUtterance = utterance;
+                
+                // Add AI response to chat
+                addMessage('AI', text);
+            }
+
+            // Start voice recognition
+            function startListening() {
+                try {
+                    recognition.start();
+                    startBtn.style.display = 'none';
+                    stopBtn.style.display = 'inline-block';
+                    statusEl.textContent = 'Listening... Speak now!';
+                    processingEl.style.display = 'none';
+                    isListening = true;
+                } catch (err) {
+                    console.error('Error starting speech recognition:', err);
+                    statusEl.textContent = 'Error: ' + err.message;
+                }
+            }
+
+            // Stop voice recognition
+            function stopListening() {
+                recognition.stop();
+                startBtn.style.display = 'inline-block';
+                stopBtn.style.display = 'none';
+                processingEl.style.display = 'flex';
+                statusEl.textContent = 'Processing your speech...';
+                isListening = false;
+            }
+
+            // Event listeners for buttons
+            startBtn.addEventListener('click', startListening);
+            stopBtn.addEventListener('click', stopListening);
+
+            // Speech recognition event handlers
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                addMessage('You', transcript);
+                
+                // Process the user's speech and generate a response
+                processUserInput(transcript);
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                if (event.error !== 'no-speech') {
+                    statusEl.textContent = 'Error: ' + event.error;
+                }
+                startBtn.style.display = 'inline-block';
+                stopBtn.style.display = 'none';
+                processingEl.style.display = 'none';
+            };
+
+            recognition.onend = () => {
+                if (isListening) {
+                    // If we're still supposed to be listening, restart recognition
+                    recognition.start();
+                }
+            };
+
+            // Process user input and generate a response
+            function processUserInput(text) {
+                // Simple response logic - in a real app, this would call your AI backend
+                processingEl.style.display = 'flex';
+                
+                // Simulate processing delay
+                setTimeout(() => {
+                    let response;
+                    const lowerText = text.toLowerCase();
+                    
+                    if (lowerText.includes('hello') || lowerText.includes('hi') || lowerText.includes('hey')) {
+                        response = "Hello! I'm your AI assistant. How can I help you with your roofing needs today?";
+                    } else if (lowerText.includes('price') || lowerText.includes('cost') || lowerText.includes('how much')) {
+                        response = "For a standard 2,500 sq ft roof, you're looking at approximately $8,000 to $15,000 depending on materials. For a more accurate quote, I'd need to know your location and the type of materials you're interested in.";
+                    } else if (lowerText.includes('schedule') || lowerText.includes('appointment') || lowerText.includes('inspection')) {
+                        response = "I can help you schedule an appointment. What day and time work best for you? Our team is available Monday through Friday from 8 AM to 6 PM.";
+                    } else if (lowerText.includes('thank')) {
+                        response = "You're welcome! Is there anything else I can help you with?";
+                    } else {
+                        response = "I understand you're asking about: " + text + ". For the most accurate information, I recommend speaking with one of our roofing specialists. Would you like me to connect you with someone?";
+                    }
+                    
+                    processingEl.style.display = 'none';
+                    speak(response);
+                }, 1000);
+            }
+            
+            // Add some initial help text
+            addMessage('AI', `Hello! I'm NODE's AI assistant, specializing in roofing services for Birmingham, AL. I can help with material estimates, scheduling inspections, emergency repairs, and answering questions about our services. What can I assist you with today?`);
+        }
+
+        // Material Orders Agent Setup
+        function setupMaterialOrdersAgent() {
+            const content = document.getElementById('material-orders-content');
+            content.innerHTML = `
+                <h2>🏗️ Material Orders Agent</h2>
+                <p>Voice or text-powered material ordering with real-time pricing and supplier integration</p>
+            `;
+
+            const form = document.getElementById('material-orders-form');
+            const input = document.getElementById('material-orders-input');
+
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                const message = input.value.trim();
+                if (!message) return;
+
+                addMessageToChat('material-orders', 'User', message);
+                input.value = '';
+                showStatus('material-orders', 'info', 'Processing material order request...');
+
+                try {
+                    // This would integrate with MaterialOrderBot
+                    const response = await fetch(`${API_BASE}/api/materials/process-order`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: message,
+                            history: conversationHistories['material-orders'],
+                            voice_style: selectedVoiceStyle
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.response) {
+                        addMessageToChat('material-orders', 'AI', data.response);
+                        showStatus('material-orders', 'success', 'Order processed!');
+                    } else {
+                        // Fallback to multi-agent chat for now
+                        const fallbackResponse = await fetch(`${API_BASE}/api/multi-agent/chat`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                message: `Material order request: ${message}`,
+                                history: conversationHistories['material-orders'],
+                                user_identity: "NODE Material Orders"
+                            })
+                        });
+                        
+                        const fallbackData = await fallbackResponse.json();
+                        addMessageToChat('material-orders', 'AI', fallbackData.response || 'I can help with material orders. Please provide more details.');
+                        showStatus('material-orders', 'success', 'Response received!');
+                    }
+                } catch (error) {
+                    console.warn('Material orders backend unavailable, using demo response:', error.message);
+                    
+                    setTimeout(() => {
+                        let demoResponse = generateMaterialOrderDemo(message);
+                        addMessageToChat('material-orders', 'AI', demoResponse);
+                        showStatus('material-orders', 'info', 'Demo material order (backend offline)');
+                    }, 1500);
+                }
+            };
+
+            // Add welcome message
+            addMessageToChat('material-orders', 'AI', 'I can help you order roofing materials. Tell me what you need: shingles, gutters, flashing, etc.');
+        }
+
+        // Voice Style Selection Functions
+        function selectVoiceStyle(styleNumber, element) {
+            selectedVoiceStyle = styleNumber;
+            
+            // Update UI - remove selected from all
+            document.querySelectorAll('.voice-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Add selected to clicked element
+            if (element) {
+                element.classList.add('selected');
+            }
+            
+            // Define style descriptions
+            const styleDescriptions = {
+                1: "Professional & Authoritative - Perfect for business presentations and formal client calls",
+                2: "Warm & Consultative - Ideal for client consultations and project discussions", 
+                3: "Direct & Reliable - Best for material orders and technical details",
+                4: "Clear & Responsive - Optimized for emergency calls and urgent situations"
+            };
+            
+            // Show style info
+            document.getElementById('selected-style-name').textContent = `Agent ${styleNumber}`;
+            document.getElementById('selected-style-description').textContent = styleDescriptions[styleNumber];
+            
+            document.getElementById('selected-style-info').classList.remove('hidden');
+            
+            console.log('Selected voice style:', styleNumber);
+        }
+
+        // Utility Functions
+        function addMessageToChat(agentType, speaker, text) {
+            const display = document.getElementById(`${agentType}-display`);
+            const msgElement = document.createElement('p');
+            msgElement.style.color = speaker === 'User' ? '#60a5fa' : '#a78bfa';
+            msgElement.innerHTML = `<strong>${speaker}:</strong> ${text}`;
+            display.appendChild(msgElement);
+            display.scrollTop = display.scrollHeight;
+            
+            // Store in conversation history
+            conversationHistories[agentType].push({
+                role: speaker === 'User' ? 'user' : 'assistant',
+                content: text
+            });
+        }
+
+        function showStatus(agentType, type, message) {
+            const statusId = agentType === 'voice-selector' ? 'selected-voice-info' : `${agentType}-status`;
+            const statusEl = document.getElementById(statusId);
+            if (statusEl) {
+                statusEl.style.display = 'block';
+                statusEl.className = `status ${type}`;
+                statusEl.innerHTML = message;
+                setTimeout(() => { statusEl.style.display = 'none'; }, 5000);
+            }
+        }
+
+        // Demo Response Generators
+        function generateFileAnalysisDemo(filename, message) {
+            const extension = filename.split('.').pop().toLowerCase();
+            
+            if (['pdf', 'doc', 'docx', 'txt'].includes(extension)) {
+                return "This appears to be a document containing roofing specifications. I've extracted key information about materials, measurements, and requirements. The document mentions GAF shingles, proper ventilation requirements, and Birmingham building code compliance. Would you like me to generate a material list based on these specifications?";
+            }
+            
+            if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) {
+                return "I've analyzed this image and can see roofing damage/conditions. The image shows areas that may need attention, including potential shingle wear, flashing concerns, and gutter conditions. Based on this visual assessment, I recommend a detailed inspection by our NODE team. Would you like to schedule an inspection?";
+            }
+            
+            if (['mp3', 'wav', 'mp4', 'avi'].includes(extension)) {
+                return "I've processed this audio/video file and transcribed the content related to roofing services. The recording discusses material preferences, timeline requirements, and project scope. Based on the transcription, I can provide relevant estimates and scheduling options for your roofing project.";
+            }
+            
+            return "I've analyzed your file and extracted relevant information for roofing project planning. The content provides useful details that I can use to assist with material estimates, project scheduling, or technical specifications.";
+        }
+
+        function generateMaterialOrderDemo(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('30 squares') || lowerMessage.includes('timberline') || lowerMessage.includes('gaf')) {
+                return "📋 **MATERIAL ORDER PROCESSED**\n\n**GAF Timberline Shingles**: 30 squares - $4,200\n**Underlayment**: 35 rolls - $420\n**Starter Strips**: 240 linear feet - $180\n**Ridge Cap**: 80 linear feet - $160\n**Flashing & Drip Edge**: Various - $240\n\n**Estimated Total**: $5,200\n**Delivery**: 2-3 business days to Birmingham area\n\nWould you like me to contact our suppliers for availability confirmation?";
+            }
+            
+            if (lowerMessage.includes('gutter') || lowerMessage.includes('downspout')) {
+                return "🏠 **GUTTER SYSTEM QUOTE**\n\n**6\" K-Style Gutters**: 150 linear feet - $450\n**Downspouts**: 4 pieces (10ft each) - $120\n**Gutter Guards**: 150 linear feet - $300\n**Hangers & Hardware**: Complete set - $75\n\n**Estimated Total**: $945\n**Installation Available**: NODE certified installers\n\nShall I schedule a site measurement for precise requirements?";
+            }
+            
+            return `I've processed your material request: "${message}"\n\nBased on typical Birmingham roofing projects, I can provide detailed pricing for:\n• Premium shingles (GAF, Owens Corning, CertainTeed)\n• Underlayment & accessories\n• Gutters & drainage systems\n• Flashing & ventilation\n\nWould you like a detailed quote for specific materials?`;
+        }
+
+        function generateDemoResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('material') || lowerMessage.includes('shingle') || lowerMessage.includes('roof')) {
+                return "I can help you with roofing materials! For a typical residential roof, you'll need GAF Timberline shingles (about 30 squares for 2500 sq ft), underlayment, starter strips, ridge cap shingles, and flashing. Would you like me to provide a detailed material list and pricing estimate?";
+            }
+            
+            if (lowerMessage.includes('quote') || lowerMessage.includes('estimate') || lowerMessage.includes('price')) {
+                return "I can generate accurate roofing quotes using our material database and current Birmingham area pricing. Please provide the roof dimensions, pitch, and any specific material preferences. Our typical residential jobs range from $8,000-$25,000 depending on size and materials.";
+            }
+            
+            if (lowerMessage.includes('schedule') || lowerMessage.includes('appointment') || lowerMessage.includes('inspection')) {
+                return "I can help schedule your roofing inspection or consultation. NODE offers free roof inspections in the Birmingham area. We typically have availability within 2-3 business days. Would you prefer morning or afternoon appointments?";
+            }
+            
+            if (lowerMessage.includes('emergency') || lowerMessage.includes('leak') || lowerMessage.includes('damage')) {
+                return "For emergency roofing situations, NODE provides 24/7 emergency response in Birmingham, AL. If you have active leaks or storm damage, please call Preston directly at 205-307-9153. For non-emergency damage assessment, I can schedule an inspection within 24 hours.";
+            }
+            
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('help')) {
+                return "Hello! I'm NODE's AI assistant, specializing in roofing services for Birmingham, AL. I can help with material estimates, scheduling inspections, emergency repairs, and answering questions about our services. What can I assist you with today?";
+            }
+            
+            // Default response
+            return `I understand you're asking about "${message}". As NODE's AI assistant, I can help with roofing materials, estimates, scheduling, and emergency services in Birmingham, AL. How can I provide more specific assistance with your roofing needs?`;
+        }
+
+        // Error handling and fallbacks
+        window.addEventListener('error', function(e) {
+            console.error('Application error:', e.error);
+            // Could integrate with Firebase logging here
+        });
+    </script>
+</body>
+</html>

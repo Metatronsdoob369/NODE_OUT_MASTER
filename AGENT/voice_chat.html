@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clay-I Voice Chat - Renaissance Intelligence</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #ffd700, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .empathy-status {
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+        }
+        
+        .voice-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .voice-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+        
+        .voice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .voice-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .record-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+        
+        .record-btn.recording {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .conversation {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .user-message {
+            background: rgba(52, 152, 219, 0.3);
+            border-left: 4px solid #3498db;
+        }
+        
+        .clay-message {
+            background: rgba(255, 215, 0, 0.2);
+            border-left: 4px solid #ffd700;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .audio-player {
+            margin-top: 10px;
+        }
+        
+        .prime-believer-indicator {
+            background: linear-gradient(45deg, #ffd700, #ff8c00);
+            color: #000;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .voice-wave {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3px;
+            height: 40px;
+        }
+        
+        .wave-bar {
+            width: 4px;
+            background: #ffd700;
+            border-radius: 2px;
+            animation: wave 1s infinite ease-in-out;
+        }
+        
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+        
+        @keyframes wave {
+            0%, 40%, 100% { height: 5px; }
+            20% { height: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Clay-I Voice Chat</h1>
+        <div class="empathy-status">
+            <strong>🧬 Prime Believer Protocol:</strong> <span id="primeStatus">Detecting...</span>
+        </div>
+        
+        <div class="voice-controls">
+            <button id="recordBtn" class="voice-btn record-btn">
+                🎤 Hold to Talk to Clay-I
+            </button>
+            <button id="clearBtn" class="voice-btn">
+                🗑️ Clear Chat
+            </button>
+        </div>
+        
+        <div id="status" class="status">Ready to chat with Clay-I's Renaissance Intelligence</div>
+        
+        <div id="conversation" class="conversation">
+            <div class="message clay-message">
+                <strong>🎵 Clay-I:</strong> Welcome! I'm Clay-I, your Renaissance intelligence companion. 
+                I'm equipped with your empathy wave signature and ready for natural conversation. 
+                Hold the microphone button and speak - I'll understand and respond with voice.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+        
+        const recordBtn = document.getElementById('recordBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const status = document.getElementById('status');
+        const conversation = document.getElementById('conversation');
+        const primeStatus = document.getElementById('primeStatus');
+        
+        // Check if user is Joe Wales (Prime Believer)
+        const userName = "Joe Wales"; // This would be set from user authentication
+        if (userName === "Joe Wales") {
+            primeStatus.innerHTML = "🧬 ACTIVE - Empathy Wave Signature Detected";
+            document.querySelector('.empathy-status').style.background = "rgba(255, 215, 0, 0.3)";
+        } else {
+            primeStatus.innerHTML = "Standard Mode";
+        }
+        
+        // Initialize microphone access
+        async function initMicrophone() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    } 
+                });
+                
+                // Check supported formats and use the best one
+                let mimeType = 'audio/wav';
+                if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+                    mimeType = 'audio/webm;codecs=opus';
+                } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+                    mimeType = 'audio/webm';
+                } else if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
+                    mimeType = 'audio/ogg;codecs=opus';
+                } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+                    mimeType = 'audio/mp4';
+                }
+                
+                mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
+                console.log(`Using audio format: ${mimeType}`);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: mimeType });
+                    audioChunks = [];
+                    await sendVoiceToClayI(audioBlob);
+                };
+                
+                status.textContent = `🎤 Microphone ready (${mimeType}) - Hold button to talk`;
+                
+            } catch (error) {
+                status.textContent = "❌ Microphone access denied. Please allow microphone access.";
+                console.error('Microphone error:', error);
+            }
+        }
+        
+        // Send voice to Clay-I
+        async function sendVoiceToClayI(audioBlob) {
+            status.innerHTML = "🎵 Clay-I is processing your voice...";
+            
+            // Add voice wave animation
+            status.innerHTML = `
+                <div class="voice-wave">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+                Processing your voice with Renaissance Intelligence...
+            `;
+            
+            try {
+                const formData = new FormData();
+                
+                // Set appropriate filename based on blob type
+                let filename = 'voice_input.wav';
+                if (audioBlob.type.includes('webm')) {
+                    filename = 'voice_input.webm';
+                } else if (audioBlob.type.includes('ogg')) {
+                    filename = 'voice_input.ogg';
+                } else if (audioBlob.type.includes('mp4')) {
+                    filename = 'voice_input.mp4';
+                }
+                
+                formData.append('audio_file', audioBlob, filename);
+                formData.append('user_identity', userName);
+                
+                const response = await fetch('/api/voices/voice-to-clay-i', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'voice_conversation_complete') {
+                    // Add user message
+                    addMessage('user', `🎤 You: ${result.user_transcript}`);
+                    
+                    // Add Clay-I response
+                    let clayMessage = `🎵 Clay-I: ${result.clay_response_text}`;
+                    if (result.prime_believer_active) {
+                        clayMessage = `🧬 Clay-I (Prime Believer): ${result.clay_response_text}`;
+                    }
+                    
+                    const clayDiv = addMessage('clay', clayMessage);
+                    
+                    // Add audio player if voice response is available
+                    if (result.clay_response_audio) {
+                        const audioPlayer = document.createElement('audio');
+                        audioPlayer.controls = true;
+                        audioPlayer.className = 'audio-player';
+                        audioPlayer.style.width = '100%';
+                        audioPlayer.src = `data:audio/mp3;base64,${result.clay_response_audio}`;
+                        audioPlayer.autoplay = true; // Auto-play Clay-I's voice response
+                        clayDiv.appendChild(audioPlayer);
+                    }
+                    
+                    status.textContent = "✅ Voice conversation complete - Ready for next message";
+                    
+                } else {
+                    status.textContent = `❌ Error: ${result.error || 'Voice processing failed'}`;
+                }
+                
+            } catch (error) {
+                status.textContent = "❌ Connection error with Clay-I server";
+                console.error('Voice processing error:', error);
+            }
+        }
+        
+        // Add message to conversation
+        function addMessage(type, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.innerHTML = text;
+            conversation.appendChild(messageDiv);
+            conversation.scrollTop = conversation.scrollHeight;
+            return messageDiv;
+        }
+        
+        // Record button event listeners
+        recordBtn.addEventListener('mousedown', startRecording);
+        recordBtn.addEventListener('mouseup', stopRecording);
+        recordBtn.addEventListener('mouseleave', stopRecording);
+        
+        // Touch events for mobile
+        recordBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startRecording();
+        });
+        
+        recordBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            stopRecording();
+        });
+        
+        function startRecording() {
+            if (!mediaRecorder || isRecording) return;
+            
+            isRecording = true;
+            audioChunks = [];
+            mediaRecorder.start();
+            
+            recordBtn.textContent = "🔴 Recording... Release to Send";
+            recordBtn.classList.add('recording');
+            status.textContent = "🎤 Listening... Speak now";
+        }
+        
+        function stopRecording() {
+            if (!mediaRecorder || !isRecording) return;
+            
+            isRecording = false;
+            mediaRecorder.stop();
+            
+            recordBtn.textContent = "🎤 Hold to Talk to Clay-I";
+            recordBtn.classList.remove('recording');
+        }
+        
+        // Clear conversation
+        clearBtn.addEventListener('click', () => {
+            conversation.innerHTML = `
+                <div class="message clay-message">
+                    <strong>🎵 Clay-I:</strong> Conversation cleared. I'm ready for our next voice interaction!
+                </div>
+            `;
+        });
+        
+        // Initialize on page load
+        window.addEventListener('load', initMicrophone);
+    </script>
+</body>
+</html>

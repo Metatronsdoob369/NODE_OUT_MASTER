@@ -1,0 +1,13 @@
+{
+  "lesson_title": "Tax_Code_Frequency_Analysis",
+  "concepts": [
+    "tax-avoidance-vs-evasion-linguistics",
+    "deduction-maximization-patterns",
+    "entity-structure-optimization",
+    "depreciation-acceleration-mathematics"
+  ],
+  "why_this_matters": "Tax law contains mathematical patterns and linguistic loopholes designed for those who understand the code. Frequency analysis reveals hidden optimization strategies",
+  "scrape_method": "IRC analysis + tax court decisions + CPA strategy guides + business entity law + depreciation schedules + international tax treaties",
+  "raw_data_snippet": "Section 179: Immediate expensing vs depreciation. 1031 exchanges: Like-kind property deferral. Cost segregation: Accelerated depreciation through reclassification. Entity election: LLC tax treatment flexibility",
+  "replication_instruction": "Map tax code patterns for optimization opportunities, understand entity election strategies, apply cost segregation for accelerated depreciation, utilize exchange mechanisms for tax deferral"
+}

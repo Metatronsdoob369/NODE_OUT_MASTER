@@ -1,0 +1,1123 @@
+1{
+  "name": "NODE_OUT Enhanced Social Media Engine + Content Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6 * * *"
+            }
+          ]
+        }
+      },
+      "id": "daily-trigger",
+      "name": "Daily Content Generation",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [180, 300]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "weather-storm-alert",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "weather-webhook",
+      "name": "Weather Storm Alert Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [180, 500],
+      "webhookId": "storm-alert-trigger"
+    },
+    {
+      "parameters": {
+        "folderId": "{{ $env.NOTEBOOKLM_FOLDER_ID }}",
+        "triggerOn": "fileCreated",
+        "fileFilter": "*.txt,*.md,*.docx"
+      },
+      "id": "notebooklm-trigger",
+      "name": "Watch NotebookLM Export",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [180, 700],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "google-drive-api",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "requestMethod": "GET",
+        "url": "https://api.openweathermap.org/data/2.5/forecast",
+        "sendQuery": true,
+        "queryParameters": {
+          "paramete
+            {
+              "name": "q",
+              "value": "={{ $env.BUSINESS_CITY }},{{ $env.BUSINESS_STATE }}"
+            },
+            {
+              "name": "appid",
+              "value": "={{ $env.OPENWEATHER_API_KEY }}"
+            },
+            {
+              "name": "units",
+              "value": "imperial"
+            }
+          ]
+        }
+      },
+      "id": "weather-api",
+      "name": "Get Weather Forecast",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "GET",
+        "url": "https://trends.google.com/trends/api/dailytrends",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "hl",
+              "value": "en-US"
+            },
+            {
+              "name": "tz",
+              "value": "-240"
+            },
+            {
+              "name": "geo",
+              "value": "US"
+            }
+          ]
+        }
+      },
+      "id": "google-trends",
+      "name": "Get Google Trends",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 100]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": "{{ $env.AIRTABLE_BASE_ID }}",
+        "table": "Recent_Projects",
+        "filterByFormula": "IS_AFTER({Completion_Date}, DATEADD(NOW(), -30, 'days'))"
+      },
+      "id": "recent-projects",
+      "name": "Get Recent Completed Projects",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [400, 200],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "airtable-api",
+          "name": "Airtable API Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "={{ $json.id }}",
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "txt"
+            }
+          }
+        }
+      },
+      "id": "download-notebooklm-file",
+      "name": "Download NotebookLM File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [400, 700],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "google-drive-api",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "weather-analysis",
+              "name": "weather_conditions",
+              "value": "={{ $('Get Weather Forecast').item.json.list.slice(0, 7).map(w => ({ \n  time: w.dt_txt,\n  condition: w.weather[0].main,\n  description: w.weather[0].description,\n  temp: w.main.temp,\n  rain_probability: w.pop,\n  wind_speed: w.wind.speed\n})) }}",
+              "type": "object"
+            },
+            {
+              "id": "trend-keywords",
+              "name": "trending_topics",
+              "value": "={{ $('Get Google Trends').item.json.default?.trendingSearchesDays?.[0]?.trendingSearches?.slice(0, 5).map(t => t.title?.query) || [] }}",
+              "type": "object"
+            },
+            {
+              "id": "project-data",
+              "name": "recent_completions",
+              "value": "={{ $('Get Recent Completed Projects').item.json.records.map(r => ({\n  address: r.fields.Address,\n  type: r.fields.Project_Type,\n  completion_date: r.fields.Completion_Date,\n  before_photo: r.fields.Before_Photo?.[0]?.url,\n  after_photo: r.fields.After_Photo?.[0]?.url,\n  customer_testimonial: r.fields.Testimonial,\n  project_value: r.fields.Project_Value\n})) }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "data-analysis",
+      "name": "Analyze Data Sources",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [600, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "storm-check",
+              "leftValue": "={{ $('Analyze Data Sources').item.json.weather_conditions.some(w => w.condition.includes('Rain') || w.condition.includes('Storm') || w.condition.includes('Thunderstorm') || w.rain_probability > 0.6 || w.wind_speed > 20) }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "storm-detection",
+      "name": "Detect Storm/Severe Weather",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [800, 200]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "operation": "create",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are an expert social media content creator for a roofing company. Create engaging content for Facebook posts and Instagram stories only. Focus on driving appointments and building trust. Always include clear calls-to-action and create urgency when appropriate. Make content authentic, helpful, and action-oriented."
+            },
+            {
+              "role": "user",
+              "content": "Create social media content based on:\n\nWeather: {{ $('Analyze Data Sources').item.json.weather_conditions }}\nTrending Topics: {{ $('Analyze Data Sources').item.json.trending_topics }}\nRecent Projects: {{ $('Analyze Data Sources').item.json.recent_completions }}\n\nGenerate content for:\n1. Facebook Post (engaging, detailed, community-focused)\n2. Instagram Story (visual, urgent, swipe-up CTA)\n\nInclude specific CTAs and Calendly booking suggestions for each platform."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.8,
+          "maxTokens": 1200
+        }
+      },
+      "id": "content-generation",
+      "name": "Generate Regular Content",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.3,
+      "position": [1000, 100],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-api",
+          "name": "OpenAI API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "operation": "create",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are an emergency response social media manager for a roofing company. Create URGENT, helpful content for storm situations that drives immediate action. Focus on Facebook posts and Instagram stories that help the community while promoting emergency services."
+            },
+            {
+              "role": "user",
+              "content": "🚨 STORM ALERT DETECTED! 🚨\n\nWeather Data: {{ $('Analyze Data Sources').item.json.weather_conditions }}\n\nGenerate URGENT storm-related content:\n\n1. Facebook Emergency Post:\n- Storm prep checklist\n- Safety tips\n- Emergency contact info\n- 24/7 availability messaging\n\n2. Instagram Story Series (3-4 slides):\n- Urgent storm prep\n- Before/after storm damage examples\n- Emergency hotline swipe-up\n- \"We're ready\" crew mobilization\n\nMake it helpful to the community while positioning us as the emergency response experts."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 1000
+        }
+      },
+      "id": "emergency-content",
+      "name": "Generate Emergency Storm Content",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.3,
+      "position": [1000, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-api",
+          "name": "OpenAI API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "operation": "create",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Transform this NotebookLM transcript into a viral TikTok script. Use the [Hook → Value → CTA] structure. Tone: witty, punchy, smart. Make it roofing-relevant and engaging for homeowners. Keep it under 60 seconds when spoken."
+            },
+            {
+              "role": "user",
+              "content": "Rewrite this transcript into a TikTok script:\n\n{{ $('Download NotebookLM File').item.json.data }}\n\nFormat as:\n- HOOK (first 3 seconds - grab attention)\n- VALUE (main content - education/entertainment)\n- CTA (clear next step)\n\nMake it conversational, add trending phrases, and include roofing expertise."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.9,
+          "maxTokens": 800
+        }
+      },
+      "id": "tiktok-script-rewrite",
+      "name": "GPT Script Rewrite (TikTok)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.3,
+      "position": [600, 700],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-api",
+          "name": "OpenAI API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "facebook-content",
+              "name": "facebook_post",
+              "value": "={{ $('Generate Regular Content').item.json.choices[0].message.content.split('Facebook:')[1]?.split('Instagram:')[0]?.trim() || $('Generate Regular Content').item.json.choices[0].message.content.split('1.')[1]?.split('2.')[0]?.trim() || 'Default Facebook content generated' }}",
+              "type": "string"
+            },
+            {
+              "id": "instagram-content",
+              "name": "instagram_story",
+              "value": "={{ $('Generate Regular Content').item.json.choices[0].message.content.split('Instagram:')[1]?.trim() || $('Generate Regular Content').item.json.choices[0].message.content.split('2.')[1]?.trim() || 'Default Instagram story content' }}",
+              "type": "string"
+            },
+            {
+              "id": "content-type",
+              "name": "content_type",
+              "value": "regular",
+              "type": "string"
+            },
+            {
+              "id": "calendly-event",
+              "name": "calendly_event_type",
+              "value": "standard-estimate",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "format-regular-content",
+      "name": "Format Regular Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1200, 100]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "emergency-facebook",
+              "name": "facebook_post",
+              "value": "={{ $('Generate Emergency Storm Content').item.json.choices[0].message.content.split('Facebook:')[1]?.split('Instagram:')[0]?.trim() || $('Generate Emergency Storm Content').item.json.choices[0].message.content.split('1.')[1]?.split('2.')[0]?.trim() || 'Emergency Facebook content' }}",
+              "type": "string"
+            },
+            {
+              "id": "emergency-instagram",
+              "name": "instagram_story",
+              "value": "={{ $('Generate Emergency Storm Content').item.json.choices[0].message.content.split('Instagram:')[1]?.trim() || $('Generate Emergency Storm Content').item.json.choices[0].message.content.split('2.')[1]?.trim() || 'Emergency Instagram story content' }}",
+              "type": "string"
+            },
+            {
+              "id": "emergency-type",
+              "name": "content_type",
+              "value": "emergency",
+              "type": "string"
+            },
+            {
+              "id": "emergency-calendly",
+              "name": "calendly_event_type",
+              "value": "emergency-storm-response",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "format-emergency-content",
+      "name": "Format Emergency Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "tiktok-script",
+              "name": "tiktok_script",
+              "value": "={{ $('GPT Script Rewrite (TikTok)').item.json.choices[0].message.content }}",
+              "type": "string"
+            },
+            {
+              "id": "content-source",
+              "name": "content_source",
+              "value": "notebooklm",
+              "type": "string"
+            },
+            {
+              "id": "original-filename",
+              "name": "original_filename",
+              "value": "={{ $('Watch NotebookLM Export').item.json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "format-tiktok-content",
+      "name": "Format TikTok Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [800, 700]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/{{ $env.ELEVENLABS_VOICE_ID }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "={{ $env.ELEVENLABS_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.tiktok_script }}"
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_multilingual_v2"
+            },
+            {
+              "name": "voice_settings",
+              "value": {
+                "stability": 0.5,
+                "similarity_boost": 0.75,
+                "style": 0.0,
+                "use_speaker_boost": true
+              }
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "generate-elevenlabs-audio",
+      "name": "Generate ElevenLabs Audio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1000, 700]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "requestMethod": "POST",
+        "url": "https://graph.facebook.com/v18.0/{{ $env.FACEBOOK_PAGE_ID }}/feed",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $json.facebook_post }}"
+            },
+            {
+              "name": "link",
+              "value": "{{ $json.content_type === 'emergency' ? $env.EMERGENCY_CALENDLY_LINK : $env.STANDARD_CALENDLY_LINK }}"
+            },
+            {
+              "name": "call_to_action",
+              "value": {
+                "type": "BOOK_NOW",
+                "value": {
+                  "link": "{{ $json.content_type === 'emergency' ? $env.EMERGENCY_CALENDLY_LINK : $env.STANDARD_CALENDLY_LINK }}"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "id": "post-to-facebook",
+      "name": "Post to Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1400, 200],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "facebook-api",
+          "name": "Facebook Graph API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "requestMethod": "POST",
+        "url": "https://graph.facebook.com/v18.0/{{ $env.INSTAGRAM_ACCOUNT_ID }}/media",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "caption",
+              "value": "={{ $json.instagram_story }}"
+            },
+            {
+              "name": "media_type",
+              "value": "STORIES"
+            },
+            {
+              "name": "link",
+              "value": "{{ $json.content_type === 'emergency' ? $env.EMERGENCY_CALENDLY_LINK : $env.STANDARD_CALENDLY_LINK }}"
+            }
+          ]
+        }
+      },
+      "id": "post-instagram-story",
+      "name": "Post Instagram Story",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1400, 300],
+      "credentials": {
+        "instagramBasicDisplayApi": {
+          "id": "instagram-api",
+          "name": "Instagram Basic Display API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Daily Content Generation": {
+      "main": [
+        [
+          {
+            "node": "Get Weather Forecast",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Google Trends",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Recent Completed Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Weather Storm Alert Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get Weather Forecast",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Watch NotebookLM Export": {
+      "main": [
+        [
+          {
+            "node": "Download NotebookLM File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Weather Forecast": {
+      "main": [
+        [
+          {
+            "node": "Analyze Data Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Google Trends": {
+      "main": [
+        [
+          {
+            "node": "Analyze Data Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Recent Completed Projects": {
+      "main": [
+        [
+          {
+            "node": "Analyze Data Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download NotebookLM File": {
+      "main": [
+        [
+          {
+            "node": "GPT Script Rewrite (TikTok)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Data Sources": {
+      "main": [
+        [
+          {
+            "node": "Detect Storm/Severe Weather",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detect Storm/Severe Weather": {
+      "main": [
+        [
+          {
+            "node": "Generate Emergency Storm Content",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Regular Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Regular Content": {
+      "main": [
+        [
+          {
+            "node": "Format Regular Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Emergency Storm Content": {
+      "main": [
+        [
+          {
+            "node": "Format Emergency Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPT Script Rewrite (TikTok)": {
+      "main": [
+        [
+          {
+            "node": "Format TikTok Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Regular Content": {
+      "main": [
+        [
+          {
+            "node": "Post to Facebook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post Instagram Story",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Emergency Content": {
+      "main": [
+        [
+          {
+            "node": "Post to Facebook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post Instagram Story",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format TikTok Content": {
+      "main": [
+        [
+          {
+            "node": "Generate ElevenLabs Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate ElevenLabs Audio": {
+      "main": [
+        [
+          {
+            "node": "Upload Audio to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to Facebook": {
+      "main": [
+        [
+          {
+            "node": "Check if Emergency Content",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Setup Dynamic Calendly Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Instagram Story": {
+      "main": [
+        [
+          {
+            "node": "Check if Emergency Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Audio to Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Content Team Alert - TikTok Content Ready",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log TikTok Content Pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Emergency Content": {
+      "main": [
+        [
+          {
+            "node": "Alert Team - Emergency Content Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup Dynamic Calendly Events": {
+      "main": [
+        [
+          {
+            "node": "Log Social Media Activity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert Team - Emergency Content Posted": {
+      "main": [
+        [
+          {
+            "node": "Log Social Media Activity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Team Alert - TikTok Content Ready": {
+      "main": [
+        [
+          {
+            "node": "Log TikTok Content Pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Social Media Activity": {
+      "main": [
+        [
+          {
+            "node": "Track Facebook Performance",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Track Instagram Story Performance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    "social-media",
+    "content-automation",
+    "weather-responsive",
+    "calendly-integration",
+    "notebooklm-pipeline",
+    "tiktok-content",
+    "elevenlabs-audio"
+  ],
+  "triggerCount": 3,
+  "updatedAt": "2024-01-20T10:30:00.000Z",
+  "versionId": "enhanced-social-media-engine-v2"
+}api",
+          "name": "Instagram Basic Display API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "folderId": "{{ $env.AUDIO_CONTENT_FOLDER_ID }}",
+        "name": "TikTok_Audio_{{ DateTime.now().toFormat('yyyy-MM-dd_HH-mm') }}.mp3",
+        "binaryData": true,
+        "binaryPropertyName": "data"
+      },
+      "id": "upload-audio-to-drive",
+      "name": "Upload Audio to Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [1200, 700],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "google-drive-api",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "emergency-content-check",
+              "leftValue": "={{ $json.content_type }}",
+              "rightValue": "emergency",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "emergency-check",
+      "name": "Check if Emergency Content",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1600, 250]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "requestMethod": "POST",
+        "url": "https://api.calendly.com/scheduled_events",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "event_type_uuid",
+              "value": "{{ $json.content_type === 'emergency' ? $env.CALENDLY_EMERGENCY_EVENT_UUID : $env.CALENDLY_STANDARD_EVENT_UUID }}"
+            },
+            {
+              "name": "start_time",
+              "value": "={{ $json.content_type === 'emergency' ? DateTime.now().plus({hours: 2}).toISO() : DateTime.now().plus({hours: 24}).toISO() }}"
+            }
+          ]
+        }
+      },
+      "id": "setup-calendly-events",
+      "name": "Setup Dynamic Calendly Events",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1800, 200],
+      "credentials": {
+        "calendlyOAuth2Api": {
+          "id": "calendly-api",
+          "name": "Calendly OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "to": "{{ $env.EMERGENCY_TEAM_PHONE }}",
+        "message": "🚨 EMERGENCY SOCIAL CONTENT ACTIVATED 🚨\n\nStorm detected in {{ $env.BUSINESS_CITY }}!\n\nContent posted:\n✅ Facebook emergency storm prep\n✅ Instagram story series with swipe-up\n\nEmergency Calendly activated - expect surge in calls!\n\nWeather: {{ $('Analyze Data Sources').item.json.weather_conditions[0].description }}\nWind: {{ $('Analyze Data Sources').item.json.weather_conditions[0].wind_speed }}mph"
+      },
+      "id": "emergency-team-alert",
+      "name": "Alert Team - Emergency Content Posted",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 2,
+      "position": [1800, 400],
+      "credentials": {
+        "twilioApi": {
+          "id": "twilio-api",
+          "name": "Twilio API Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "to": "{{ $env.CONTENT_TEAM_PHONE }}",
+        "message": "🎬 NEW TIKTOK CONTENT READY!\n\nSource: {{ $json.original_filename }}\nAudio generated and uploaded to Drive\n\nFolder: {{ $env.AUDIO_CONTENT_FOLDER_ID }}\n\nReady for video creation! 🚀"
+      },
+      "id": "content-team-alert",
+      "name": "Alert Team - TikTok Content Ready",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 2,
+      "position": [1400, 700],
+      "credentials": {
+        "twilioApi": {
+          "id": "twilio-api",
+          "name": "Twilio API Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": "{{ $env.AIRTABLE_BASE_ID }}",
+        "table": "Social_Media_Activity",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "post_date": "={{ $now }}",
+            "content_type": "={{ $json.content_type }}",
+            "facebook_content": "={{ $json.facebook_post }}",
+            "instagram_story": "={{ $json.instagram_story }}",
+            "weather_trigger": "={{ $('Analyze Data Sources').item.json.weather_conditions[0].condition }}",
+            "calendly_event_type": "={{ $json.calendly_event_type }}",
+            "emergency_alert_sent": "={{ $json.content_type === 'emergency' ? 'Yes' : 'No' }}",
+            "platforms_posted": "Facebook, Instagram Stories"
+          }
+        }
+      },
+      "id": "log-social-activity",
+      "name": "Log Social Media Activity",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [2000, 250],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "airtable-api",
+          "name": "Airtable API Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": "{{ $env.AIRTABLE_BASE_ID }}",
+        "table": "TikTok_Content_Pipeline",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "creation_date": "={{ $now }}",
+            "source_file": "={{ $json.original_filename }}",
+            "script_content": "={{ $json.tiktok_script }}",
+            "audio_file_url": "={{ $('Upload Audio to Google Drive').item.json.webViewLink }}",
+            "status": "Ready for Video Creation",
+            "content_source": "NotebookLM",
+            "team_notified": "Yes"
+          }
+        }
+      },
+      "id": "log-tiktok-pipeline",
+      "name": "Log TikTok Content Pipeline",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [1600, 700],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "airtable-api",
+          "name": "Airtable API Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "requestMethod": "GET",
+        "url": "https://graph.facebook.com/v18.0/{{ $env.FACEBOOK_PAGE_ID }}/insights",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "metric",
+              "value": "page_post_engagements,page_impressions,page_reactions_like_total"
+            },
+            {
+              "name": "period",
+              "value": "day"
+            }
+          ]
+        }
+      },
+      "id": "track-facebook-performance",
+      "name": "Track Facebook Performance",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [2000, 100],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "facebook-api",
+          "name": "Facebook Graph API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "requestMethod": "GET",
+        "url": "https://graph.facebook.com/v18.0/{{ $env.INSTAGRAM_ACCOUNT_ID }}/insights",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "metric",
+              "value": "impressions,reach,story_exits,story_replies"
+            },
+            {
+              "name": "period",
+              "value": "day"
+            }
+          ]
+        }
+      },
+      "id": "track-instagram-performance",
+      "name": "Track Instagram Story Performance",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [2000, 150],
+      "credentials": {
+        "instagramBasicDisplayApi": {
+          "id": "instagram-

@@ -1,0 +1,144 @@
+{
+  "modules": {
+    "brand_voice_engine": {
+      "name": "Brand Voice Engine - Core Module",
+      "description": "Reusable across all Content Alchemist products",
+      "nodes": [
+        {
+          "parameters": {
+            "mode": "raw",
+            "jsonOutput": true,
+            "options": {
+              "maxRetries": 3,
+              "timeout": 30000
+            }
+          },
+          "id": "brand-voice-core",
+          "name": "Brand Voice Transformer",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 1,
+          "position": [250, 300],
+          "alwaysOutputData": true,
+          "code": "// BRAND VOICE ENGINE - Core Transformation Logic\n// Reusable across Email Builder, Weekly Drop Kit, etc.\n\nconst brandInputs = $input.all()[0].json;\n\n// Standardized brand profile structure\nconst brandProfilePrompt = `\nYou are The Alchemist of personal brands. Transform these inputs into a consistent brand profile.\n\nInputs:\n- Tone: ${brandInputs.tone || 'authentic'}\n- Vibes: ${(brandInputs.vibes || []).join(', ')}\n- Metaphor: ${brandInputs.metaphor || 'a welcoming space'}\n- Audience: ${brandInputs.audience || 'my community'}\n- Sample Copy: ${brandInputs.sampleCopy || ''}\n- Context: ${brandInputs.context || 'general'} // 'social', 'email', 'website', etc.\n- Visual Insights: ${brandInputs.visualInsights || 'none'}\n\nReturn a JSON with these EXACT keys (this structure is used across all our products):\n{\n  \"brand_essence\": \"2-3 sentences capturing their unique magic\",\n  \"voice_attributes\": [\"5 descriptive words\"],\n  \"content_pillars\": [\"3 main themes\"],\n  \"unique_angle\": \"what makes them irreplaceable\",\n  \"emotional_signature\": \"the feeling people get\",\n  \"tone_spectrum\": {\n    \"formal_casual\": 0.0-1.0,\n    \"serious_playful\": 0.0-1.0,\n    \"minimal_elaborate\": 0.0-1.0\n  },\n  \"vocabulary_level\": \"simple|conversational|professional|academic\",\n  \"storytelling_style\": \"direct|metaphorical|data-driven|emotional\"\n}\n`;\n\n// Call GPT-4 (or your AI of choice)\nconst brandProfile = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.openai.com/v1/chat/completions',\n  headers: {\n    'Authorization': `Bearer ${$credentials.openAiApi.apiKey}`,\n    'Content-Type': 'application/json'\n  },\n  body: {\n    model: 'gpt-4',\n    messages: [\n      {\n        role: 'system',\n        content: 'You are The Alchemist. You see potential where others see ordinary. Always return valid JSON.'\n      },\n      {\n        role: 'user',\n        content: brandProfilePrompt\n      }\n    ],\n    temperature: 0.8,\n    max_tokens: 800,\n    response_format: { type: 'json_object' }\n  }\n});\n\nconst profile = JSON.parse(brandProfile.choices[0].message.content);\n\n// Add metadata for tracking\nprofile._metadata = {\n  generated_at: new Date().toISOString(),\n  version: '1.0',\n  module: 'brand_voice_engine',\n  context: brandInputs.context\n};\n\nreturn [{ json: profile }];"
+        }
+      ]
+    },
+    "content_generator_framework": {
+      "name": "Universal Content Generator",
+      "description": "Adaptable for any content type",
+      "nodes": [
+        {
+          "parameters": {
+            "mode": "raw",
+            "jsonOutput": true
+          },
+          "id": "content-generator-universal",
+          "name": "Content Generation Framework",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 1,
+          "position": [450, 300],
+          "code": "// UNIVERSAL CONTENT GENERATOR\n// Adapts to any content type: social posts, emails, web copy, etc.\n\nconst brandProfile = $input.all()[0].json;\nconst contentRequest = $node['content-request'].json;\n\n// Content type configurations\nconst contentConfigs = {\n  'social_reel': {\n    system: 'You create viral short-form video content.',\n    output: ['hook', 'script', 'visual_notes', 'cta', 'duration']\n  },\n  'email_sequence': {\n    system: 'You write engaging email sequences that convert.',\n    output: ['subject_line', 'preview_text', 'body', 'cta', 'ps_line']\n  },\n  'weekly_content': {\n    system: 'You plan comprehensive weekly content strategies.',\n    output: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'weekend']\n  },\n  'carousel': {\n    system: 'You create swipeable educational content.',\n    output: ['title', 'slides', 'design_notes', 'save_trigger']\n  },\n  'website_copy': {\n    system: 'You write converting website copy.',\n    output: ['headline', 'subheadline', 'body_sections', 'cta', 'trust_elements']\n  }\n};\n\nconst config = contentConfigs[contentRequest.type] || contentConfigs['social_reel'];\n\n// Build dynamic prompt based on content type\nconst dynamicPrompt = `\nBrand Profile:\n${JSON.stringify(brandProfile, null, 2)}\n\nContent Type: ${contentRequest.type}\nQuantity: ${contentRequest.quantity || 1}\nSpecific Requirements: ${contentRequest.requirements || 'none'}\n\nGenerate ${contentRequest.quantity || 1} piece(s) of content.\nEach piece must include these elements: ${config.output.join(', ')}\n\nMaintain the brand voice throughout. Be specific and actionable.\nReturn as JSON array.\n`;\n\n// Generate content\nconst generatedContent = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.openai.com/v1/chat/completions',\n  headers: {\n    'Authorization': `Bearer ${$credentials.openAiApi.apiKey}`,\n    'Content-Type': 'application/json'\n  },\n  body: {\n    model: 'gpt-4',\n    messages: [\n      {\n        role: 'system',\n        content: config.system + ' Always maintain brand consistency.'\n      },\n      {\n        role: 'user',\n        content: dynamicPrompt\n      }\n    ],\n    temperature: contentRequest.creativity || 0.8,\n    max_tokens: contentRequest.maxTokens || 1000,\n    response_format: { type: 'json_object' }\n  }\n});\n\nconst content = JSON.parse(generatedContent.choices[0].message.content);\n\n// Add generation metadata\nconst output = {\n  content_type: contentRequest.type,\n  generated_content: content,\n  brand_profile_used: brandProfile.brand_essence,\n  _metadata: {\n    generated_at: new Date().toISOString(),\n    module: 'content_generator_framework',\n    version: '1.0'\n  }\n};\n\nreturn [{ json: output }];"
+        }
+      ]
+    },
+    "alchemist_voice": {
+      "name": "Alchemist Voice Module",
+      "description": "Consistent mystical encouragement across products",
+      "nodes": [
+        {
+          "parameters": {
+            "functionCode": "// THE ALCHEMIST VOICE - Consistent across all products\n// Generates personalized encouragement based on context\n\nconst brandProfile = $input.all()[0].json;\nconst context = $node['context'].json;\n\n// Context-aware message templates\nconst messageTemplates = {\n  'brand_discovery': {\n    prefix: 'Your brand essence reveals',\n    suffix: 'The world awaits your unique magic.'\n  },\n  'email_launch': {\n    prefix: 'Your words carry power',\n    suffix: 'Each email is a spell of connection.'\n  },\n  'content_creation': {\n    prefix: 'Your creative force flows',\n    suffix: 'Transform hearts with every post.'\n  },\n  'weekly_planning': {\n    prefix: 'This week holds infinite potential',\n    suffix: 'Seven days to change everything.'\n  }\n};\n\nconst template = messageTemplates[context.type] || messageTemplates['brand_discovery'];\n\n// Generate personalized message\nconst messagePrompt = `\nAs The Alchemist, write a 2-3 sentence personalized encouragement.\n\nTheir essence: ${brandProfile.brand_essence}\nTheir unique angle: ${brandProfile.unique_angle}\nContext: ${context.type}\n\nStart with: \"${template.prefix}...\"\nEnd with: \"${template.suffix}\"\n\nMake them feel seen, capable, and excited to begin.\nUnder 50 words total.\n`;\n\nconst alchemistMessage = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.openai.com/v1/chat/completions',\n  headers: {\n    'Authorization': `Bearer ${$credentials.openAiApi.apiKey}`,\n    'Content-Type': 'application/json'\n  },\n  body: {\n    model: 'gpt-4',\n    messages: [\n      {\n        role: 'system',\n        content: 'You are The Alchemist. Mystical yet practical. You see gold in everyone.'\n      },\n      {\n        role: 'user',\n        content: messagePrompt\n      }\n    ],\n    temperature: 0.9,\n    max_tokens: 150\n  }\n});\n\nreturn [{\n  json: {\n    message: alchemistMessage.choices[0].message.content,\n    context: context.type,\n    timestamp: new Date().toISOString()\n  }\n}];"
+          },
+          "id": "alchemist-voice-core",
+          "name": "Alchemist Voice Generator",
+          "type": "n8n-nodes-base.function",
+          "typeVersion": 1,
+          "position": [250, 300]
+        }
+      ]
+    },
+    "quality_safety_gate": {
+      "name": "Quality & Safety Gate",
+      "description": "Standardized content validation",
+      "nodes": [
+        {
+          "parameters": {
+            "functionCode": "// QUALITY & SAFETY GATE - Universal content validator\n// Use across all Content Alchemist products\n\nconst contentToCheck = $input.all()[0].json;\n\n// Configurable safety rules\nconst safetyConfig = {\n  bannedWords: ['hate', 'violence', 'explicit', 'drug', 'abuse'],\n  bannedPhrases: [],\n  minQualityScore: 0.7,\n  requireElements: ['brand_alignment', 'actionable', 'positive']\n};\n\n// Safety check\nfunction performSafetyCheck(content) {\n  const contentString = JSON.stringify(content).toLowerCase();\n  \n  // Check banned words\n  for (const word of safetyConfig.bannedWords) {\n    if (contentString.includes(word)) {\n      return {\n        passed: false,\n        reason: `Content contains restricted term: ${word}`,\n        severity: 'high'\n      };\n    }\n  }\n  \n  return { passed: true };\n}\n\n// Quality check\nfunction performQualityCheck(content) {\n  const checks = {\n    hasValue: content.generated_content && content.generated_content.length > 0,\n    brandAligned: content.brand_profile_used && content.brand_profile_used.length > 10,\n    isComplete: !JSON.stringify(content).includes('undefined') && !JSON.stringify(content).includes('null'),\n    isActionable: JSON.stringify(content).includes('cta') || JSON.stringify(content).includes('action')\n  };\n  \n  const score = Object.values(checks).filter(Boolean).length / Object.keys(checks).length;\n  \n  return {\n    passed: score >= safetyConfig.minQualityScore,\n    score,\n    checks\n  };\n}\n\n// Perform checks\nconst safetyResult = performSafetyCheck(contentToCheck);\nconst qualityResult = performQualityCheck(contentToCheck);\n\n// Compile results\nconst validationResult = {\n  passed: safetyResult.passed && qualityResult.passed,\n  safety: safetyResult,\n  quality: qualityResult,\n  timestamp: new Date().toISOString(),\n  recommendations: []\n};\n\n// Add recommendations if needed\nif (!validationResult.passed) {\n  if (!safetyResult.passed) {\n    validationResult.recommendations.push('Regenerate content with safer parameters');\n  }\n  if (!qualityResult.passed) {\n    validationResult.recommendations.push('Enhance content completeness and actionability');\n  }\n}\n\n// Return both validation and original content\nreturn [{\n  json: {\n    validation: validationResult,\n    content: contentToCheck,\n    proceed: validationResult.passed\n  }\n}];"
+          },
+          "id": "quality-safety-gate",
+          "name": "Content Quality & Safety Validator",
+          "type": "n8n-nodes-base.function",
+          "typeVersion": 1,
+          "position": [250, 300]
+        }
+      ]
+    },
+    "output_formatter_universal": {
+      "name": "Universal Output Formatter",
+      "description": "Flexible formatter for any product output",
+      "nodes": [
+        {
+          "parameters": {
+            "functionCode": "// UNIVERSAL OUTPUT FORMATTER\n// Adapts output structure based on product needs\n\nconst rawContent = $input.all()[0].json;\nconst outputConfig = $node['output-config'].json;\n\n// Output format templates\nconst formatTemplates = {\n  'mobile_preview': {\n    structure: 'flat',\n    includeMetadata: false,\n    wrapInContainer: true\n  },\n  'api_response': {\n    structure: 'nested',\n    includeMetadata: true,\n    wrapInContainer: false\n  },\n  'email_template': {\n    structure: 'sections',\n    includeMetadata: false,\n    wrapInContainer: true,\n    addUnsubscribe: true\n  },\n  'download_package': {\n    structure: 'files',\n    includeMetadata: true,\n    wrapInContainer: true,\n    generateFileNames: true\n  }\n};\n\nconst format = formatTemplates[outputConfig.format] || formatTemplates['api_response'];\n\n// Format based on template\nfunction formatContent(content, template) {\n  let formatted = {};\n  \n  if (template.structure === 'flat') {\n    // Flatten nested structures for easy display\n    formatted = flattenObject(content);\n  } else if (template.structure === 'sections') {\n    // Organize into clear sections\n    formatted = {\n      header: extractHeader(content),\n      body: extractBody(content),\n      footer: extractFooter(content)\n    };\n  } else if (template.structure === 'files') {\n    // Prepare for file generation\n    formatted = prepareFileStructure(content);\n  } else {\n    // Default nested structure\n    formatted = content;\n  }\n  \n  // Apply template options\n  if (!template.includeMetadata) {\n    delete formatted._metadata;\n  }\n  \n  if (template.wrapInContainer) {\n    formatted = {\n      success: true,\n      data: formatted,\n      generated_at: new Date().toISOString()\n    };\n  }\n  \n  return formatted;\n}\n\n// Helper functions\nfunction flattenObject(obj, prefix = '') {\n  let flattened = {};\n  for (const key in obj) {\n    if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {\n      Object.assign(flattened, flattenObject(obj[key], prefix + key + '_'));\n    } else {\n      flattened[prefix + key] = obj[key];\n    }\n  }\n  return flattened;\n}\n\nfunction extractHeader(content) {\n  return {\n    title: content.title || content.brand_essence || 'Your Content',\n    subtitle: content.subtitle || content.unique_angle || ''\n  };\n}\n\nfunction extractBody(content) {\n  return content.generated_content || content.content || [];\n}\n\nfunction extractFooter(content) {\n  return {\n    cta: content.cta || 'Get started today',\n    signature: content.signature || 'The Content Alchemist Team'\n  };\n}\n\nfunction prepareFileStructure(content) {\n  const files = [];\n  if (Array.isArray(content.generated_content)) {\n    content.generated_content.forEach((item, index) => {\n      files.push({\n        filename: `${outputConfig.filePrefix || 'content'}_${index + 1}.json`,\n        content: item\n      });\n    });\n  }\n  return files;\n}\n\n// Apply formatting\nconst formattedOutput = formatContent(rawContent, format);\n\nreturn [{ json: formattedOutput }];"
+          },
+          "id": "output-formatter-universal",
+          "name": "Universal Output Formatter",
+          "type": "n8n-nodes-base.function",
+          "typeVersion": 1,
+          "position": [250, 300]
+        }
+      ]
+    }
+  },
+  "implementation_guide": {
+    "how_to_use_modules": [
+      "1. Import each module as a subflow in n8n",
+      "2. Connect modules using 'Execute Workflow' nodes",
+      "3. Pass standardized parameters between modules",
+      "4. Each module returns consistent JSON structure"
+    ],
+    "module_connections": {
+      "example_flow": "Input → Brand Voice Engine → Content Generator → Quality Gate → Output Formatter → Response",
+      "parameter_passing": {
+        "to_brand_voice": {
+          "tone": "string",
+          "vibes": "array",
+          "metaphor": "string",
+          "audience": "string",
+          "context": "product_specific"
+        },
+        "to_content_generator": {
+          "brand_profile": "from_brand_voice_engine",
+          "content_type": "social_reel|email|carousel|etc",
+          "quantity": "number",
+          "requirements": "string"
+        },
+        "to_quality_gate": {
+          "content": "from_content_generator",
+          "safety_level": "strict|moderate|relaxed"
+        },
+        "to_output_formatter": {
+          "content": "from_quality_gate",
+          "format": "mobile_preview|api_response|email_template|download_package"
+        }
+      }
+    },
+    "product_specific_configs": {
+      "10_pic_push": {
+        "brand_voice_context": "social",
+        "content_types": ["social_reel", "carousel"],
+        "output_format": "mobile_preview"
+      },
+      "email_builder": {
+        "brand_voice_context": "email",
+        "content_types": ["email_sequence"],
+        "output_format": "email_template"
+      },
+      "weekly_drop_kit": {
+        "brand_voice_context": "weekly_planning",
+        "content_types": ["weekly_content"],
+        "output_format": "download_package"
+      }
+    }
+  }
+}

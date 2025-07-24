@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NODE_OUT Kill Bill Targets</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Oswald:wght@300;400;600&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a1a1a 100%);
+            font-family: 'Cinzel', serif;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .poster {
+            width: 800px;
+            height: 1100px;
+            background: 
+                linear-gradient(45deg, rgba(255,215,0,0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #000 0%, #1a0000 50%, #000 100%);
+            border: 5px solid #FFD700;
+            border-radius: 10px;
+            box-shadow: 
+                0 0 50px rgba(255,215,0,0.3),
+                inset 0 0 100px rgba(255,215,0,0.1);
+            position: relative;
+            overflow: hidden;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        .poster::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255,0,0,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,215,0,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #FFD700;
+            text-shadow: 
+                0 0 20px rgba(255,215,0,0.5),
+                3px 3px 0px #000,
+                -1px -1px 0px #000,
+                1px -1px 0px #000,
+                -1px 1px 0px #000;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .targets-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .target {
+            background: linear-gradient(45deg, rgba(0,0,0,0.8) 0%, rgba(20,0,0,0.8) 100%);
+            border: 2px solid #FFD700;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .target:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+            border-color: #FF6B6B;
+        }
+
+        .target::before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 50px;
+            background: linear-gradient(90deg, #FFD700 0%, #FF6B6B 100%);
+            border-radius: 0 5px 5px 0;
+        }
+
+        .target-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #FFD700;
+            float: left;
+            margin-right: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            line-height: 1;
+        }
+
+        .target-content {
+            overflow: hidden;
+        }
+
+        .target-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #FF6B6B;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .target-subtitle {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .target-pain {
+            font-size: 0.9rem;
+            color: #fff;
+            line-height: 1.4;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .kill-count {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            color: #FFD700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 3;
+        }
+
+        .bottom-quote {
+            position: absolute;
+            bottom: 80px;
+            left: 40px;
+            right: 40px;
+            text-align: center;
+            font-style: italic;
+            color: #FFD700;
+            font-size: 1.1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            z-index: 2;
+            padding: 10px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .sword {
+            position: absolute;
+            right: -50px;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+            width: 200px;
+            height: 10px;
+            background: linear-gradient(90deg, #666 0%, #FFD700 50%, #666 100%);
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        .blood-splatter {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #8B0000;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .splatter-1 { top: 15%; right: 20%; }
+        .splatter-2 { top: 35%; left: 15%; width: 12px; height: 12px; }
+        .splatter-3 { bottom: 25%; right: 25%; width: 18px; height: 18px; }
+        .splatter-4 { top: 60%; left: 10%; width: 10px; height: 10px; }
+    </style>
+</head>
+<body>
+    <div class="poster">
+        <div class="kill-count">AUTOMATION DEATH LIST</div>
+        
+        <div class="blood-splatter splatter-1"></div>
+        <div class="blood-splatter splatter-2"></div>
+        <div class="blood-splatter splatter-3"></div>
+        <div class="blood-splatter splatter-4"></div>
+        
+        <div class="sword"></div>
+        
+        <div class="header">
+            <div class="title">NODE_OUT</div>
+            <div class="subtitle">Craft AI Kill List</div>
+        </div>
+
+        <div class="targets-container">
+            <div class="target">
+                <div class="target-number">01</div>
+                <div class="target-content">
+                    <div class="target-title">🏗️ Roofing/Construction</div>
+                    <div class="target-subtitle">"Weather-dependent chaos conductors"</div>
+                    <div class="target-pain">
+                        <strong>Prime Vulnerability:</strong> "Storm season must completely transform how you operate..." 
+                        <br><strong>Fatal Strike:</strong> "How are you affected by... last-minute weather changes?"
+                    </div>
+                </div>
+            </div>
+
+            <div class="target">
+                <div class="target-number">02</div>
+                <div class="target-content">
+                    <div class="target-title">🍽️ Restaurants/Hospitality</div>
+                    <div class="target-subtitle">"Live performance directors with walkout audiences"</div>
+                    <div class="target-pain">
+                        <strong>Prime Vulnerability:</strong> "Staff scheduling must feel like solving a Rubik's cube blindfolded..." 
+                        <br><strong>Fatal Strike:</strong> "How are you affected by... no-shows during your busiest shifts?"
+                    </div>
+                </div>
+            </div>
+
+            <div class="target">
+                <div class="target-number">03</div>
+                <div class="target-content">
+                    <div class="target-title">🏥 Healthcare/Medical</div>
+                    <div class="target-subtitle">"Two-master servants of care & administration"</div>
+                    <div class="target-pain">
+                        <strong>Prime Vulnerability:</strong> "Patient scheduling must be like air traffic control for people's health..." 
+                        <br><strong>Fatal Strike:</strong> "How are you affected by... last-minute cancellations and no-shows?"
+                    </div>
+                </div>
+            </div>
+
+            <div class="target">
+                <div class="target-number">04</div>
+                <div class="target-content">
+                    <div class="target-title">⚖️ Legal/Professional</div>
+                    <div class="target-subtitle">"Precision surgeons drowning in documentation"</div>
+                    <div class="target-pain">
+                        <strong>Prime Vulnerability:</strong> "Document management must feel like archaeology sometimes..." 
+                        <br><strong>Fatal Strike:</strong> "How are you affected by... clients changing case scope mid-representation?"
+                    </div>
+                </div>
+            </div>
+
+            <div class="target">
+                <div class="target-number">05</div>
+                <div class="target-content">
+                    <div class="target-title">🏭 Manufacturing/Distribution</div>
+                    <div class="target-subtitle">"Future-predicting present managers"</div>
+                    <div class="target-pain">
+                        <strong>Prime Vulnerability:</strong> "Quality control must be like being a detective and fortune teller..." 
+                        <br><strong>Fatal Strike:</strong> "How are you affected by... equipment downtime during critical deadlines?"
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-quote">
+            "Never ask if they need help. Guide them to tell you where they're bleeding."
+        </div>
+    </div>
+</body>
+</html>

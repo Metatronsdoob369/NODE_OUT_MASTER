@@ -1,0 +1,12 @@
+{
+  "lesson_title": "CSS_Grid_Golden_Ratio_Foundation",
+  "concepts": [
+    "grid-template-areas",
+    "golden-ratio-1.618",
+    "proportional-spacing"
+  ],
+  "why_this_matters": "Mathematical harmony creates intuitive UX",
+  "scrape_method": "MDN + sacred geometry principles",
+  "raw_data_snippet": "",
+  "replication_instruction": "Use 1:1.618 ratios for grid layouts"
+}

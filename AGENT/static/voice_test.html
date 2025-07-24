@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice System Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Cinematic Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23000"/><stop offset="100%" stop-color="%23000"/></radialGradient><filter id="b"><feGaussianBlur stdDeviation="2"/></filter></defs><rect width="100%" height="100%" fill="%23000"/><circle cx="200" cy="150" r="50" fill="%23ff6b6b" opacity="0.8" filter="url(%23b)"/><circle cx="1000" cy="200" r="80" fill="%234ecdc4" opacity="0.6" filter="url(%23b)"/><circle cx="300" cy="600" r="60" fill="%23ffe66d" opacity="0.7" filter="url(%23b)"/><circle cx="900" cy="650" r="70" fill="%23ff8b94" opacity="0.5" filter="url(%23b)"/><path d="M0 400 Q300 200 600 400 T1200 400 L1200 800 L0 800 Z" fill="%23000" opacity="0.3"/><path d="M0 500 Q400 300 800 500 T1200 500 L1200 800 L0 800 Z" fill="%23000" opacity="0.2"/><circle cx="600" cy="100" r="3" fill="%23fff" opacity="0.8"/><circle cx="150" cy="300" r="2" fill="%23fff" opacity="0.6"/><circle cx="1050" cy="400" r="2" fill="%23fff" opacity="0.7"/><circle cx="400" cy="700" r="1" fill="%23fff" opacity="0.5"/><circle cx="1100" cy="100" r="1" fill="%23fff" opacity="0.4"/></svg>');
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            animation: backgroundFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundFloat {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.05) rotate(1deg); }
+        }
+
+        /* Animated particles */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: sparkle 4s linear infinite;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        @keyframes sparkle {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-100px); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px);
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+        }
+
+        .status-bar {
+            background: linear-gradient(90deg, rgba(39, 174, 96, 0.8), rgba(46, 204, 113, 0.8));
+            color: white;
+            padding: 16px 40px;
+            text-align: center;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            backdrop-filter: blur(15px);
+            z-index: 2;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .status-bar.error {
+            background: linear-gradient(90deg, rgba(231, 76, 60, 0.8), rgba(192, 57, 43, 0.8));
+        }
+
+        .status-bar .status-icon {
+            font-size: 1rem;
+        }
+
+        .content {
+            padding: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h3 {
+            font-size: 1.6rem;
+            color: white;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            font-weight: 400;
+            letter-spacing: -0.3px;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .example-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .example-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: left 0.8s;
+        }
+
+        .example-card:hover::before {
+            left: 100%;
+        }
+
+        .example-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+        }
+
+        .example-image {
+            width: 100%;
+            height: 200px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: 300;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .example-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .example-content h4 {
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 12px;
+            font-weight: 400;
+            letter-spacing: -0.3px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+
+        .example-content p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-weight: 300;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+        }
+
+        .voice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .voice-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.5s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .voice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: left 0.8s;
+        }
+
+        .voice-card:hover::before {
+            left: 100%;
+        }
+
+        .voice-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+        }
+
+        .voice-card.loading {
+            border-color: rgba(52, 152, 219, 0.4);
+            background: rgba(52, 152, 219, 0.03);
+            box-shadow: 0 0 25px rgba(52, 152, 219, 0.15);
+        }
+
+        .voice-card.success {
+            border-color: rgba(39, 174, 96, 0.4);
+            background: rgba(39, 174, 96, 0.03);
+            box-shadow: 0 0 25px rgba(39, 174, 96, 0.15);
+        }
+
+        .voice-card.error {
+            border-color: rgba(231, 76, 60, 0.4);
+            background: rgba(231, 76, 60, 0.03);
+            box-shadow: 0 0 25px rgba(231, 76, 60, 0.15);
+        }
+
+        .voice-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .voice-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            font-weight: 300;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            position: relative;
+            letter-spacing: -0.5px;
+        }
+
+        .voice-avatar::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            z-index: -1;
+        }
+
+        .voice-info h4 {
+            font-size: 1.4rem;
+            color: white;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            font-weight: 400;
+            letter-spacing: -0.3px;
+        }
+
+        .voice-info p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            font-weight: 300;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+        }
+
+        .voice-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.2px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.4));
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.3), rgba(41, 128, 185, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.2);
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(41, 128, 185, 0.4));
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .audio-player {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+
+        .audio-player audio {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .response-area {
+            background: rgba(44, 62, 80, 0.6);
+            color: #ecf0f1;
+            padding: 24px;
+            border-radius: 16px;
+            margin-top: 24px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            border-left: 4px solid #667eea;
+            display: none;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            color: #667eea;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .voice-personalities {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .personality-tag {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            color: white;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .personality-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .voice-grid, .examples-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 24px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(40px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        /* Professional glass morphism effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in glass-effect">
+        <div class="header">
+            <h1>Voice System Demo</h1>
+            <p>Advanced AI-driven voice synthesis with personality</p>
+        </div>
+
+        <div class="status-bar" id="status">
+            <span class="status-icon">●</span>
+            <span>Connecting to voice system...</span>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h3>Use Cases & Applications</h3>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-image">📊</div>
+                        <div class="example-content">
+                            <h4>Business Analytics</h4>
+                            <p>Transform data insights into compelling voice narratives for executive presentations and stakeholder communications.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="example-card">
+                        <div class="example-image">🎯</div>
+                        <div class="example-content">
+                            <h4>Sales & Marketing</h4>
+                            <p>Create personalized voice campaigns that convert prospects with authentic, personality-driven messaging.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="example-card">
+                        <div class="example-image">📞</div>
+                        <div class="example-content">
+                            <h4>Customer Service</h4>
+                            <p>Enhance customer experience with intelligent voicemail systems and automated response solutions.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="example-card">
+                        <div class="example-image">🎓</div>
+                        <div class="example-content">
+                            <h4>Training & Education</h4>
+                            <p>Develop engaging learning materials with diverse voice personalities for better retention and engagement.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="example-card">
+                        <div class="example-image">📱</div>
+                        <div class="example-content">
+                            <h4>Mobile Applications</h4>
+                            <p>Integrate voice capabilities into mobile apps for enhanced user experience and accessibility.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="example-card">
+                        <div class="example-image">🏢</div>
+                        <div class="example-content">
+                            <h4>Enterprise Solutions</h4>
+                            <p>Scale voice technology across large organizations with secure, customizable voice infrastructure.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Voice Personalities</h3>
+                <div class="voice-grid">
+                    <div class="voice-card" data-voice="Drew">
+                        <div class="voice-header">
+                            <div class="voice-avatar" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">D</div>
+                            <div class="voice-info">
+                                <h4>Drew</h4>
+                                <p>Confident & Engaging</p>
+                            </div>
+                        </div>
+                        <div class="voice-personalities">
+                            <div class="personality-tag">Motivational</div>
+                            <div class="personality-tag">Energetic</div>
+                        </div>
+                        <div class="voice-actions">
+                            <button class="btn btn-primary" onclick="testVoice('Drew')">
+                                Test Voice
+                            </button>
+                            <button class="btn btn-secondary" onclick="testVoicemail('Drew')">
+                                Voicemail
+                            </button>
+                        </div>
+                        <div class="audio-player" id="audio-Drew" style="display: none;"></div>
+                    </div>
+
+                    <div class="voice-card" data-voice="Rachel">
+                        <div class="voice-header">
+                            <div class="voice-avatar" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">R</div>
+                            <div class="voice-info">
+                                <h4>Rachel</h4>
+                                <p>Warm & Storytelling</p>
+                            </div>
+                        </div>
+                        <div class="voice-personalities">
+                            <div class="personality-tag">Narrative</div>
+                            <div class="personality-tag">Empathetic</div>
+                        </div>
+                        <div class="voice-actions">
+                            <button class="btn btn-primary" onclick="testVoice('Rachel')">
+                                Test Voice
+                            </button>
+                            <button class="btn btn-secondary" onclick="testVoicemail('Rachel')">
+                                Voicemail
+                            </button>
+                        </div>
+                        <div class="audio-player" id="audio-Rachel" style="display: none;"></div>
+                    </div>
+
+                    <div class="voice-card" data-voice="Paul">
+                        <div class="voice-header">
+                            <div class="voice-avatar" style="background: linear-gradient(135deg, #3498db, #2980b9);">P</div>
+                            <div class="voice-info">
+                                <h4>Paul</h4>
+                                <p>Authoritative & Experienced</p>
+                            </div>
+                        </div>
+                        <div class="voice-personalities">
+                            <div class="personality-tag">Professional</div>
+                            <div class="personality-tag">Commanding</div>
+                        </div>
+                        <div class="voice-actions">
+                            <button class="btn btn-primary" onclick="testVoice('Paul')">
+                                Test Voice
+                            </button>
+                            <button class="btn btn-secondary" onclick="testVoicemail('Paul')">
+                                Voicemail
+                            </button>
+                        </div>
+                        <div class="audio-player" id="audio-Paul" style="display: none;"></div>
+                    </div>
+
+                    <div class="voice-card" data-voice="Antoni">
+                        <div class="voice-header">
+                            <div class="voice-avatar" style="background: linear-gradient(135deg, #f39c12, #e67e22);">A</div>
+                            <div class="voice-info">
+                                <h4>Antoni</h4>
+                                <p>Charismatic & Persuasive</p>
+                            </div>
+                        </div>
+                        <div class="voice-personalities">
+                            <div class="personality-tag">Charismatic</div>
+                            <div class="personality-tag">Persuasive</div>
+                        </div>
+                        <div class="voice-actions">
+                            <button class="btn btn-primary" onclick="testVoice('Antoni')">
+                                Test Voice
+                            </button>
+                            <button class="btn btn-secondary" onclick="testVoicemail('Antoni')">
+                                Voicemail
+                            </button>
+                        </div>
+                        <div class="audio-player" id="audio-Antoni" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading-spinner" id="loading">
+                <div class="spinner"></div>
+                <p>Generating voice sample...</p>
+            </div>
+
+            <div class="response-area" id="response"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://russell-disclaimers-cp-part.trycloudflare.com';
+        
+        async function testVoice(voiceName) {
+            setCardLoading(voiceName);
+            showLoading();
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/voices/test`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        voice_name: voiceName
+                    })
+                });
+                
+                const data = await response.json();
+                setCardSuccess(voiceName);
+                showResponse(data, `Voice Test - ${voiceName}`);
+                
+                // Play audio if available
+                if (data.audio_file) {
+                    playAudio(voiceName, data.audio_file);
+                }
+                
+            } catch (error) {
+                setCardError(voiceName);
+                showResponse({ error: error.message }, `Error - ${voiceName}`);
+            }
+        }
+        
+        async function testVoicemail(voiceName) {
+            setCardLoading(voiceName);
+            showLoading();
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/voices/demo-voicemail`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        voice_name: voiceName,
+                        agent_name: 'Sarah Johnson'
+                    })
+                });
+                
+                const data = await response.json();
+                setCardSuccess(voiceName);
+                showResponse(data, `Voicemail - ${voiceName}`);
+                
+                // Play audio if available
+                if (data.audio_file) {
+                    playAudio(voiceName, data.audio_file);
+                }
+                
+            } catch (error) {
+                setCardError(voiceName);
+                showResponse({ error: error.message }, `Error - ${voiceName}`);
+            }
+        }
+        
+        function playAudio(voiceName, audioFile) {
+            const audioPlayer = document.getElementById(`audio-${voiceName}`);
+            audioPlayer.style.display = 'block';
+            audioPlayer.innerHTML = `
+                <audio controls autoplay>
+                    <source src="${API_BASE}/api/voices/audio/${audioFile}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            `;
+        }
+        
+        function setCardLoading(voiceName) {
+            const card = document.querySelector(`[data-voice="${voiceName}"]`);
+            card.className = 'voice-card loading';
+        }
+        
+        function setCardSuccess(voiceName) {
+            const card = document.querySelector(`[data-voice="${voiceName}"]`);
+            card.className = 'voice-card success';
+            setTimeout(() => {
+                card.className = 'voice-card';
+            }, 2000);
+        }
+        
+        function setCardError(voiceName) {
+            const card = document.querySelector(`[data-voice="${voiceName}"]`);
+            card.className = 'voice-card error';
+            setTimeout(() => {
+                card.className = 'voice-card';
+            }, 3000);
+        }
+        
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('response').style.display = 'none';
+        }
+        
+        function showResponse(data, title) {
+            document.getElementById('loading').style.display = 'none';
+            const responseDiv = document.getElementById('response');
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = `${title}\n\n${JSON.stringify(data, null, 2)}`;
+        }
+        
+        // Test connection on load
+        window.onload = async function() {
+            try {
+                const response = await fetch(`${API_BASE}/api/status`);
+                const data = await response.json();
+                
+                const statusBar = document.getElementById('status');
+                statusBar.innerHTML = `
+                    <span class="status-icon">●</span>
+                    <span>Connected to Voice System - ${data.voice_system_ready ? 'Ready' : 'Initializing'}</span>
+                `;
+                statusBar.className = 'status-bar';
+                
+            } catch (error) {
+                const statusBar = document.getElementById('status');
+                statusBar.innerHTML = `
+                    <span class="status-icon">●</span>
+                    <span>Connection Failed - ${error.message}</span>
+                `;
+                statusBar.className = 'status-bar error';
+            }
+        };
+    </script>
+</body>
+</html> 

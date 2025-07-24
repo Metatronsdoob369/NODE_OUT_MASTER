@@ -1,0 +1,13 @@
+{
+  "lesson_title": "Harmonic_Code_Review_Process",
+  "concepts": [
+    "constructive-interference-feedback",
+    "resonance-based-mentoring",
+    "wave-dampening-criticism",
+    "frequency-matching-communication"
+  ],
+  "why_this_matters": "Code reviews often create destructive interference. Applying wave mechanics creates constructive feedback that amplifies learning and team harmony",
+  "scrape_method": "Software engineering psychology + acoustic feedback theory + mentorship effectiveness studies + team communication research",
+  "raw_data_snippet": "Positive reinforcement (constructive interference): amplify good patterns. Gentle correction (phase alignment): guide without destroying confidence. Constructive questioning (resonance building): match the developers frequency",
+  "replication_instruction": "Start reviews with positive pattern recognition, use questioning that matches developer skill level, apply constructive interference to amplify strengths, use gentle phase correction for improvements"
+}

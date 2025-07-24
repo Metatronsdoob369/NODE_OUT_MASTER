@@ -1,0 +1,369 @@
+{
+  "project": {
+    "name": "StormCommander AI-Native Operating System",
+    "version": "1.0.0",
+    "description": "AI-native operating system for post-storm automation with intelligent sub-agents",
+    "created": "2025-07-19T00:00:00Z",
+    "updated": "2025-07-19T00:00:00Z"
+  },
+  "modules": {
+    "storm_commander": {
+      "name": "StormCommander",
+      "type": "main_agent",
+      "mission": "Coordinate all post-storm automation including voice triage, quoting, and order sequencing",
+      "status": "completed",
+      "priority": "critical",
+      "dependencies": ["voice_responder", "quote_draft", "material_order_bot"],
+      "api_touchpoints": ["twilio", "acculynx", "calendly", "n8n"],
+      "primary_actions": [
+        "Spawn and manage 3 sub-agents",
+        "Define API touchpoints and integrations",
+        "Issue test tasks and evaluate agent fitness",
+        "Coordinate workflow between agents",
+        "Monitor system health and performance"
+      ],
+      "files": ["storm_commander.py"],
+      "tests": ["test_storm_commander.py"],
+      "next_milestones": [
+        "Integration testing with live APIs",
+        "Performance optimization",
+        "Error handling enhancement"
+      ]
+    },
+    "voice_responder": {
+      "name": "VoiceResponder",
+      "type": "sub_agent",
+      "mission": "Handle incoming voice calls, triage urgency, and extract key damage information",
+      "status": "completed",
+      "priority": "high",
+      "dependencies": ["prompt_builder", "output_validator"],
+      "api_touchpoints": ["twilio", "n8n"],
+      "capabilities": [
+        "Voice call processing and transcription",
+        "Urgency level assessment",
+        "Damage type classification",
+        "Customer information extraction",
+        "Summary generation and handoff preparation"
+      ],
+      "validation_rules": [
+        "must_extract_contact_info",
+        "must_assess_urgency_level",
+        "must_identify_damage_type"
+      ],
+      "files": ["voice_responder_agent.py"],
+      "tests": ["test_voice_responder.py"],
+      "next_milestones": [
+        "Integration with live Twilio API",
+        "Advanced NLP for better damage classification",
+        "Multi-language support"
+      ]
+    },
+    "quote_draft": {
+      "name": "QuoteDraft", 
+      "type": "sub_agent",
+      "mission": "Generate accurate quotes based on damage assessment and material costs",
+      "status": "completed",
+      "priority": "high",
+      "dependencies": ["prompt_builder", "output_validator"],
+      "api_touchpoints": ["acculynx", "n8n"],
+      "capabilities": [
+        "Material cost calculation",
+        "Labor estimation and scheduling",
+        "Tax and markup application",
+        "Timeline estimation",
+        "Professional quote formatting"
+      ],
+      "validation_rules": [
+        "must_include_material_costs",
+        "must_include_labor_estimates", 
+        "must_include_timeline",
+        "must_validate_pricing_rules"
+      ],
+      "files": ["quote_draft_agent.py"],
+      "tests": ["test_quote_draft.py"],
+      "next_milestones": [
+        "Real-time material pricing integration",
+        "Advanced cost optimization algorithms",
+        "Competitive pricing analysis"
+      ]
+    },
+    "material_order_bot": {
+      "name": "MaterialOrderBot",
+      "type": "sub_agent", 
+      "mission": "Automatically order materials based on approved quotes and scheduling",
+      "status": "completed",
+      "priority": "high",
+      "dependencies": ["prompt_builder", "output_validator"],
+      "api_touchpoints": ["acculynx", "calendly", "n8n"],
+      "capabilities": [
+        "Quote approval verification",
+        "Material availability checking",
+        "Supplier selection and optimization",
+        "Delivery scheduling coordination",
+        "Order tracking and status monitoring"
+      ],
+      "validation_rules": [
+        "must_verify_quote_approval",
+        "must_check_material_availability",
+        "must_optimize_delivery_timing",
+        "must_track_order_status"
+      ],
+      "files": ["material_order_bot.py"],
+      "tests": ["test_material_order_bot.py"],
+      "next_milestones": [
+        "Live supplier API integrations",
+        "Inventory management system",
+        "Predictive ordering based on weather forecasts"
+      ]
+    },
+    "prompt_builder": {
+      "name": "PromptBuilder",
+      "type": "utility_module",
+      "mission": "Craft context-aware prompts using live file and goal context for each sub-agent",
+      "status": "completed",
+      "priority": "medium",
+      "dependencies": [],
+      "capabilities": [
+        "Template management for each agent type",
+        "Dynamic context variable injection",
+        "Live data integration",
+        "Validation requirement specification",
+        "Template versioning and export"
+      ],
+      "templates": [
+        "voice_responder_template",
+        "quote_draft_template", 
+        "material_order_template"
+      ],
+      "files": ["prompt_builder.py"],
+      "tests": ["test_prompt_builder.py"],
+      "next_milestones": [
+        "Template optimization based on agent performance",
+        "A/B testing framework for prompts",
+        "Machine learning-based prompt improvement"
+      ]
+    },
+    "output_validator": {
+      "name": "OutputValidator",
+      "type": "utility_module",
+      "mission": "Detect hallucinations, errors, and missing data in agent outputs",
+      "status": "completed",
+      "priority": "medium",
+      "dependencies": [],
+      "capabilities": [
+        "Required field validation",
+        "Data type and format checking",
+        "Business rule enforcement",
+        "Hallucination detection",
+        "Performance scoring and feedback generation"
+      ],
+      "validation_types": [
+        "required_fields",
+        "field_types",
+        "valid_values",
+        "field_constraints",
+        "business_rules",
+        "data_patterns",
+        "hallucination_detection"
+      ],
+      "files": ["output_validator.py"],
+      "tests": ["test_output_validator.py"],
+      "next_milestones": [
+        "Machine learning-based anomaly detection",
+        "Real-time validation monitoring",
+        "Automated correction suggestions"
+      ]
+    },
+    "api_integrations": {
+      "name": "APIManager",
+      "type": "integration_module",
+      "mission": "Manage connections and interactions with external APIs (Twilio, AccuLynx, Calendly, n8n)",
+      "status": "completed",
+      "priority": "medium",
+      "dependencies": [],
+      "supported_apis": {
+        "twilio": {
+          "purpose": "Voice calls and SMS messaging",
+          "endpoints": ["make_call", "send_sms", "get_call_details"],
+          "authentication": "API key + secret"
+        },
+        "acculynx": {
+          "purpose": "CRM and project management",
+          "endpoints": ["create_lead", "create_project", "create_quote", "get_materials"],
+          "authentication": "API key"
+        },
+        "calendly": {
+          "purpose": "Appointment scheduling",
+          "endpoints": ["schedule_appointment", "get_availability", "cancel_appointment"],
+          "authentication": "API key"
+        },
+        "n8n": {
+          "purpose": "Workflow automation",
+          "endpoints": ["trigger_workflow", "get_workflow_status", "create_workflow"],
+          "authentication": "API key"
+        }
+      },
+      "files": ["api_integrations.py"],
+      "tests": ["test_api_integrations.py"],
+      "next_milestones": [
+        "Live API credential configuration",
+        "Rate limiting and retry logic",
+        "API health monitoring and alerting"
+      ]
+    }
+  },
+  "roadmap": {
+    "phase_1_foundation": {
+      "name": "Foundation and Core Agents",
+      "status": "completed",
+      "start_date": "2025-07-19",
+      "completion_date": "2025-07-19", 
+      "objectives": [
+        "Create StormCommander main agent architecture",
+        "Implement all three sub-agents (VoiceResponder, QuoteDraft, MaterialOrderBot)",
+        "Build supporting modules (PromptBuilder, OutputValidator, APIManager)"
+      ],
+      "deliverables": [
+        "Functional agent system with simulated data",
+        "Comprehensive validation and prompt management",
+        "API integration framework"
+      ],
+      "success_criteria": [
+        "All agents can process test tasks successfully",
+        "Validation system catches common errors",
+        "API framework supports all required touchpoints"
+      ]
+    },
+    "phase_2_integration": {
+      "name": "Live API Integration and Testing",
+      "status": "pending",
+      "start_date": "2025-07-20",
+      "estimated_completion": "2025-07-25",
+      "objectives": [
+        "Connect to live APIs (Twilio, AccuLynx, Calendly, n8n)",
+        "Implement comprehensive error handling",
+        "Add real-time data processing capabilities",
+        "Create monitoring and alerting systems"
+      ],
+      "dependencies": ["phase_1_foundation"],
+      "risk_factors": [
+        "API access and credential setup",
+        "Rate limiting and quota management",
+        "Network reliability and error handling"
+      ]
+    },
+    "phase_3_optimization": {
+      "name": "Performance Optimization and Intelligence",
+      "status": "pending", 
+      "start_date": "2025-07-26",
+      "estimated_completion": "2025-08-05",
+      "objectives": [
+        "Implement machine learning for better decision making",
+        "Add predictive capabilities (weather-based ordering, demand forecasting)",
+        "Optimize agent performance and response times",
+        "Add advanced analytics and reporting"
+      ],
+      "dependencies": ["phase_2_integration"],
+      "innovative_features": [
+        "Weather-based urgency adjustment",
+        "Predictive material ordering",
+        "Dynamic pricing optimization",
+        "Customer satisfaction prediction"
+      ]
+    },
+    "phase_4_scaling": {
+      "name": "Enterprise Scaling and Advanced Features",
+      "status": "pending",
+      "start_date": "2025-08-06", 
+      "estimated_completion": "2025-08-20",
+      "objectives": [
+        "Multi-tenant support for multiple contractors",
+        "Advanced workflow customization",
+        "Integration with additional business systems",
+        "Mobile app development"
+      ],
+      "dependencies": ["phase_3_optimization"],
+      "scalability_targets": [
+        "Support 100+ concurrent voice calls",
+        "Process 1000+ quotes per day",
+        "Manage 500+ material orders simultaneously"
+      ]
+    }
+  },
+  "success_metrics": {
+    "operational": {
+      "response_time": {
+        "voice_triage": "< 30 seconds",
+        "quote_generation": "< 5 minutes", 
+        "material_ordering": "< 2 minutes"
+      },
+      "accuracy": {
+        "damage_classification": "> 95%",
+        "quote_accuracy": "> 98%",
+        "delivery_timing": "> 90%"
+      },
+      "availability": {
+        "system_uptime": "> 99.5%",
+        "api_connectivity": "> 99%"
+      }
+    },
+    "business": {
+      "efficiency_gains": {
+        "call_processing_time": "Reduce by 70%",
+        "quote_turnaround": "Reduce by 80%",
+        "order_processing": "Reduce by 90%"
+      },
+      "cost_savings": {
+        "labor_costs": "Reduce by 60%",
+        "material_waste": "Reduce by 25%",
+        "administrative_overhead": "Reduce by 50%"
+      },
+      "customer_satisfaction": {
+        "response_time": "< 1 hour for all calls",
+        "quote_accuracy": "Zero pricing errors",
+        "delivery_reliability": "> 95% on-time delivery"
+      }
+    }
+  },
+  "technology_stack": {
+    "core_language": "Python 3.9+",
+    "frameworks": ["asyncio", "dataclasses", "typing"],
+    "apis": ["Twilio", "AccuLynx", "Calendly", "n8n"],
+    "data_formats": ["JSON", "ISO 8601 dates"],
+    "validation": ["regex", "business rules", "type checking"],
+    "logging": ["Python logging", "structured logs"],
+    "testing": ["unittest", "pytest", "mock APIs"]
+  },
+  "deployment": {
+    "development": {
+      "environment": "Local development with mock APIs",
+      "testing": "Unit tests and integration tests with simulated data"
+    },
+    "staging": {
+      "environment": "Cloud deployment with live API connections",
+      "testing": "End-to-end testing with real data"
+    },
+    "production": {
+      "environment": "High-availability cloud deployment",
+      "monitoring": "24/7 monitoring with alerting",
+      "backup": "Automated backup and disaster recovery"
+    }
+  },
+  "next_actions": {
+    "immediate": [
+      "Run comprehensive test suite for all agents",
+      "Set up development environment with API credentials",
+      "Create deployment scripts and configuration"
+    ],
+    "short_term": [
+      "Integrate with live Twilio API for voice processing",
+      "Connect to AccuLynx for CRM functionality",
+      "Implement real-time material pricing feeds"
+    ],
+    "long_term": [
+      "Add machine learning for continuous improvement",
+      "Expand to additional verticals beyond roofing",
+      "Develop mobile applications for field crews"
+    ]
+  }
+}

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE SEVERANCE PACKAGE - YouTube Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        
+        .scraper-form {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 1rem;
+        }
+        
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .scrape-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .scrape-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+        
+        .scrape-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #ff6b6b;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .results.active {
+            display: block;
+        }
+        
+        .results h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .result-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #ff6b6b;
+        }
+        
+        .result-section h4 {
+            color: #ffa726;
+            margin-bottom: 10px;
+        }
+        
+        .competitive-insights {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .competitive-insights h4 {
+            color: #ff6b6b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            color: #ff6b6b;
+            display: none;
+        }
+        
+        .error.active {
+            display: block;
+        }
+        
+        pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .book-upload-form {
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+        }
+        
+        .book-upload-form h3 {
+            margin-bottom: 20px;
+            color: #9aeba3;
+        }
+        
+        .book-upload-form .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .book-upload-form .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .book-upload-form .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 1rem;
+        }
+        
+        .book-upload-form .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .book-upload-form .scrape-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .book-upload-form .scrape-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+        
+        .book-upload-form .scrape-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .book-upload-form .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            margin-top: 10px;
+        }
+        
+        .book-upload-form .loading.active {
+            display: block;
+        }
+        
+        .book-upload-form .results {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .book-upload-form .results.active {
+            display: block;
+        }
+        
+        .book-upload-form .results h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>THE SEVERANCE PACKAGE</h1>
+            <p>"Some packages deliver results. Ours deliver resignations."</p>
+        </div>
+        
+        <div class="scraper-form">
+            <h3 style="margin-bottom: 20px; color: #ffa726;">🎯 YouTube Intelligence Extraction</h3>
+            
+            <div class="form-group">
+                <label for="youtube-url">Target YouTube URL:</label>
+                <input type="url" id="youtube-url" placeholder="https://www.youtube.com/watch?v=..." 
+                       value="https://www.youtube.com/watch?v=aircAruvnKk">
+            </div>
+            
+            <div class="form-group">
+                <label for="extract-frames">Visual Analysis:</label>
+                <select id="extract-frames">
+                    <option value="false">Info Only (Fast)</option>
+                    <option value="true">Full Visual Analysis (Slower)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="user-identity">Operator Identity:</label>
+                <input type="text" id="user-identity" value="Joe Wales" readonly>
+            </div>
+            
+            <button class="scrape-btn" onclick="executeSeverance()">
+                ☢️ EXECUTE SEVERANCE
+            </button>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Extracting competitive intelligence...</p>
+            <p style="font-size: 0.9rem; opacity: 0.7;">Analyzing brand DNA, visual patterns, and market positioning...</p>
+        </div>
+        
+        <div class="error" id="error"></div>
+        
+        <div class="results" id="results">
+            <h3>🧠 COMPETITIVE INTELLIGENCE EXTRACTED</h3>
+            <div id="results-content"></div>
+        </div>
+        
+        <div class="book-upload-form">
+            <h3 style="margin-bottom: 20px; color: #9aeba3;">📚 Book Reconstruction Upload</h3>
+            
+            <div class="form-group">
+                <label for="book-file">Book File (PDF, TXT, DOCX):</label>
+                <input type="file" id="book-file" accept=".pdf,.txt,.doc,.docx">
+            </div>
+            
+            <div class="form-group">
+                <label for="book-title">Book Title:</label>
+                <input type="text" id="book-title" placeholder="e.g. The Lean Startup">
+            </div>
+            
+            <div class="form-group">
+                <label for="book-author">Author:</label>
+                <input type="text" id="book-author" placeholder="e.g. Eric Ries">
+            </div>
+            
+            <button class="scrape-btn" id="book-upload-btn" onclick="uploadBook(event)">Upload & Reconstruct</button>
+            
+            <div class="loading" id="book-upload-loading" style="margin-top:10px;">
+                <div class="spinner"></div>
+                <p>Uploading and reconstructing book...</p>
+            </div>
+            
+            <div class="results" id="book-upload-results" style="margin-top:20px;">
+                <h3>📖 Book Metadata Token</h3>
+                <div id="book-upload-results-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function executeSeverance() {
+            const url = document.getElementById('youtube-url').value;
+            const extractFrames = document.getElementById('extract-frames').value === 'true';
+            const userIdentity = document.getElementById('user-identity').value;
+            
+            if (!url) {
+                showError('Please enter a YouTube URL');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('error').classList.remove('active');
+            document.querySelector('.scrape-btn').disabled = true;
+            
+            // Use curl command instead of fetch due to CORS
+            const curlCommand = `curl -X POST "http://localhost:5002/api/youtube/scrape-brand-aesthetic" -H "Content-Type: application/json" -d '{"url":"${url}","extract_frames":${extractFrames},"user_identity":"${userIdentity}","scrape_type":"video","max_videos":1}'`;
+            
+            showError(`CORS blocked browser request. Run this command in terminal:\\n\\n${curlCommand}`);
+            
+            document.getElementById('loading').classList.remove('active');
+            document.querySelector('.scrape-btn').disabled = false;
+        }
+        
+        function displayResults(data) {
+            const resultsContent = document.getElementById('results-content');
+            let html = `<div class="result-section">
+                <h4>📹 TARGET INTELLIGENCE</h4>
+                <p><strong>Title:</strong> ${data.video_info.title}</p>
+                <p><strong>Channel:</strong> ${data.video_info.uploader}</p>
+                <p><strong>Performance:</strong> ${data.video_info.view_count?.toLocaleString() || 'Unknown'} views</p>
+                <p><strong>Duration:</strong> ${Math.round(data.video_info.duration / 60)} minutes</p>
+            </div>`;
+
+            html += `
+                <div class="result-section">
+                    <h4>🏷️ CONTENT TAGS</h4>
+                    <p>${data.video_info.tags?.join(', ') || 'No tags extracted'}</p>
+                </div>
+                <div class="result-section">
+                    <h4>📝 DESCRIPTION PREVIEW</h4>
+                    <p>${data.video_info.description || 'No description available'}</p>
+                </div>
+            `;
+
+            if (data.visual_analysis && Object.keys(data.visual_analysis).length > 0) {
+                html += `
+                    <div class="result-section">
+                        <h4>🎨 VISUAL ANALYSIS</h4>
+                        <pre>${JSON.stringify(data.visual_analysis, null, 2)}</pre>
+                    </div>
+                `;
+            }
+
+            // Robust brand_insights display
+            if (data.brand_insights) {
+                if (typeof data.brand_insights === 'object' && !Array.isArray(data.brand_insights)) {
+                    html += `<div class="competitive-insights"><h4>☢️ SEVERANCE INTELLIGENCE</h4>`;
+                    for (const [category, block] of Object.entries(data.brand_insights)) {
+                        html += `<div class="category"><strong>${category}:</strong> ${block.insight || block}`;
+                        if (block.suggestions && Array.isArray(block.suggestions)) {
+                            html += `<ul>`;
+                            // Show up to 2 suggestions per category
+                            block.suggestions.slice(0, 2).forEach(s => {
+                                html += `<li>${s}</li>`;
+                            });
+                            html += `</ul>`;
+                        }
+                        html += `</div>`;
+                    }
+                    html += `</div>`;
+                } else {
+                    html += `<div class="competitive-insights"><h4>☢️ SEVERANCE INTELLIGENCE</h4>
+                        <pre style="white-space: pre-wrap;">${data.brand_insights}</pre></div>`;
+                }
+            }
+
+            if (data.prime_believer_enhancement) {
+                html += `
+                    <div class="result-section" style="border-left-color: gold;">
+                        <h4>⚡ PRIME BELIEVER ENHANCEMENT</h4>
+                        <p><strong>Empathy Wave:</strong> ${data.prime_believer_enhancement.empathy_wave_resonance}</p>
+                        <p><strong>Learning Acceleration:</strong> ${data.prime_believer_enhancement.learning_acceleration}</p>
+                        <p><strong>Competitive Intelligence:</strong> ${data.prime_believer_enhancement.competitive_intelligence}</p>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="result-section">
+                    <h4>📊 EXTRACTION METADATA</h4>
+                    <p><strong>Frames Extracted:</strong> ${data.frames_extracted || 0}</p>
+                    <p><strong>Analysis Time:</strong> ${data.scrape_metadata.timestamp}</p>
+                    <p><strong>Operator:</strong> ${data.scrape_metadata.user_identity}</p>
+                </div>
+            `;
+
+            resultsContent.innerHTML = html;
+            document.getElementById('results').classList.add('active');
+        }
+        
+        async function uploadBook(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('book-file');
+            const title = document.getElementById('book-title').value;
+            const author = document.getElementById('book-author').value;
+            const loading = document.getElementById('book-upload-loading');
+            const results = document.getElementById('book-upload-results');
+            const resultsContent = document.getElementById('book-upload-results-content');
+            
+            results.classList.remove('active');
+            loading.classList.add('active');
+            resultsContent.textContent = '';
+
+            if (!fileInput.files[0] || !title || !author) {
+                loading.classList.remove('active');
+                results.classList.add('active');
+                resultsContent.innerHTML = '<span style="color:#e66">Please select a file, enter a title, and author.</span>';
+                return;
+            }
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('title', title);
+            formData.append('author', author);
+            try {
+                const res = await fetch('http://localhost:5002/api/book/reconstruct', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                loading.classList.remove('active');
+                results.classList.add('active');
+                if (data.token) {
+                    resultsContent.innerHTML = `<pre style="white-space:pre-wrap;word-break:break-all;background:rgba(0,0,0,0.3);padding:10px;border-radius:8px;">${JSON.stringify(data.token,null,2)}</pre>`;
+                } else if (data.error) {
+                    resultsContent.innerHTML = `<span style="color:#e66">${data.error}</span>`;
+                } else {
+                    resultsContent.innerHTML = `<span style="color:#e66">Unexpected response: <pre>${JSON.stringify(data,null,2)}</pre></span>`;
+                }
+            } catch (err) {
+                loading.classList.remove('active');
+                results.classList.add('active');
+                resultsContent.innerHTML = `<span style="color:#e66">Upload failed: ${err}</span>`;
+            }
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('active');
+        }
+        
+        // Test connection on page load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('http://localhost:5002/');
+                if (!response.ok) {
+                    showError('Clay-i server not responding. Start the server with: python clay_i_server.py');
+                }
+            } catch (error) {
+                showError('Clay-i server not running. Start the server with: python clay_i_server.py');
+            }
+        });
+    </script>
+</body>
+</html>

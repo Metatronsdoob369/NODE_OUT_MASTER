@@ -1,0 +1,79 @@
+{
+  "agent_name": "preston_voice",
+  "training_id": "ue5_mass_training_1753328287",
+  "timestamp": "2025-07-23T22:38:09.507334",
+  "specialization": "voice_demo",
+  "priority": 4,
+  "curriculum": {
+    "agent_specialization": "voice_demo",
+    "curriculum": {
+      "ue5_fundamentals": {
+        "engine_architecture": "UE5 Engine architecture, systems, and core components",
+        "blueprint_system": "Visual scripting system for creating game logic without coding",
+        "level_design": "3D environment creation, lighting, and optimization",
+        "materials_shaders": "Material creation, shader graphs, and visual effects",
+        "animation_system": "Character animation, state machines, and motion capture",
+        "physics_simulation": "Real-time physics, collision detection, and dynamics"
+      },
+      "business_applications": {
+        "visualization_dashboards": "3D data visualization and interactive business dashboards",
+        "immersive_interfaces": "VR/AR business applications and user interfaces",
+        "real_time_collaboration": "Multi-user business environments and collaboration tools",
+        "automated_workflows": "Blueprint-based business process automation",
+        "interactive_presentations": "3D presentations and sales demonstrations",
+        "training_simulations": "Employee training and skill development environments"
+      }
+    },
+    "training_objectives": [
+      "Understand UE5 engine architecture and core systems",
+      "Master Blueprint visual scripting for business automation",
+      "Create interactive 3D business applications",
+      "Integrate UE5 with external business systems"
+    ],
+    "assessment_criteria": {
+      "knowledge_retention": "Demonstrate understanding of UE5 core concepts",
+      "practical_application": "Successfully create functional UE5 business applications",
+      "integration_capability": "Connect UE5 with existing business systems",
+      "innovation_potential": "Generate novel UE5 business use cases",
+      "specialization_mastery": "Excel in voice_demo-specific UE5 applications"
+    },
+    "practical_projects": [
+      {
+        "name": "Interactive Business Dashboard",
+        "description": "Create a 3D data visualization dashboard using UE5",
+        "deliverable": "Functional UE5 project with real-time data integration"
+      },
+      {
+        "name": "Automated Workflow Visualization",
+        "description": "Build a Blueprint-based business process automation",
+        "deliverable": "Working automation system with visual feedback"
+      }
+    ]
+  },
+  "ue5_knowledge_injection": {
+    "status": "completed",
+    "knowledge_areas": [
+      "ue5_fundamentals",
+      "business_applications"
+    ],
+    "training_objectives": [
+      "Understand UE5 engine architecture and core systems",
+      "Master Blueprint visual scripting for business automation",
+      "Create interactive 3D business applications",
+      "Integrate UE5 with external business systems"
+    ],
+    "practical_projects": [
+      {
+        "name": "Interactive Business Dashboard",
+        "description": "Create a 3D data visualization dashboard using UE5",
+        "deliverable": "Functional UE5 project with real-time data integration"
+      },
+      {
+        "name": "Automated Workflow Visualization",
+        "description": "Build a Blueprint-based business process automation",
+        "deliverable": "Working automation system with visual feedback"
+      }
+    ],
+    "completion_time": "2025-07-23T22:38:10.009196"
+  }
+}

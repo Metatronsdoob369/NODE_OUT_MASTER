@@ -1,0 +1,276 @@
+{
+  "name": "Daily Weather Briefing System",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+      "name": "Daily at 9 AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "content": "## Daily Weather Briefing Workflow\n\nThis workflow runs every day at 9 AM and:\n1. Fetches current weather conditions\n2. Gets 24-hour forecast\n3. Formats a personalized briefing\n4. Sends via email\n\n### Configuration Required:\n- OpenWeatherMap API Key\n- Email credentials\n- Location settings in Set Configuration node",
+        "height": 200,
+        "width": 300
+      },
+      "id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+      "name": "Workflow Documentation",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [250, 50]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "location",
+              "value": "New York"
+            },
+            {
+              "name": "units",
+              "value": "metric"
+            },
+            {
+              "name": "apiKey",
+              "value": "YOUR_OPENWEATHERMAP_API_KEY"
+            },
+            {
+              "name": "recipientEmail",
+              "value": "your-email@example.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+      "name": "Set Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openweathermap.org/data/2.5/weather?q={{$node[\"Set Configuration\"].json[\"location\"]}}&appid={{$node[\"Set Configuration\"].json[\"apiKey\"]}}&units={{$node[\"Set Configuration\"].json[\"units\"]}}",
+        "authentication": "none",
+        "method": "GET",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f90",
+      "name": "Get Current Weather",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openweathermap.org/data/2.5/forecast?q={{$node[\"Set Configuration\"].json[\"location\"]}}&appid={{$node[\"Set Configuration\"].json[\"apiKey\"]}}&units={{$node[\"Set Configuration\"].json[\"units\"]}}&cnt=8",
+        "authentication": "none",
+        "method": "GET",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "5e6f7a8b-9c0d-1e2f-3a4b5c6d7e8f90-a1",
+      "name": "Get Weather Forecast",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "content": "### Weather API Configuration\n\n**Current Weather**: Fetches real-time conditions\n**Forecast**: Gets next 24 hours (8 x 3-hour intervals)\n\n**Units**: \n- metric: Celsius, m/s\n- imperial: Fahrenheit, mph\n\n**Error Handling**: Check response status",
+        "height": 180,
+        "width": 250
+      },
+      "id": "6f7a8b9c-0d1e-2f3a-4b5c6d7e8f90-a1b2",
+      "name": "API Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [750, 100]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Get weather data from previous nodes\nconst currentWeather = $input.first().json;\nconst config = $node[\"Set Configuration\"].json;\nconst forecast = $node[\"Get Weather Forecast\"].json;\n\n// Format date\nconst today = new Date();\nconst dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };\nconst formattedDate = today.toLocaleDateString('en-US', dateOptions);\n\n// Process current weather\nconst temp = Math.round(currentWeather.main.temp);\nconst feelsLike = Math.round(currentWeather.main.feels_like);\nconst description = currentWeather.weather[0].description;\nconst humidity = currentWeather.main.humidity;\nconst windSpeed = currentWeather.wind.speed;\n\n// Process forecast data\nlet maxTemp = -Infinity;\nlet minTemp = Infinity;\nlet willRain = false;\n\nforecast.list.forEach(item => {\n  maxTemp = Math.max(maxTemp, item.main.temp_max);\n  minTemp = Math.min(minTemp, item.main.temp_min);\n  if (item.weather[0].main.includes('Rain')) {\n    willRain = true;\n  }\n});\n\n// Generate recommendations\nlet clothingRec = \"\";\nlet activityRec = \"\";\n\nif (temp < 10) {\n  clothingRec = \"Wear warm layers, including a coat and gloves\";\n} else if (temp < 20) {\n  clothingRec = \"A light jacket or sweater would be comfortable\";\n} else if (temp < 30) {\n  clothingRec = \"Comfortable with light clothing\";\n} else {\n  clothingRec = \"Stay cool with light, breathable clothing\";\n}\n\nif (willRain) {\n  clothingRec += \". Don't forget an umbrella!\";\n  activityRec = \"Indoor activities recommended due to rain\";\n} else if (temp > 20 && temp < 30 && humidity < 70) {\n  activityRec = \"Perfect weather for outdoor activities\";\n} else if (temp < 5) {\n  activityRec = \"Bundle up if going outside, or enjoy indoor activities\";\n} else {\n  activityRec = \"Weather is suitable for most activities\";\n}\n\n// Create HTML email content\nconst emailContent = `\n<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }\n    .header { background-color: #3498db; color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }\n    .section { background-color: #f8f9fa; padding: 15px; margin-bottom: 15px; border-radius: 8px; }\n    .temp-main { font-size: 48px; font-weight: bold; }\n    .temp-unit { font-size: 24px; }\n    .forecast-item { display: inline-block; margin: 10px; padding: 10px; background: white; border-radius: 5px; }\n    .recommendation { padding: 10px; background-color: #e8f4f8; border-left: 4px solid #3498db; margin: 10px 0; }\n  </style>\n</head>\n<body>\n  <div class=\"header\">\n    <h1>Good Morning! ☀️</h1>\n    <p>Your Weather Briefing for ${formattedDate}</p>\n  </div>\n  \n  <div class=\"section\">\n    <h2>Current Conditions in ${config.location}</h2>\n    <p><span class=\"temp-main\">${temp}</span><span class=\"temp-unit\">°${config.units === 'metric' ? 'C' : 'F'}</span></p>\n    <p><strong>${description.charAt(0).toUpperCase() + description.slice(1)}</strong></p>\n    <p>Feels like: ${feelsLike}°</p>\n    <p>Humidity: ${humidity}%</p>\n    <p>Wind: ${windSpeed} ${config.units === 'metric' ? 'm/s' : 'mph'}</p>\n  </div>\n  \n  <div class=\"section\">\n    <h2>Today's Forecast</h2>\n    <p>High: ${Math.round(maxTemp)}° | Low: ${Math.round(minTemp)}°</p>\n    ${willRain ? '<p>⚠️ <strong>Rain expected today</strong></p>' : '<p>✅ No rain expected</p>'}\n  </div>\n  \n  <div class=\"section\">\n    <h2>Your Daily Recommendations</h2>\n    <div class=\"recommendation\">\n      <strong>👔 What to Wear:</strong> ${clothingRec}\n    </div>\n    <div class=\"recommendation\">\n      <strong>🎯 Activities:</strong> ${activityRec}\n    </div>\n  </div>\n  \n  <div style=\"text-align: center; color: #666; margin-top: 30px;\">\n    <p>Have a wonderful day!</p>\n    <p style=\"font-size: 12px;\">Powered by your n8n Weather Assistant</p>\n  </div>\n</body>\n</html>\n`;\n\n// Return formatted data\nreturn [{\n  json: {\n    emailContent,\n    subject: `Weather Briefing: ${temp}° and ${description} - ${formattedDate}`,\n    recipient: config.recipientEmail,\n    currentTemp: temp,\n    description: description,\n    willRain: willRain\n  }\n}];"
+      },
+      "id": "7a8b9c0d-1e2f-3a4b5c6d7e8f90-a1b2c3",
+      "name": "Format Daily Briefing",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$json[\"recipient\"]}}",
+        "subject": "={{$json[\"subject\"]}}",
+        "emailType": "html",
+        "message": "={{$json[\"emailContent\"]}}",
+        "options": {}
+      },
+      "id": "8b9c0d1e-2f3a-4b5c6d7e8f90-a1b2c3d4",
+      "name": "Send Email Briefing",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1250, 300],
+      "credentials": {
+        "smtp": {
+          "id": "1",
+          "name": "Email account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"cod\"]}}",
+              "operation": "equals",
+              "value2": "200"
+            }
+          ]
+        }
+      },
+      "id": "9c0d1e2f-3a4b-5c6d7e8f90-a1b2c3d4e5",
+      "name": "Check API Response",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 500]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "error",
+              "value": "Failed to fetch weather data. Please check API configuration."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0d1e2f3a-4b5c-6d7e8f90-a1b2c3d4e5f6",
+      "name": "Set Error Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [850, 500]
+    },
+    {
+      "parameters": {
+        "content": "### Email Configuration\n\nThis node requires email credentials to be configured:\n\n1. Click on the Email node\n2. Select 'Create New' credential\n3. Configure SMTP settings:\n   - Gmail: smtp.gmail.com, port 587\n   - Outlook: smtp.office365.com, port 587\n\nFor Gmail, use App Password instead of regular password.",
+        "height": 200,
+        "width": 300
+      },
+      "id": "1e2f3a4b-5c6d-7e8f90-a1b2c3d4e5f6a7",
+      "name": "Email Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1250, 100]
+    }
+  ],
+  "connections": {
+    "Daily at 9 AM": {
+      "main": [
+        [
+          {
+            "node": "Set Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Configuration": {
+      "main": [
+        [
+          {
+            "node": "Get Current Weather",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Current Weather": {
+      "main": [
+        [
+          {
+            "node": "Check API Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check API Response": {
+      "main": [
+        [
+          {
+            "node": "Get Weather Forecast",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Weather Forecast": {
+      "main": [
+        [
+          {
+            "node": "Format Daily Briefing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Daily Briefing": {
+      "main": [
+        [
+          {
+            "node": "Send Email Briefing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "id": "1234567890",
+  "meta": {
+    "instanceId": "8a47692873d33d0c72d3c2e4ceb5e4faa31baf2eb0b9aa47a3b4c08e6b812345"
+  },
+  "tags": []
+}

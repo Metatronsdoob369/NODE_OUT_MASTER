@@ -1,0 +1,384 @@
+{
+  "name": "10 Pic Push - Content Alchemist Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "10-pic-push",
+        "responseMode": "responseNode",
+        "options": {
+          "responseContentType": "application/json"
+        }
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Parse and validate input data\nconst inputData = items[0].json;\n\n// Extract core elements\nconst images = inputData.images || [];\nconst quiz = inputData.quiz || {};\nconst userId = inputData.userId || 'anonymous_' + Date.now();\n\n// Validate image count\nif (images.length < 2 || images.length > 10) {\n  throw new Error('Please provide between 2-10 images');\n}\n\n// Structure the data for downstream processing\nreturn [\n  {\n    json: {\n      userId,\n      timestamp: new Date().toISOString(),\n      images,\n      tone: quiz.tone || 'authentic',\n      vibes: quiz.vibes || [],\n      metaphor: quiz.metaphor || 'a cozy coffee shop',\n      audience: quiz.audience || 'creative entrepreneurs',\n      sampleCopy: quiz.sampleCopy || '',\n      imageCount: images.length\n    }\n  }\n];"
+      },
+      "id": "input-parser",
+      "name": "Input Parser & Validator",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "{\n  \"model\": \"gpt-4-vision-preview\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an expert aesthetic analyst. Analyze the provided images and extract key visual themes, colors, mood, and style elements. Return a structured JSON with aesthetic keywords.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"Analyze these images and provide aesthetic insights in JSON format with keys: dominant_colors, visual_style, mood, energy_level, and key_themes.\"\n        },\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": \"{{ $json.images[0] }}\"\n          }\n        }\n      ]\n    }\n  ],\n  \"max_tokens\": 500,\n  \"temperature\": 0.7\n}"
+      },
+      "id": "vision-analyzer",
+      "name": "Vision Aesthetic Analyzer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "workflowId": "brand_voice_engine_v1",
+        "workflowData": {
+          "tone": "={{ $json.tone }}",
+          "vibes": "={{ $json.vibes }}",
+          "metaphor": "={{ $json.metaphor }}",
+          "audience": "={{ $json.audience }}",
+          "sampleCopy": "={{ $json.sampleCopy }}",
+          "context": "social",
+          "visualInsights": "={{ $node['vision-analyzer'].json.choices[0].message.content }}"
+        }
+      },
+      "id": "brand-voice-builder",
+      "name": "Execute: Brand Voice Engine Module",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "workflowId": "content_generator_framework_v1",
+        "workflowData": {
+          "brand_profile": "={{ $json }}",
+          "content_type": "social_reel",
+          "quantity": 3,
+          "requirements": "Short-form video concepts for social media",
+          "creativity": 0.85,
+          "maxTokens": 1200
+        }
+      },
+      "id": "reel-generator",
+      "name": "Execute: Content Generator (Reels)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [1050, 200]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "systemMessage": "You are a carousel content expert. You create educational, valuable carousels that people save and share. Your carousels blend aesthetic beauty with actionable insights.",
+          "jsonOutput": true,
+          "history": [
+            {
+              "role": "user",
+              "content": "Based on this brand profile:\n{{ $node['brand-voice-builder'].json }}\n\nCreate 2 carousel concepts (5-8 slides each). Format:\n- title (main hook)\n- subtitle (supporting promise)\n- slides (array with headline and key_points for each)\n- design_notes (visual style guidance)\n- save_trigger (why people will save this)\n\nOne should be educational/how-to, one should be inspirational/mindset."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.8,
+          "maxTokens": 1000
+        }
+      },
+      "id": "carousel-generator",
+      "name": "Carousel Content Generator",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [1050, 350]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "systemMessage": "You are a master of the hook. You write opening lines that stop thumbs mid-scroll. Your hooks create curiosity gaps that MUST be filled.",
+          "jsonOutput": true,
+          "history": [
+            {
+              "role": "user",
+              "content": "Based on this brand profile:\n{{ $node['brand-voice-builder'].json }}\n\nCreate 3 irresistible hook lines for posts. Each hook should:\n- Create immediate curiosity or emotion\n- Be under 10 words\n- Match their brand voice\n- Work for different content types\n\nFormat as array with: hook_text, emotion_trigger, and best_use_case"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.9,
+          "maxTokens": 400
+        }
+      },
+      "id": "hook-generator",
+      "name": "Hook Line Generator",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [1050, 500]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Compile all generated content into structured output\nconst brandVoice = $node['brand-voice-builder'].json;\nconst reels = $node['reel-generator'].json;\nconst carousels = $node['carousel-generator'].json;\nconst hooks = $node['hook-generator'].json;\nconst originalInput = $node['input-parser'].json;\n\n// Safety check function\nfunction contentSafetyCheck(content) {\n  const bannedWords = ['hate', 'violence', 'explicit', 'drug'];\n  const contentString = JSON.stringify(content).toLowerCase();\n  return !bannedWords.some(word => contentString.includes(word));\n}\n\n// Perform safety check\nif (!contentSafetyCheck([brandVoice, reels, carousels, hooks])) {\n  throw new Error('Content safety check failed. Please try again.');\n}\n\n// Structure the complete output\nconst output = {\n  userId: originalInput.userId,\n  timestamp: originalInput.timestamp,\n  brandProfile: {\n    essence: brandVoice.brand_essence,\n    voiceAttributes: brandVoice.voice_attributes,\n    contentPillars: brandVoice.content_pillars,\n    uniqueAngle: brandVoice.unique_angle,\n    emotionalSignature: brandVoice.emotional_signature\n  },\n  contentBundle: {\n    shortForm: reels.videos || reels,\n    carousels: carousels.carousels || carousels,\n    hooks: hooks.hooks || hooks\n  },\n  metadata: {\n    imageCount: originalInput.imageCount,\n    tone: originalInput.tone,\n    vibes: originalInput.vibes,\n    generatedAt: new Date().toISOString()\n  }\n};\n\nreturn [{ json: output }];"
+      },
+      "id": "output-formatter",
+      "name": "Output Formatter & Safety Check",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1250, 350]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "systemMessage": "You are The Alchemist. You see the gold within every creator. Write a brief, personalized message of encouragement that makes them excited to start their journey. Be mystical yet practical, inspiring yet grounded.",
+          "history": [
+            {
+              "role": "user",
+              "content": "Based on this brand essence: {{ $json.brandProfile.essence }}\n\nWrite a 2-3 sentence personalized encouragement that:\n- Acknowledges their unique magic\n- Gives them confidence to begin\n- Hints at the transformation ahead\n\nKeep it under 50 words. Make them feel seen and capable."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.9,
+          "maxTokens": 150
+        }
+      },
+      "id": "alchemist-message",
+      "name": "Alchemist Encouragement",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [1450, 450]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "collection": "10PicResults",
+        "documentId": "={{ $json.userId }}_{{ Date.now() }}",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "userId",
+              "fieldValue": "={{ $json.userId }}"
+            },
+            {
+              "fieldName": "timestamp",
+              "fieldValue": "={{ $json.timestamp }}"
+            },
+            {
+              "fieldName": "brandProfile",
+              "fieldValue": "={{ JSON.stringify($json.brandProfile) }}"
+            },
+            {
+              "fieldName": "contentBundle",
+              "fieldValue": "={{ JSON.stringify($json.contentBundle) }}"
+            },
+            {
+              "fieldName": "metadata",
+              "fieldValue": "={{ JSON.stringify($json.metadata) }}"
+            },
+            {
+              "fieldName": "alchemistMessage",
+              "fieldValue": "={{ $node['alchemist-message'].json.output }}"
+            },
+            {
+              "fieldName": "imageRefs",
+              "fieldValue": "={{ JSON.stringify($node['input-parser'].json.images) }}"
+            }
+          ]
+        }
+      },
+      "id": "firebase-writer",
+      "name": "Firebase Storage",
+      "type": "n8n-nodes-base.firebase",
+      "typeVersion": 1,
+      "position": [1650, 350]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Prepare final response\nconst savedData = $node['firebase-writer'].json;\nconst alchemistMessage = $node['alchemist-message'].json.output || $node['alchemist-message'].json;\n\n// Add posting time suggestions based on brand voice\nconst postingGuidance = {\n  bestTimes: determineOptimalPostingTimes($json.brandProfile.voiceAttributes),\n  frequencyAdvice: '3-4 times per week to maintain momentum without burnout',\n  platformPriority: suggestPlatformOrder($json.brandProfile.contentPillars)\n};\n\nfunction determineOptimalPostingTimes(attributes) {\n  if (attributes.includes('professional') || attributes.includes('educational')) {\n    return ['Weekdays 8-10am', 'Lunch 12-1pm', 'Evening 5-7pm'];\n  } else if (attributes.includes('creative') || attributes.includes('artistic')) {\n    return ['Early morning 6-8am', 'Late afternoon 4-6pm', 'Night owls 9-11pm'];\n  } else {\n    return ['Morning 9-11am', 'Afternoon 2-4pm', 'Evening 7-9pm'];\n  }\n}\n\nfunction suggestPlatformOrder(pillars) {\n  const platformMap = {\n    'education': ['LinkedIn', 'Instagram'],\n    'inspiration': ['Instagram', 'TikTok'],\n    'community': ['Facebook', 'Instagram'],\n    'entertainment': ['TikTok', 'Instagram Reels']\n  };\n  \n  // Match pillars to platforms\n  const platforms = new Set();\n  pillars.forEach(pillar => {\n    const keywords = pillar.toLowerCase().split(' ');\n    Object.keys(platformMap).forEach(key => {\n      if (keywords.some(word => word.includes(key))) {\n        platformMap[key].forEach(platform => platforms.add(platform));\n      }\n    });\n  });\n  \n  return Array.from(platforms).slice(0, 2) || ['Instagram', 'TikTok'];\n}\n\n// Final response structure\nconst response = {\n  success: true,\n  message: 'Your brand alchemy is complete! ✨',\n  alchemistMessage,\n  data: {\n    ...$json,\n    postingGuidance,\n    firebaseRef: savedData.name || savedData.id\n  }\n};\n\nreturn [{ json: response }];"
+      },
+      "id": "response-compiler",
+      "name": "Response Compiler",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1850, 350]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2050, 350]
+    }
+  ],
+  "connections": {
+    "webhook-trigger": {
+      "main": [
+        [
+          {
+            "node": "input-parser",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "input-parser": {
+      "main": [
+        [
+          {
+            "node": "vision-analyzer",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "brand-voice-builder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "brand-voice-builder": {
+      "main": [
+        [
+          {
+            "node": "reel-generator",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "carousel-generator",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "hook-generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reel-generator": {
+      "main": [
+        [
+          {
+            "node": "output-formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "carousel-generator": {
+      "main": [
+        [
+          {
+            "node": "output-formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hook-generator": {
+      "main": [
+        [
+          {
+            "node": "output-formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output-formatter": {
+      "main": [
+        [
+          {
+            "node": "alchemist-message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "alchemist-message": {
+      "main": [
+        [
+          {
+            "node": "firebase-writer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "firebase-writer": {
+      "main": [
+        [
+          {
+            "node": "response-compiler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "response-compiler": {
+      "main": [
+        [
+          {
+            "node": "webhook-response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "content-alchemist",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "01"
+}

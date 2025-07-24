@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roofing AI Assistant - Professional Demo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f172a 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .demo-header {
+            text-align: center;
+            padding: 40px 30px;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, rgba(231, 126, 34, 0.8) 50%, transparent 100%);
+        }
+
+        .demo-header h1 {
+            font-size: 3.2em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.4em;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .tech-stack {
+            font-size: 1.1em;
+            color: #e67e22;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .voice-showcase {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(39, 174, 96, 0.06);
+            border-radius: 20px;
+            border: 1px solid rgba(39, 174, 96, 0.2);
+            backdrop-filter: blur(15px);
+        }
+
+        .voice-showcase h3 {
+            color: #27ae60;
+            margin-bottom: 25px;
+            font-size: 1.6em;
+            text-align: center;
+        }
+
+        .voice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .voice-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .voice-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(39, 174, 96, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(39, 174, 96, 0.2);
+        }
+
+        .voice-avatar {
+            font-size: 4em;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .voice-card h4 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .voice-card p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        .voice-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .voice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        .demo-output {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #27ae60;
+            margin-top: 20px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .demo-output.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .chat-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(52, 152, 219, 0.06);
+            border-radius: 20px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            backdrop-filter: blur(15px);
+        }
+
+        .chat-section h3 {
+            color: #3498db;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+            text-align: center;
+        }
+
+        .voice-selector {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .voice-selector label {
+            color: #3498db;
+            font-weight: 600;
+            margin-right: 15px;
+        }
+
+        .voice-selector select {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 1em;
+            line-height: 1.5;
+            resize: vertical;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .send-btn, .demo-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        .demo-btn {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 126, 34, 0.3);
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(231, 126, 34, 0.4);
+        }
+
+        .response-area {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #3498db;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+
+        .response-area.active {
+            display: block;
+        }
+
+        .response-area h4 {
+            color: #3498db;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .response-area pre {
+            color: rgba(255, 255, 255, 0.9);
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .metrics-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(155, 89, 182, 0.06);
+            border-radius: 20px;
+            border: 1px solid rgba(155, 89, 182, 0.2);
+            backdrop-filter: blur(15px);
+        }
+
+        .metrics-section h3 {
+            color: #9b59b6;
+            margin-bottom: 25px;
+            font-size: 1.6em;
+            text-align: center;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, rgba(231, 126, 34, 0.12) 0%, rgba(230, 126, 34, 0.08) 50%, rgba(229, 126, 34, 0.04) 100%);
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(231, 126, 34, 0.3);
+            backdrop-filter: blur(15px);
+            transition: all 0.4s ease;
+            transform: rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .metric-card:hover {
+            transform: rotateX(0deg) rotateY(0deg) translateZ(20px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #e67e22;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .metric-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .status-indicators {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: rgba(39, 174, 96, 0.1);
+            border-radius: 10px;
+            border-left: 3px solid #27ae60;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #27ae60;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px rgba(39, 174, 96, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .future-preview {
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .future-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, rgba(52, 152, 219, 0.8) 50%, transparent 100%);
+        }
+
+        .future-preview h4 {
+            color: #3498db;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .ar-hint {
+            background: rgba(155, 89, 182, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #9b59b6;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .app { padding: 15px; }
+            .demo-header h1 { font-size: 2.2em; }
+            .subtitle { font-size: 1.1em; }
+            .voice-grid { grid-template-columns: 1fr; }
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+            .button-group { flex-direction: column; }
+            .send-btn, .demo-btn { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="demo-header">
+            <h1>🏠 Roofing AI Assistant Demo</h1>
+            <p class="subtitle">Real Estate Agent Partnership & Business Automation System</p>
+            <div class="tech-stack">
+                ⚡ ElevenLabs Voice AI • 🏗️ AccuLynx Integration • 🌎 Bilingual Support • 🧠 Clay-I Enhanced
+            </div>
+        </div>
+
+        <!-- Voice Portfolio Showcase -->
+        <div class="voice-showcase">
+            <h3>🎙️ Custom Voice Portfolio</h3>
+            <div class="voice-grid">
+                <div class="voice-card">
+                    <div class="voice-avatar">👨‍💼</div>
+                    <h4>Professional Mike</h4>
+                    <p>Real Estate Agent Outreach</p>
+                    <button class="voice-btn" onclick="playVoice('professional')">▶️ Listen</button>
+                </div>
+                <div class="voice-card">
+                    <div class="voice-avatar">👩‍🔧</div>
+                    <h4>Bilingual Sofia</h4>
+                    <p>Customer Service EN/ES</p>
+                    <button class="voice-btn" onclick="playVoice('bilingual')">▶️ Escuchar</button>
+                </div>
+                <div class="voice-card">
+                    <div class="voice-avatar">👨‍🏭</div>
+                    <h4>Foreman José</h4>
+                    <p>Crew Coordination</p>
+                    <button class="voice-btn" onclick="playVoice('foreman')">▶️ Play</button>
+                </div>
+                <div class="voice-card">
+                    <div class="voice-avatar">📞</div>
+                    <h4>Supply Chain AI</h4>
+                    <p>Material Orders</p>
+                    <button class="voice-btn" onclick="playVoice('supply')">▶️ Demo</button>
+                </div>
+            </div>
+            <div class="demo-output" id="voiceDemo"></div>
+        </div>
+
+        <!-- Interactive Chat Interface -->
+        <div class="chat-section">
+            <h3>🤖 Enhanced Clay-I Assistant</h3>
+            <div class="voice-selector">
+                <label>Voice Profile: </label>
+                <select id="voiceSelect">
+                    <option value="professional">Professional Mike</option>
+                    <option value="bilingual">Bilingual Sofia</option>
+                    <option value="foreman">Foreman José</option>
+                    <option value="supply">Supply Chain AI</option>
+                </select>
+            </div>
+            
+            <textarea
+                id="chatInput"
+                rows="4"
+                placeholder="Ask about real estate partnerships, crew scheduling, material orders, or roofing business strategies..."
+                class="chat-input"
+            ></textarea>
+            
+            <div class="button-group">
+                <button onclick="askClayI()" class="send-btn">🧠 Ask Clay-I</button>
+                <button onclick="runAccuLynxDemo()" class="demo-btn">🏗️ AccuLynx Demo</button>
+            </div>
+
+            <div class="response-area" id="responseArea">
+                <h4>🧠 Clay-I Response:</h4>
+                <pre id="responseText"></pre>
+            </div>
+        </div>
+
+        <!-- Business Metrics Dashboard -->
+        <div class="metrics-section">
+            <h3>📊 Real-Time Business Dashboard</h3>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">47</div>
+                    <div class="metric-label">Realtor Partnerships</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">$180K</div>
+                    <div class="metric-label">Monthly Revenue</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">94%</div>
+                    <div class="metric-label">Customer Satisfaction</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">23%</div>
+                    <div class="metric-label">Cost Reduction</div>
+                </div>
+            </div>
+            
+            <div class="status-indicators">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    AccuLynx CRM Sync: Real-time
+                </div>
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    ElevenLabs Voice: 12 Active Agents
+                </div>
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    Clay-I Enhanced: Renaissance AI Knowledge Active
+                </div>
+            </div>
+        </div>
+
+        <!-- Future Vision Preview -->
+        <div class="future-preview">
+            <h4>🔮 Next-Gen Dashboard Preview</h4>
+            <div class="ar-hint">
+                💡 <strong>Coming Soon:</strong> Spatial AR dashboard where metrics float in 3D space. 
+                Custom views per client - some see revenue, others see efficiency gains.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const voiceProfiles = {
+            professional: {
+                name: "Professional Mike",
+                text: "Good morning Sarah, this is Mike from ABC Roofing AI. I have critical updates on insurance requirements that could affect your pending closings. The new state mandate requires certified roof inspections within 48 hours of closing. I can expedite inspections to keep your deals on track."
+            },
+            bilingual: {
+                name: "Bilingual Sofia", 
+                text: "Hola, buenos días. This is Sofia from ABC Roofing. We can help with inspections in English and Spanish. ¿Necesita ayuda con inspección de techo para sus clientes? We handle all insurance paperwork and coordinate with realtors."
+            },
+            foreman: {
+                name: "Foreman José",
+                text: "Crew Alpha reporting for Johnson job site. Materials loaded: 25 squares IKO Cambridge shingles, flashing, and underlayment. Safety check complete. Team ready for 8:00 AM start time. Weather conditions optimal for roofing work."
+            },
+            supply: {
+                name: "Supply Chain AI",
+                text: "Placing order for job #RF-2024-0847: 25 squares architectural shingles, 10 rolls underlayment, aluminum flashing materials. Delivery scheduled Thursday 7:00 AM to 1247 Oak Street. AccuLynx integration active."
+            }
+        };
+
+        function playVoice(voiceType) {
+            const demo = document.getElementById('voiceDemo');
+            demo.className = 'demo-output active';
+            demo.innerHTML = `🎙️ Playing ${voiceProfiles[voiceType].name}...`;
+            
+            setTimeout(() => {
+                demo.innerHTML = `🎵 ${voiceProfiles[voiceType].name}: "${voiceProfiles[voiceType].text}"`;
+                setTimeout(() => {
+                    demo.className = 'demo-output';
+                }, 6000);
+            }, 800);
+        }
+
+        function askClayI() {
+            const input = document.getElementById('chatInput');
+            const voice = document.getElementById('voiceSelect').value;
+            const responseArea = document.getElementById('responseArea');
+            const responseText = document.getElementById('responseText');
+            
+            if (!input.value.trim()) return;
+            
+            responseArea.className = 'response-area active';
+            responseText.textContent = '🤖 Clay-I is thinking...';
+            
+            const responses = {
+                professional: `As your roofing AI specialist, I understand you're looking at partnerships with real estate agents. The new insurance requirements create a huge opportunity - agents need reliable roofing partners who can provide same-day inspections and expedited repairs to keep closings on track. 
+
+I recommend setting up a referral program where agents get:
+• Priority scheduling within 24 hours
+• Complete insurance documentation handling
+• Direct communication on project status
+• Expedited repair completion
+
+This protects their commissions and builds long-term relationships. The key is reliability - when an agent refers a client, they need to know the work will be done fast and professionally.`,
+                bilingual: `¡Perfecto! Como especialista bilingüe en techos, I can help you build strong partnerships with real estate agents in both English and Spanish markets.
+
+The bilingual capability is crucial because:
+• Many clients prefer Spanish communication
+• You can serve broader market segments  
+• Creates differentiation from competitors
+• Builds trust with Hispanic homeowners
+
+We can create all materials in both languages and ensure seamless communication throughout the process. This opens up opportunities other roofing companies miss.`,
+                foreman: `From a crew coordination perspective, real estate partnerships require bulletproof execution. Here's what I recommend:
+
+• Dedicate specific crews for agent referrals
+• Implement quality control checklists for every job
+• Use AccuLynx to keep agents updated in real-time
+• Maintain emergency response capability for urgent repairs
+
+Fast, professional communication keeps agents happy. When they know they can count on you for quality work on schedule, the referrals keep coming. One satisfied agent can generate 10-15 jobs per year.`,
+                supply: `For material management with agent partnerships, efficiency is everything. Here's the winning strategy:
+
+• Pre-stage common repair materials at warehouse
+• Establish supplier relationships for emergency orders
+• Use AccuLynx inventory tracking for accurate estimates
+• Maintain 48-hour delivery capability for urgent jobs
+
+Quick turnaround on insurance jobs is critical - agents need repairs completed fast to avoid delaying closings. When you can guarantee materials and completion timeframes, you become their go-to partner.`
+            };
+            
+            setTimeout(() => {
+                responseText.textContent = responses[voice] || responses.professional;
+                input.value = '';
+            }, 1500);
+        }
+
+        function runAccuLynxDemo() {
+            const responseArea = document.getElementById('responseArea');
+            const responseText = document.getElementById('responseText');
+            
+            responseArea.className = 'response-area active';
+            responseText.textContent = '🏗️ AccuLynx Integration Processing...';
+            
+            setTimeout(() => {
+                const workflowId = `WF_${Date.now()}`;
+                const timestamp = new Date().toLocaleString();
+                
+                responseText.textContent = `🏗️ AccuLynx Integration Demo - LIVE RESULTS:
+
+✅ Crew Alpha scheduled for Tuesday 8:00 AM
+✅ Materials ordered: 25 squares IKO Cambridge shingles (Weatherwood)
+✅ Job #RF-2024-0847 created in AccuLynx CRM
+✅ Bilingual foreman José assigned 
+✅ Customer & realtor notifications sent
+✅ Real-time sync with business dashboard active
+✅ Insurance documentation prepared
+✅ Weather monitoring enabled
+
+Workflow ID: ${workflowId}
+Processed: ${timestamp}
+Integration Status: CONNECTED
+Expected Completion: Thursday 3:00 PM
+
+💰 Estimated Project Value: $8,500
+🏠 Property: 1247 Oak Street, Austin TX
+📞 Realtor: Sarah Johnson (Keller Williams)
+📋 Insurance Claim: #IC-2024-5521
+
+System shows full automation from lead to completion with real-time stakeholder updates.`;
+            }, 2000);
+        }
+
+        // Add Enter key support
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                askClayI();
+            }
+        });
+    </script>
+</body>
+</html>

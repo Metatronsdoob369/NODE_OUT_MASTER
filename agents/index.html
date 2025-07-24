@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Storm Repair Pro - Secure payment portal for emergency storm damage repair services in Birmingham, AL">
+    <meta name="keywords" content="storm damage repair, Birmingham AL, emergency roof repair, payment portal">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://stormrepairpro-payments.netlify.app">
+    <title>Storm Repair Pro - Payment Portal</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.3)), 
+                        url('https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: white;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .payment-container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 580px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            animation: containerAppear 0.8s ease-out;
+        }
+
+        @keyframes containerAppear {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        .payment-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+            animation: shimmer 4s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .logo-section {
+            text-align: center;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .storm-logo {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 20px 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .storm-logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: logoShimmer 3s infinite;
+        }
+
+        @keyframes logoShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: white;
+            text-shadow: 0 2px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .logo-subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        .quote-summary {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .quote-summary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+            border-radius: 18px;
+            opacity: 0.6;
+        }
+
+        .quote-id {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .payment-type-badge {
+            background: linear-gradient(45deg, rgba(74, 144, 226, 0.3), rgba(80, 200, 120, 0.3));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            position: relative;
+        }
+
+        .customer-info {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .customer-info p {
+            color: rgba(255, 255, 255, 0.85);
+            margin: 8px 0;
+            font-weight: 500;
+        }
+
+        .customer-info strong {
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 600;
+        }
+
+        .amount-display {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .amount {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #4ade80, #22d3ee, #a78bfa);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .timeline-badge {
+            background: rgba(255, 193, 7, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            position: relative;
+        }
+
+        .timeline-badge::before {
+            content: 'URGENT:';
+            margin-right: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        #payment-form {
+            position: relative;
+        }
+
+        #payment-element {
+            margin: 25px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        #payment-element:focus-within {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .pay-button {
+            width: 100%;
+            background: linear-gradient(45deg, rgba(34, 197, 94, 0.9), rgba(16, 185, 129, 0.9));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 18px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 25px;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .pay-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .pay-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 15px 30px rgba(34, 197, 94, 0.4),
+                0 0 40px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .pay-button:hover::before {
+            left: 100%;
+        }
+
+        .pay-button:disabled {
+            background: rgba(107, 114, 128, 0.6);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message-box {
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-top: 20px;
+            font-weight: 500;
+            display: none;
+            position: relative;
+            backdrop-filter: blur(15px);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: rgba(255, 255, 255, 0.95);
+            text-align: center;
+        }
+
+        .success-message h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            font-weight: 500;
+            gap: 8px;
+        }
+
+        .secure-badge::before {
+            content: 'SECURE';
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .feature-badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .feature-badge {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Background particles effect */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { width: 4px; height: 4px; left: 20%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 6px; height: 6px; left: 40%; animation-delay: 1s; }
+        .particle:nth-child(3) { width: 3px; height: 3px; left: 60%; animation-delay: 2s; }
+        .particle:nth-child(4) { width: 5px; height: 5px; left: 80%; animation-delay: 3s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10%, 90% { opacity: 1; }
+            50% { transform: translateY(-10px) rotate(180deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .payment-container {
+                padding: 25px;
+                margin: 10px;
+            }
+            
+            .amount {
+                font-size: 2.5rem;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+
+            .feature-badges {
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="payment-container">
+        <div class="logo-section">
+            <div class="storm-logo">
+                <div class="logo-icon">S</div>
+                <div>
+                    <div class="logo-text">STORM REPAIR PRO</div>
+                    <div class="logo-subtitle">Emergency Restoration Services</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quote-summary">
+            <div class="quote-id" id="quote-id">Quote ID: Loading...</div>
+            <div class="payment-type-badge" id="payment-type">Payment Required</div>
+            
+            <div class="customer-info" id="customer-info">
+                <p><strong>Customer:</strong> <span id="customer-name">Loading...</span></p>
+                <p><strong>Address:</strong> <span id="customer-address">Loading...</span></p>
+                <p><strong>Damage Type:</strong> <span id="damage-type">Loading...</span></p>
+                <p><strong>Service Level:</strong> <span id="urgency-level">Loading...</span></p>
+            </div>
+            
+            <div class="amount-display">
+                <div class="amount" id="amount">$0.00</div>
+            </div>
+            
+            <div class="timeline-badge" id="timeline">
+                Timeline: Loading...
+            </div>
+        </div>
+        
+        <form id="payment-form">
+            <div id="payment-element">
+                <!-- Stripe Elements will create form elements here -->
+            </div>
+            
+            <button id="submit-button" class="pay-button" type="submit">
+                <span id="button-text">Secure Payment • Pay Now</span>
+                <div id="spinner" class="loading-spinner"></div>
+            </button>
+        </form>
+        
+        <div id="error-message" class="message-box error-message"></div>
+        <div id="success-message" class="message-box success-message">
+            <h3>Payment Successful</h3>
+            <p>Your payment has been processed successfully. Work will begin according to the timeline above.</p>
+            <p><strong>Confirmation sent to your email address.</strong></p>
+        </div>
+
+        <div class="feature-badges">
+            <div class="feature-badge">Instant Processing</div>
+            <div class="feature-badge">256-bit Encryption</div>
+            <div class="feature-badge">Mobile Optimized</div>
+        </div>
+        
+        <div class="secure-badge">
+            Secured by Stripe • Bank-level Security
+        </div>
+    </div>
+
+    <script>
+        // Initialize Stripe with your publishable key
+        const stripe = Stripe('pk_test_51RoOc6BWsn8icDzjI641I5BXoNSm09TZchNrSfCMwwjhvQApy8afrpxFSuNZJN3efC6brnmEdFSvRU7BsGQIyutg00gfuQTRgA');
+        
+        let elements;
+        let paymentElement;
+        
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientSecret = urlParams.get('payment_intent');
+        const quoteId = urlParams.get('quote_id');
+        
+        // Professional quote data without emojis
+        const mockQuoteData = {
+            quote_id: quoteId || 'Q-STORM-2025',
+            customer_name: 'Sarah Johnson',
+            customer_address: '1247 Oak Street, Birmingham, AL 35203',
+            damage_type: 'Severe Roof Damage',
+            urgency_level: 'Emergency Service',
+            amount: 9880.38,
+            payment_type: 'Emergency Payment',
+            timeline: 'Same day emergency service'
+        };
+        
+        // Initialize payment form with professional styling
+        async function initializePayment() {
+            if (!clientSecret) {
+                showError('Invalid payment link. Please contact our support team at (205) 307-9153');
+                return;
+            }
+            
+            // Update UI with quote data
+            updateQuoteDisplay();
+            
+            // Create Stripe elements with custom styling
+            elements = stripe.elements({
+                clientSecret: clientSecret,
+                appearance: {
+                    theme: 'night',
+                    variables: {
+                        colorPrimary: '#22d3ee',
+                        colorBackground: 'rgba(255, 255, 255, 0.05)',
+                        colorText: '#ffffff',
+                        colorDanger: '#ef4444',
+                        borderRadius: '12px',
+                        spacingUnit: '6px',
+                        fontFamily: 'Inter, sans-serif',
+                        fontSizeBase: '16px',
+                        fontWeightNormal: '500',
+                    },
+                    rules: {
+                        '.Input': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                            backdropFilter: 'blur(10px)',
+                            color: '#ffffff',
+                        },
+                        '.Input:focus': {
+                            border: '1px solid rgba(255, 255, 255, 0.4)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                            boxShadow: '0 0 0 2px rgba(34, 211, 238, 0.2)',
+                        },
+                        '.Label': {
+                            color: 'rgba(255, 255, 255, 0.9)',
+                            fontWeight: '600',
+                        }
+                    }
+                }
+            });
+            
+            paymentElement = elements.create('payment');
+            paymentElement.mount('#payment-element');
+        }
+        
+        function updateQuoteDisplay() {
+            document.getElementById('quote-id').textContent = `Quote ID: ${mockQuoteData.quote_id}`;
+            document.getElementById('customer-name').textContent = mockQuoteData.customer_name;
+            document.getElementById('customer-address').textContent = mockQuoteData.customer_address;
+            document.getElementById('damage-type').textContent = mockQuoteData.damage_type;
+            document.getElementById('urgency-level').textContent = mockQuoteData.urgency_level;
+            document.getElementById('amount').textContent = `$${mockQuoteData.amount.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('payment-type').textContent = mockQuoteData.payment_type;
+            document.getElementById('timeline').textContent = mockQuoteData.timeline;
+        }
+        
+        // Handle payment form submission
+        document.getElementById('payment-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            setLoading(true);
+            
+            const {error} = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    return_url: window.location.origin + '/payment-success.html',
+                },
+                redirect: 'if_required'
+            });
+            
+            if (error) {
+                if (error.type === "card_error" || error.type === "validation_error") {
+                    showError(error.message);
+                } else {
+                    showError("An unexpected error occurred. Please try again or contact support.");
+                }
+            } else {
+                // Payment succeeded
+                showSuccess();
+            }
+            
+            setLoading(false);
+        });
+        
+        function setLoading(isLoading) {
+            const button = document.getElementById('submit-button');
+            const buttonText = document.getElementById('button-text');
+            const spinner = document.getElementById('spinner');
+            
+            if (isLoading) {
+                button.disabled = true;
+                buttonText.style.display = 'none';
+                spinner.style.display = 'block';
+            } else {
+                button.disabled = false;
+                buttonText.style.display = 'block';
+                spinner.style.display = 'none';
+            }
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            document.getElementById('success-message').style.display = 'none';
+            
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 8000);
+        }
+        
+        function showSuccess() {
+            const successDiv = document.getElementById('success-message');
+            successDiv.style.display = 'block';
+            
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('payment-form').style.opacity = '0.6';
+            document.getElementById('submit-button').disabled = true;
+            
+            document.body.style.background = `
+                linear-gradient(rgba(34, 197, 94, 0.3), rgba(16, 185, 129, 0.2)), 
+                url('https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80')
+            `;
+        }
+        
+        // Auto-refresh payment status every 30 seconds
+        setInterval(async () => {
+            if (clientSecret && !document.getElementById('success-message').style.display) {
+                try {
+                    const {paymentIntent} = await stripe.retrievePaymentIntent(clientSecret);
+                    if (paymentIntent.status === 'succeeded') {
+                        showSuccess();
+                    }
+                } catch (error) {
+                    console.log('Status check failed:', error);
+                }
+            }
+        }, 30000);
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Storm Repair Pro Payment Portal initialized');
+            initializePayment();
+        });
+    </script>
+</body>
+</html>

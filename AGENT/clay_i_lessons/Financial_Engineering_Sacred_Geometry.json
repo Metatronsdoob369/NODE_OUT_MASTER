@@ -1,0 +1,13 @@
+{
+  "lesson_title": "Financial_Engineering_Sacred_Geometry",
+  "concepts": [
+    "compound-interest-spiral-patterns",
+    "fibonacci-investment-timing",
+    "golden-ratio-portfolio-allocation",
+    "fractal-risk-management"
+  ],
+  "why_this_matters": "Financial markets follow mathematical patterns. Sacred geometry reveals optimal timing, allocation, and risk management strategies that most investors miss",
+  "scrape_method": "Quantitative finance + market pattern analysis + portfolio theory + risk mathematics + compound interest modeling + technical analysis",
+  "raw_data_snippet": "Portfolio allocation: 61.8% growth, 38.2% stability (golden ratio). Rebalancing: Fibonacci intervals (1,2,3,5,8,13 months). Compound growth: e^(rt) exponential curves. Risk: \u221an diversification mathematics",
+  "replication_instruction": "Apply golden ratio to portfolio allocation, use fibonacci timing for market entries, leverage compound interest mathematics for wealth building, implement fractal risk management across time horizons"
+}

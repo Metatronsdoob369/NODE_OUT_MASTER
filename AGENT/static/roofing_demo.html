@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roofing AI Demo - Business Automation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+        
+        .demo-section {
+            margin: 30px 0;
+            padding: 25px;
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        
+        .demo-title {
+            font-size: 1.5em;
+            color: #e74c3c;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .demo-title::before {
+            content: "🤖";
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .response {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .loading {
+            display: none;
+            color: #3498db;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        
+        .status {
+            background: #27ae60;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .feature-highlight {
+            background: #f39c12;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 5px 0;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 Roofing AI Demo</h1>
+        <p class="subtitle">Transform Your Business with AI Automation</p>
+        
+        <div class="status" id="status">
+            System Status: <span id="statusText">Checking connection...</span>
+        </div>
+
+        <!-- Social Media Demo -->
+        <div class="demo-section">
+            <div class="demo-title">Social Media Content Creation</div>
+            <p><strong>Demo:</strong> Generate professional Facebook post about storm damage inspections</p>
+            <div class="feature-highlight">✅ Instant Content</div>
+            <div class="feature-highlight">✅ Industry Expertise</div>
+            <div class="feature-highlight">✅ Call-to-Action</div>
+            
+            <button onclick="runSocialDemo()">Generate Social Media Post</button>
+            <button onclick="showBackupSocial()">Show Backup Response</button>
+            
+            <div class="loading" id="socialLoading">🤖 AI is creating content...</div>
+            <div class="response" id="socialResponse" style="display: none;"></div>
+        </div>
+
+        <!-- Automated Calls Demo -->
+        <div class="demo-section">
+            <div class="demo-title">Automated Calls & Scripts</div>
+            <p><strong>Demo:</strong> Generate call script for real estate agent outreach about insurance changes</p>
+            <div class="feature-highlight">✅ Relationship Building</div>
+            <div class="feature-highlight">✅ Insurance Expertise</div>
+            <div class="feature-highlight">✅ Professional Scripts</div>
+            
+            <button onclick="runCallDemo()">Generate Call Script</button>
+            <button onclick="showBackupCall()">Show Backup Response</button>
+            
+            <div class="loading" id="callLoading">🤖 AI is writing script...</div>
+            <div class="response" id="callResponse" style="display: none;"></div>
+        </div>
+
+        <!-- ACULinx Integration Demo -->
+        <div class="demo-section">
+            <div class="demo-title">ACULinx Lead Processing</div>
+            <p><strong>Demo:</strong> Process urgent storm damage lead with full workflow automation</p>
+            <div class="feature-highlight">✅ Instant Processing</div>
+            <div class="feature-highlight">✅ Priority Scheduling</div>
+            <div class="feature-highlight">✅ Insurance Documentation</div>
+            
+            <button onclick="runWorkflowDemo()">Process ACULinx Lead</button>
+            <button onclick="showBackupWorkflow()">Show Backup Response</button>
+            
+            <div class="loading" id="workflowLoading">🤖 AI is processing lead...</div>
+            <div class="response" id="workflowResponse" style="display: none;"></div>
+        </div>
+
+        <!-- Agent Commands Demo -->
+        <div class="demo-section">
+            <div class="demo-title">Multi-Agent System</div>
+            <p><strong>Demo:</strong> Switch between specialized agents and see available capabilities</p>
+            <div class="feature-highlight">✅ 5 Specialized Agents</div>
+            <div class="feature-highlight">✅ Instant Switching</div>
+            <div class="feature-highlight">✅ Unique Expertise</div>
+            
+            <button onclick="showAgents()">List Available Agents</button>
+            <button onclick="switchToSales()">Switch to Sales Agent</button>
+            
+            <div class="loading" id="agentLoading">🤖 Managing agents...</div>
+            <div class="response" id="agentResponse" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5002';
+
+        // Check system status on load
+        window.onload = function() {
+            checkStatus();
+        };
+
+        async function checkStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/api/status`);
+                const data = await response.json();
+                
+                if (data.connected) {
+                    document.getElementById('statusText').textContent = '✅ Connected - AI System Ready';
+                    document.getElementById('status').style.background = '#27ae60';
+                } else {
+                    document.getElementById('statusText').textContent = '⚠️ AI Offline - Using Backup Responses';
+                    document.getElementById('status').style.background = '#f39c12';
+                }
+            } catch (error) {
+                document.getElementById('statusText').textContent = '❌ Server Offline - Demo Mode Only';
+                document.getElementById('status').style.background = '#e74c3c';
+            }
+        }
+
+        // Demo functions with backup responses
+        async function runSocialDemo() {
+            showLoading('socialLoading');
+            try {
+                const response = await fetch(`${API_BASE}/api/agents/content_creator`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        message: "Create a Facebook post about storm damage roof inspections for homeowners after the recent storm season"
+                    })
+                });
+                const data = await response.json();
+                showResponse('socialResponse', data);
+            } catch (error) {
+                showBackupSocial();
+            }
+            hideLoading('socialLoading');
+        }
+
+        function showBackupSocial() {
+            const backup = {
+                response: "🏠⛈️ STORM DAMAGE ROOF INSPECTION ALERT ⛈️🏠\n\nHomeowners: Don't wait until it's too late! Recent storms may have caused damage that's not visible from the ground but could lead to costly leaks and insurance claim denials.\n\n✅ FREE 15-minute inspection\n✅ Insurance claim documentation included\n✅ Same-day emergency repairs available\n✅ Licensed & bonded professionals\n\nDid you know? Insurance companies require inspections within 30 days of storm damage for full coverage. We handle all the paperwork and work directly with your adjuster.\n\n📞 Call now: [Your Phone]\n🌐 Schedule online: [Your Website]\n\n#StormDamage #RoofRepair #InsuranceClaims #YourCityRoofing",
+                agent_type: "content_creator",
+                source: "backup_response"
+            };
+            showResponse('socialResponse', backup);
+        }
+
+        async function runCallDemo() {
+            showLoading('callLoading');
+            try {
+                const response = await fetch(`${API_BASE}/api/agents/roofing_specialist`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        message: "Create a script for calling real estate agents about new insurance law changes affecting roof claims"
+                    })
+                });
+                const data = await response.json();
+                showResponse('callResponse', data);
+            } catch (error) {
+                showBackupCall();
+            }
+            hideLoading('callLoading');
+        }
+
+        function showBackupCall() {
+            const backup = {
+                response: "Hi [Agent Name], this is [Your Name] from [Company]. I'm reaching out because there are significant insurance law changes affecting roof claims that directly impact your listings and client transactions.\n\nHere's what's changed:\n• New 30-day inspection requirements for storm damage claims\n• Updated documentation standards that many contractors don't know about\n• Pre-listing roof certifications now required for homes over 15 years\n\nThis affects your deals because:\n✓ Buyers' insurance companies are requiring pre-purchase roof inspections\n✓ Sellers need proper documentation to avoid claim denials\n✓ Failed inspections can kill deals at closing\n\nI'd like to offer your clients:\n• Complimentary pre-listing roof assessments\n• 24-hour inspection reports for your transactions\n• Direct communication with insurance adjusters\n• Priority scheduling for your referrals\n\nCan we schedule 15 minutes this week to discuss how this partnership can help your deals close faster and protect your clients from insurance issues?",
+                agent_type: "roofing_specialist",
+                source: "backup_response"
+            };
+            showResponse('callResponse', backup);
+        }
+
+        async function runWorkflowDemo() {
+            showLoading('workflowLoading');
+            try {
+                const response = await fetch(`${API_BASE}/api/workflow/execute`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        workflow_type: "complete_system",
+                        input: "Process a new roof inspection lead from ACULinx: homeowner John Smith, storm damage claim, needs inspection within 48 hours"
+                    })
+                });
+                const data = await response.json();
+                showResponse('workflowResponse', data);
+            } catch (error) {
+                showBackupWorkflow();
+            }
+            hideLoading('workflowLoading');
+        }
+
+        function showBackupWorkflow() {
+            const backup = {
+                response: "LEAD PROCESSING COMPLETE - PRIORITY: HIGH\n\n📋 LEAD DETAILS:\nCustomer: John Smith\nSource: ACULinx\nIssue: Storm damage claim\nUrgency: 48-hour requirement\nStatus: PROCESSED & SCHEDULED\n\n🚀 ACTIONS TAKEN:\n✅ Lead prioritized as HIGH (storm damage = insurance deadline)\n✅ Appointment scheduled within 24 hours (tomorrow 2:00 PM)\n✅ Insurance documentation packet prepared\n✅ Storm damage assessment checklist ready\n✅ Follow-up sequence activated\n\n💼 BUSINESS INTELLIGENCE:\n• Customer qualified for emergency service rates\n• Insurance claim value estimated: $8,000-15,000\n• Probability of conversion: 85% (storm damage)\n• Upsell opportunities: Gutters, siding inspection\n\nLead processing time: 3.2 seconds\nExpected close rate: 85%\nProjected revenue: $12,500",
+                workflow_type: "complete_system",
+                source: "backup_response"
+            };
+            showResponse('workflowResponse', backup);
+        }
+
+        async function showAgents() {
+            showLoading('agentLoading');
+            try {
+                const response = await fetch(`${API_BASE}/api/commands`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({command: "get_agents"})
+                });
+                const data = await response.json();
+                showResponse('agentResponse', data);
+            } catch (error) {
+                const backup = {
+                    available_agents: {
+                        "pathsassin": "Learning and mastery development agent",
+                        "sales_agent": "Sales and persuasion specialist",
+                        "roofing_specialist": "Roofing industry expert with insurance law knowledge",
+                        "content_creator": "Content creation and messaging specialist",
+                        "relationship_agent": "Networking and relationship building expert"
+                    },
+                    success: true,
+                    source: "backup_response"
+                };
+                showResponse('agentResponse', backup);
+            }
+            hideLoading('agentLoading');
+        }
+
+        async function switchToSales() {
+            showLoading('agentLoading');
+            try {
+                const response = await fetch(`${API_BASE}/api/commands`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        command: "switch_agent",
+                        params: {agent_type: "sales_agent"}
+                    })
+                });
+                const data = await response.json();
+                showResponse('agentResponse', data);
+            } catch (error) {
+                const backup = {
+                    success: true,
+                    new_agent: "sales_agent",
+                    message: "Switched to sales_agent agent",
+                    agent_capabilities: ["persuasion", "objection_handling", "closing", "relationship_building"],
+                    source: "backup_response"
+                };
+                showResponse('agentResponse', backup);
+            }
+            hideLoading('agentLoading');
+        }
+
+        function showLoading(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function hideLoading(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function showResponse(id, data) {
+            const element = document.getElementById(id);
+            element.style.display = 'block';
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html> 

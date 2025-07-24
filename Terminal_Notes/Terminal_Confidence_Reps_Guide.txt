@@ -1,0 +1,63 @@
+
+Terminal Confidence Reps Guide (File Movement & Location Mastery)
+
+Goal: Build instincts for knowing where files are, moving them clean, and renaming with confidence.
+
+---
+
+1. **Know Where You Are**
+Check your current location:
+    pwd
+
+List what's in your current folder:
+    ls
+
+---
+
+2. **See What's in a Specific Folder**
+List contents of your home folder:
+    ls ~
+
+List contents of a subfolder (e.g., your NODE_OUT_Master structure):
+    ls ~/NODE_OUT_Master
+    ls ~/NODE_OUT_Master/SIP_AGENT_Workflow
+
+---
+
+3. **Move a File**
+Move a file from one folder to another:
+    mv [source path] [destination path]
+
+Example - Move Roadmap file to Workflow folder:
+    mv ~/Downloads/Roadmap.txt ~/NODE_OUT_Master/SIP_AGENT_Workflow/
+
+---
+
+4. **Rename a File While Moving**
+    mv ~/NODE_OUT_Master/SIP_AGENT_Workflow/Roadmap.txt ~/NODE_OUT_Master/SIP_AGENT_Workflow/Final_Roadmap.txt
+
+---
+
+5. **Rename a Folder**
+    mv ~/NODE_OUT_Master/Old_Folder_Name ~/NODE_OUT_Master/New_Folder_Name
+
+---
+
+6. **Open a File in VS Code from Terminal**
+    code ~/NODE_OUT_Master/SIP_AGENT_Workflow/Roadmap.txt
+
+(Note: You need VS Code's 'code' CLI installed. I can show you how.)
+
+---
+
+7. **Final Tip: Avoid Spaces in File/Folder Names**
+Spaces make terminal navigation harder. Use underscores or CamelCase instead.
+
+8. Quick Peek Shortcut: ALIAS
+alias siptodo='open ~/NODE_OUT_Master/Terminal_Notes/NODE_OUT_SIP_Agent_Needs_List.txt'
+Then siptodo opens
+---
+
+Keep practicing these small, daily reps. Terminal fluency = massive long-term time savings.
+
+

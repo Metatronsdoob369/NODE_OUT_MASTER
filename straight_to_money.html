@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NODE OUT - STRAIGHT TO MONEY</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .money-container {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .money-title {
+            font-size: 2.5em;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px #00d4ff;
+        }
+
+        .money-subtitle {
+            font-size: 1.2em;
+            color: #00ff88;
+            margin-bottom: 40px;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .payment-button {
+            background: linear-gradient(45deg, #00ff88, #00d4ff);
+            border: none;
+            border-radius: 50px;
+            padding: 25px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .payment-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .payment-button:hover::before {
+            left: 100%;
+        }
+
+        .price-tag {
+            font-size: 3em;
+            color: #ff6b35;
+            margin: 30px 0;
+            text-shadow: 0 0 20px #ff6b35;
+        }
+
+        .cta-text {
+            font-size: 1.5em;
+            color: #00d4ff;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="money-container">
+        <h1 class="money-title">NODE OUT</h1>
+        <p class="money-subtitle">Enterprise AI Automation</p>
+        
+        <div class="price-tag">$2,500</div>
+        <p class="cta-text">Complete 25-Agent System</p>
+        
+        <div class="payment-options">
+            <button class="payment-button" onclick="processPayment('stripe')">
+                💳 PAY WITH STRIPE
+            </button>
+            
+            <button class="payment-button" onclick="processPayment('paypal')">
+                💰 PAY WITH PAYPAL
+            </button>
+            
+            <button class="payment-button" onclick="processPayment('crypto')">
+                ₿ PAY WITH CRYPTO
+            </button>
+            
+            <button class="payment-button" onclick="processPayment('invoice')">
+                📋 INVOICE ME
+            </button>
+        </div>
+        
+        <p style="margin-top: 30px; color: #00ff88; font-size: 0.9em;">
+            Immediate deployment • 25-agent system • Full automation<br>
+            Storm responder intelligence • UE5 mastery • Enterprise-grade
+        </p>
+    </div>
+
+    <script>
+        function processPayment(method) {
+            // Simulate payment processing
+            alert(`Processing ${method} payment for NODE OUT 25-Agent System...`);
+            
+            // In real implementation, redirect to payment gateway
+            setTimeout(() => {
+                window.location.href = `payment-${method}.html`;
+            }, 1000);
+        }
+
+        // Add subtle animations
+        setInterval(() => {
+            const buttons = document.querySelectorAll('.payment-button');
+            buttons.forEach(button => {
+                button.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    button.style.transform = 'scale(1)';
+                }, 200);
+            });
+        }, 3000);
+    </script>
+</body>
+</html>

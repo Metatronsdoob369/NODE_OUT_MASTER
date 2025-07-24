@@ -1,0 +1,198 @@
+DEMO 1: MAGIC BUTTON SMS
+Copy this entire block:
+
+{
+  "name": "Demo 1: Magic Button SMS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "magic",
+        "responseMode": "responseNode",
+        "response": {
+          "body": "🚀 Magic activated! Check your phone..."
+        }
+      },
+      "id": "webhook-trigger",
+      "name": "Magic Button",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [300, 300]
+    },
+    {
+      "parameters": {
+        "to": "+15551234567",
+        "message": "🚀 Magic activated! This text was sent by pure automation. Pretty cool, right?"
+      },
+      "id": "send-sms",
+      "name": "Send Magic SMS",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [500, 300]
+    }
+  ],
+  "connections": {
+    "Magic Button": {
+      "main": [
+        [
+          {
+            "node": "Send Magic SMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
+
+---
+
+DEMO 2: WEATHER INTELLIGENCE  
+Copy this entire block:
+
+{
+  "name": "Demo 2: Weather Intelligence",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Check Weather Now",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [300, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "GET",
+        "url": "https://api.openweathermap.org/data/2.5/weather?q=Miami,FL&appid=YOUR_API_KEY&units=imperial"
+      },
+      "id": "get-weather",
+      "name": "Get Live Weather",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "to": "+15551234567",
+        "message": "🌦️ WEATHER INTEL\n\nLocation: {{ $json.name }}\nCondition: {{ $json.weather[0].description }}\nTemp: {{ $json.main.temp }}°F\n\n🤖 Delivered by automation"
+      },
+      "id": "weather-sms",
+      "name": "Send Weather Alert",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [700, 300]
+    }
+  ],
+  "connections": {
+    "Check Weather Now": {
+      "main": [
+        [
+          {
+            "node": "Get Live Weather",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Live Weather": {
+      "main": [
+        [
+          {
+            "node": "Send Weather Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
+
+---
+
+DEMO 3: QUOTE CALCULATOR
+Copy this entire block:
+
+{
+  "name": "Demo 3: Quote Calculator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "quote",
+        "responseMode": "responseNode",
+        "response": {
+          "body": "🏠 Quote calculated! Check your phone for estimate."
+        }
+      },
+      "id": "quote-webhook",
+      "name": "Quote Request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [300, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "sqft",
+              "name": "square_feet",
+              "value": "={{ parseInt($json.query.sqft) || 2000 }}",
+              "type": "number"
+            },
+            {
+              "id": "total",
+              "name": "total_estimate",
+              "value": "={{ $json.square_feet * 7.75 }}",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "id": "calculate-quote",
+      "name": "Calculate Estimate",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "to": "={{ $json.query.phone || '+15551234567' }}",
+        "message": "🏠 ROOFING ESTIMATE\n\n📐 Size: {{ $json.square_feet }} sq ft\n💵 TOTAL: ${{ $json.total_estimate.toLocaleString() }}\n\n📞 Call to schedule free inspection!"
+      },
+      "id": "quote-sms",
+      "name": "Send Quote SMS",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [700, 300]
+    }
+  ],
+  "connections": {
+    "Quote Request": {
+      "main": [
+        [
+          {
+            "node": "Calculate Estimate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Estimate": {
+      "main": [
+        [
+          {
+            "node": "Send Quote SMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

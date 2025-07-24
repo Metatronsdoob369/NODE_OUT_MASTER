@@ -1,0 +1,13 @@
+{
+  "lesson_title": "Geometric_Algorithm_Patterns",
+  "concepts": [
+    "fractal-recursion",
+    "fibonacci-spirals",
+    "platonic-solids",
+    "tessellation"
+  ],
+  "why_this_matters": "Natural patterns create efficient algorithms and beautiful interfaces",
+  "scrape_method": "Mathematical geometry + algorithm design + nature patterns",
+  "raw_data_snippet": "",
+  "replication_instruction": "Apply recursive patterns to UI components, use spiral algorithms for data visualization"
+}

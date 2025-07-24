@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roofing AI Demo - Backup Responses</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; line-height: 1.6; color: #1a1a1a; background: #f8fafc; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; padding: 2rem 0; margin-bottom: 2rem; }
+        .header-content { max-width: 1200px; margin: 0 auto; padding: 0 2rem; text-align: center; }
+        .header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.025em; }
+        .header .subtitle { font-size: 1.25rem; opacity: 0.9; font-weight: 400; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .demo-section { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0; transition: all 0.3s ease; }
+        .demo-section:hover { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
+        .demo-title { font-size: 1.5rem; font-weight: 600; color: #1e293b; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+        .demo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem; }
+        .demo-description { color: #64748b; margin-bottom: 1.5rem; font-size: 0.95rem; }
+        .feature-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .feature-tag { background: #f1f5f9; color: #475569; padding: 0.375rem 0.875rem; border-radius: 6px; font-size: 0.8rem; font-weight: 500; border: 1px solid #e2e8f0; }
+        .response { background: #0f172a; color: #e2e8f0; padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem; font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace; font-size: 0.875rem; line-height: 1.6; white-space: pre-wrap; max-height: 500px; overflow-y: auto; border: 1px solid #334155; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); }
+        .button-group { margin-bottom: 1.5rem; }
+        .button-group button { background-color: #3b82f6; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; border: none; cursor: pointer; font-size: 1rem; font-weight: 600; transition: background-color 0.3s ease; }
+        .button-group button:hover { background-color: #1d4ed8; }
+        .loading { text-align: center; padding: 1rem; color: #64748b; }
+        @media (max-width: 768px) { .demo-grid { grid-template-columns: 1fr; } .container { padding: 0 1rem; } .demo-section { padding: 1.5rem; } .header h1 { font-size: 2rem; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>Roofing AI Platform Demo (Backup Only)</h1>
+            <p class="subtitle">Static Demo - No Backend Required</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="demo-grid">
+            <!-- Live Voice Conversation Demo -->
+            <div class="demo-section">
+                <div class="demo-title">
+                    <div class="demo-icon">CV</div>
+                    Live Voice Conversation
+                </div>
+                <p class="demo-description">Speak directly with our AI roofing specialist about insurance, inspections, or partnerships.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">Real-time Voice</span>
+                    <span class="feature-tag">Roofing Expertise</span>
+                    <span class="feature-tag">Interactive Demo</span>
+                </div>
+                <!-- ElevenLabs ConvAI Widget -->
+                <elevenlabs-convai agent-id="agent_01k0ah7ah0f2etf8mmxdrwc0zd"></elevenlabs-convai>
+                <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+            </div>
+            <!-- Voice Message Demo -->
+            <div class="demo-section">
+                <div class="demo-title"><div class="demo-icon">VM</div>Create Voice Message</div>
+                <p class="demo-description">Generate a personalized script, convert it to a professional voice message, and (optionally) deliver via SMS using Twilio. This is a static demo of the full workflow.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">AI Script</span>
+                    <span class="feature-tag">ElevenLabs Voice</span>
+                    <span class="feature-tag">Twilio Delivery</span>
+                </div>
+                <div class="button-group">
+                    <button onclick="createVoiceMessage()">Create Voice Message</button>
+                </div>
+                <div class="loading" id="voiceLoading">Processing voice message workflow...</div>
+                <div class="response" id="voiceResponse" style="display: none;"></div>
+            </div>
+            <!-- Social Media Demo -->
+            <div class="demo-section">
+                <div class="demo-title"><div class="demo-icon">SM</div>Social Media Content Creation</div>
+                <p class="demo-description">Generate professional Facebook posts about storm damage inspections with industry-specific messaging and clear calls-to-action.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">Instant Content</span>
+                    <span class="feature-tag">Industry Expertise</span>
+                    <span class="feature-tag">Conversion Optimized</span>
+                </div>
+                <div class="response">
+STORM DAMAGE ROOF INSPECTION ALERT
+
+Homeowners: Don't wait until it's too late! Recent storms may have caused damage that's not visible from the ground but could lead to costly leaks and insurance claim denials.
+
+• FREE 15-minute inspection
+• Insurance claim documentation included
+• Same-day emergency repairs available
+• Licensed & bonded professionals
+
+Did you know? Insurance companies require inspections within 30 days of storm damage for full coverage. We handle all the paperwork and work directly with your adjuster.
+
+Call now: [Your Phone]
+Schedule online: [Your Website]
+
+#StormDamage #RoofRepair #InsuranceClaims #YourCityRoofing
+                </div>
+            </div>
+            <!-- Automated Calls Demo -->
+            <div class="demo-section">
+                <div class="demo-title"><div class="demo-icon">AC</div>Automated Call Scripts</div>
+                <p class="demo-description">Create professional scripts for real estate agent outreach, incorporating current insurance law changes and partnership opportunities.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">Relationship Building</span>
+                    <span class="feature-tag">Insurance Expertise</span>
+                    <span class="feature-tag">Professional Scripts</span>
+                </div>
+                <div class="response">
+Hi [Agent Name], this is [Your Name] from [Company]. I'm reaching out because there are significant insurance law changes affecting roof claims that directly impact your listings and client transactions.
+
+Here's what's changed:
+• New 30-day inspection requirements for storm damage claims
+• Updated documentation standards that many contractors don't know about
+• Pre-listing roof certifications now required for homes over 15 years
+
+This affects your deals because:
+• Buyers' insurance companies are requiring pre-purchase roof inspections
+• Sellers need proper documentation to avoid claim denials
+• Failed inspections can kill deals at closing
+
+I'd like to offer your clients:
+• Complimentary pre-listing roof assessments
+• 24-hour inspection reports for your transactions
+• Direct communication with insurance adjusters
+• Priority scheduling for your referrals
+
+Can we schedule 15 minutes this week to discuss how this partnership can help your deals close faster and protect your clients from insurance issues?
+                </div>
+            </div>
+            <!-- ACULinx Integration Demo -->
+            <div class="demo-section">
+                <div class="demo-title"><div class="demo-icon">AL</div>ACULinx Lead Processing</div>
+                <p class="demo-description">Automatically process urgent storm damage leads with priority scheduling, insurance documentation, and follow-up workflows.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">Instant Processing</span>
+                    <span class="feature-tag">Priority Scheduling</span>
+                    <span class="feature-tag">Insurance Documentation</span>
+                </div>
+                <div class="response">
+LEAD PROCESSING COMPLETE - PRIORITY: HIGH
+
+LEAD DETAILS:
+Customer: John Smith
+Source: ACULinx
+Issue: Storm damage claim
+Urgency: 48-hour requirement
+Status: PROCESSED & SCHEDULED
+
+ACTIONS TAKEN:
+• Lead prioritized as HIGH (storm damage = insurance deadline)
+• Appointment scheduled within 24 hours (tomorrow 2:00 PM)
+• Insurance documentation packet prepared
+• Storm damage assessment checklist ready
+• Follow-up sequence activated
+
+BUSINESS INTELLIGENCE:
+• Customer qualified for emergency service rates
+• Insurance claim value estimated: $8,000-15,000
+• Probability of conversion: 85% (storm damage)
+• Upsell opportunities: Gutters, siding inspection
+
+NEXT STEPS:
+1. Inspector dispatch confirmed for tomorrow
+2. Insurance adjuster contact attempted
+3. Follow-up call scheduled for post-inspection
+4. Estimate delivery within 24 hours of inspection
+
+Lead processing time: 3.2 seconds
+Expected close rate: 85%
+Projected revenue: $12,500
+                </div>
+            </div>
+            <!-- Agent Management Demo -->
+            <div class="demo-section">
+                <div class="demo-title"><div class="demo-icon">MA</div>Multi-Agent System</div>
+                <p class="demo-description">Switch between specialized AI agents, each with unique expertise for different business functions and customer interactions.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">5 Specialized Agents</span>
+                    <span class="feature-tag">Instant Switching</span>
+                    <span class="feature-tag">Unique Expertise</span>
+                </div>
+                <div class="response">
+Available Agents:
+- pathsassin: Learning and mastery development agent
+- sales_agent: Sales and persuasion specialist
+- roofing_specialist: Roofing industry expert with insurance law knowledge
+- content_creator: Content creation and messaging specialist
+- relationship_agent: Networking and relationship building expert
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+function showLoading(id) {
+    document.getElementById(id).style.display = 'block';
+}
+
+function hideLoading(id) {
+    document.getElementById(id).style.display = 'none';
+}
+
+function showResponse(id, data) {
+    const responseDiv = document.getElementById(id);
+    responseDiv.style.display = 'block';
+    responseDiv.textContent = JSON.stringify(data, null, 2);
+}
+
+async function createVoiceMessage() {
+    showLoading('voiceLoading');
+    try {
+        // 1. Generate script with AI (static backup)
+        const script = await generateCallScript();
+        // 2. Convert to voice with ElevenLabs (static backup)
+        const audioFile = await createVoiceRecording(script);
+        // 3. Send via Twilio (static backup)
+        const delivered = await sendVoiceMessage(audioFile);
+        showResponse('voiceResponse', delivered);
+    } catch (error) {
+        showResponse('voiceResponse', {error: 'Demo failed. (Static mode)'});
+    }
+    hideLoading('voiceLoading');
+}
+async function generateCallScript() {
+    return "Hi [Agent Name], this is [Your Name] from [Company]. I'm reaching out because there are significant insurance law changes affecting roof claims that directly impact your listings and client transactions.\n\nHere's what's changed:\n• New 30-day inspection requirements for storm damage claims\n• Updated documentation standards that many contractors don't know about\n• Pre-listing roof certifications now required for homes over 15 years\n\nThis affects your deals because:\n• Buyers' insurance companies are requiring pre-purchase roof inspections\n• Sellers need proper documentation to avoid claim denials\n• Failed inspections can kill deals at closing\n\nI'd like to offer your clients:\n• Complimentary pre-listing roof assessments\n• 24-hour inspection reports for your transactions\n• Direct communication with insurance adjusters\n• Priority scheduling for your referrals\n\nCan we schedule 15 minutes this week to discuss how this partnership can help your deals close faster and protect your clients from insurance issues?";
+}
+async function createVoiceRecording(script) {
+    return {
+        script,
+        audio_url: 'https://example.com/voice-demo.mp3',
+        status: 'Voice message created (static demo)'
+    };
+}
+async function sendVoiceMessage(audioFile) {
+    return {
+        ...audioFile,
+        sms_status: 'Delivered via Twilio (static demo)',
+        to: '+15555555555'
+    };
+}
+</script>
+</body>
+</html> 

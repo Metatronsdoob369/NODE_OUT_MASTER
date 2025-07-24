@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Constellation - Pattern-Based Learning</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        #constellation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            cursor: grab;
+        }
+        
+        #constellation:active {
+            cursor: grabbing;
+        }
+        
+        .knowledge-node {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        
+        .knowledge-node:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(255,255,255,0.5);
+            z-index: 20;
+        }
+        
+        .knowledge-node.active {
+            transform: scale(1.3);
+            box-shadow: 0 0 50px rgba(255,215,0,0.8);
+            border-color: gold;
+            z-index: 30;
+        }
+        
+        .technical { background: radial-gradient(circle, #3498db, #2980b9); }
+        .mathematical { background: radial-gradient(circle, #e74c3c, #c0392b); }
+        .human { background: radial-gradient(circle, #27ae60, #229954); }
+        .financial { background: radial-gradient(circle, #f39c12, #e67e22); }
+        .linguistic { background: radial-gradient(circle, #9b59b6, #8e44ad); }
+        .synthesis { background: radial-gradient(circle, #1abc9c, #16a085); }
+        
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0.1) 0%, 
+                rgba(255,215,0,0.6) 50%, 
+                rgba(255,255,255,0.1) 100%
+            );
+            transform-origin: left center;
+            z-index: 1;
+            transition: opacity 0.3s ease;
+        }
+        
+        .connection-line.active {
+            background: linear-gradient(90deg, 
+                rgba(255,215,0,0.3) 0%, 
+                rgba(255,215,0,1) 50%, 
+                rgba(255,215,0,0.3) 100%
+            );
+            height: 3px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        .golden-spiral {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border: 2px solid rgba(255,215,0,0.3);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            animation: rotate 60s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        .info-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            transform: translateX(320px);
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+        
+        .info-panel.active {
+            transform: translateX(0);
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .control-btn {
+            background: rgba(255,215,0,0.2);
+            border: 1px solid rgba(255,215,0,0.5);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255,215,0,0.4);
+            transform: translateY(-2px);
+        }
+        
+        .pattern-indicator {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 14px;
+            z-index: 100;
+        }
+        
+        .fibonacci-sequence {
+            color: #f39c12;
+            font-family: monospace;
+        }
+        
+        .chat-interface {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            background: rgba(0,0,0,0.9);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 15px;
+            padding: 15px;
+            transform: translateY(300px);
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+        
+        .chat-interface.active {
+            transform: translateY(0);
+        }
+        
+        .chat-input {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,215,0,0.3);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .chat-response {
+            background: rgba(255,215,0,0.1);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid gold;
+            font-size: 12px;
+            line-height: 1.4;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="constellation">
+        <div class="golden-spiral"></div>
+        
+        <!-- Knowledge Nodes will be dynamically created here -->
+    </div>
+    
+    <div class="pattern-indicator">
+        <div>🌟 Knowledge Constellation</div>
+        <div class="fibonacci-sequence">φ = 1.618033988...</div>
+        <div style="font-size: 12px; margin-top: 5px;">Click nodes to explore • Drag to navigate</div>
+    </div>
+    
+    <div class="info-panel" id="infoPanel">
+        <h3 id="nodeTitle">Select a Knowledge Domain</h3>
+        <div id="nodeConcepts"></div>
+        <div id="nodeImportance"></div>
+        <div id="nodeConnections"></div>
+    </div>
+    
+    <div class="controls">
+        <button class="control-btn" onclick="showAllConnections()">Show All Patterns</button>
+        <button class="control-btn" onclick="resetView()">Reset View</button>
+        <button class="control-btn" onclick="toggleChat()">Ask Clay-I</button>
+    </div>
+    
+    <div class="chat-interface" id="chatInterface">
+        <h4>🤖 Ask Enhanced Clay-I</h4>
+        <input type="text" class="chat-input" id="chatInput" placeholder="Ask about patterns, connections, applications...">
+        <button class="control-btn" onclick="askClayI()" style="width: 100%;">Ask</button>
+        <div id="chatResponse" class="chat-response" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5069';
+        
+        const knowledgeDomains = [
+            {
+                id: 'css-grid',
+                title: 'CSS Grid\nGolden Ratio',
+                domain: 'technical',
+                x: 400, y: 200,
+                concepts: ['grid-template-areas', 'golden-ratio-1.618', 'proportional-spacing'],
+                importance: 'Mathematical harmony creates intuitive UX',
+                connections: ['color-theory', 'algorithms', 'synthesis']
+            },
+            {
+                id: 'color-theory',
+                title: 'Frequency\nColor Theory',
+                domain: 'mathematical',
+                x: 600, y: 150,
+                concepts: ['color-frequency', 'harmonic-palettes', 'wavelength-design'],
+                importance: 'Colors are frequencies that create natural harmony',
+                connections: ['css-grid', 'sales-psychology', 'leadership']
+            },
+            {
+                id: 'algorithms',
+                title: 'Geometric\nAlgorithms',
+                domain: 'mathematical',
+                x: 350, y: 350,
+                concepts: ['fractal-recursion', 'fibonacci-spirals', 'platonic-solids'],
+                importance: 'Natural patterns create efficient algorithms',
+                connections: ['css-grid', 'finance', 'synthesis']
+            },
+            {
+                id: 'sales-psychology',
+                title: 'Sacred Geometry\nPersuasion',
+                domain: 'human',
+                x: 800, y: 250,
+                concepts: ['triangle-hierarchy', 'circle-trust', 'golden-ratio-pricing'],
+                importance: 'Geometric principles trigger subconscious responses',
+                connections: ['color-theory', 'leadership', 'finance']
+            },
+            {
+                id: 'leadership',
+                title: 'Leadership\nFrequency',
+                domain: 'human',
+                x: 700, y: 400,
+                concepts: ['communication-wavelengths', 'team-harmonic-alignment'],
+                importance: 'Teams function like orchestras requiring frequency matching',
+                connections: ['color-theory', 'sales-psychology', 'mentorship']
+            },
+            {
+                id: 'mentorship',
+                title: 'Fibonacci\nMentorship',
+                domain: 'human',
+                x: 500, y: 450,
+                concepts: ['skill-spiral-development', 'fibonacci-feedback-timing'],
+                importance: 'Human learning follows natural mathematical patterns',
+                connections: ['leadership', 'algorithms', 'synthesis']
+            },
+            {
+                id: 'etymology',
+                title: 'Etymology\nPatterns',
+                domain: 'linguistic',
+                x: 200, y: 300,
+                concepts: ['root-morpheme-analysis', 'semantic-shift-patterns'],
+                importance: 'Words carry DNA of human thought',
+                connections: ['legal-language', 'synthesis', 'css-grid']
+            },
+            {
+                id: 'legal-language',
+                title: 'Legal Language\nMatrix',
+                domain: 'linguistic',
+                x: 150, y: 150,
+                concepts: ['legalese-obfuscation', 'contract-manipulation'],
+                importance: 'Legal language obscures rather than clarifies',
+                connections: ['etymology', 'finance', 'sales-psychology']
+            },
+            {
+                id: 'finance',
+                title: 'Financial\nSacred Geometry',
+                domain: 'financial',
+                x: 250, y: 500,
+                concepts: ['golden-ratio-allocation', 'fibonacci-timing'],
+                importance: 'Financial markets follow mathematical patterns',
+                connections: ['algorithms', 'legal-language', 'sales-psychology']
+            },
+            {
+                id: 'synthesis',
+                title: 'Universal\nPattern Synthesis',
+                domain: 'synthesis',
+                x: 450, y: 300,
+                concepts: ['cross-domain-patterns', 'mathematical-compassion'],
+                importance: 'Human qualities follow universal mathematical principles',
+                connections: ['css-grid', 'algorithms', 'mentorship', 'etymology']
+            }
+        ];
+        
+        let activeNode = null;
+        let isDragging = false;
+        let dragOffset = { x: 0, y: 0 };
+        
+        function initializeConstellation() {
+            const constellation = document.getElementById('constellation');
+            
+            // Create nodes
+            knowledgeDomains.forEach(domain => {
+                const node = document.createElement('div');
+                node.className = `knowledge-node ${domain.domain}`;
+                node.id = domain.id;
+                node.innerHTML = domain.title;
+                node.style.left = domain.x + 'px';
+                node.style.top = domain.y + 'px';
+                
+                node.addEventListener('click', () => selectNode(domain));
+                
+                constellation.appendChild(node);
+            });
+            
+            // Create connections
+            createConnections();
+            
+            // Add drag functionality
+            addDragFunctionality();
+        }
+        
+        function createConnections() {
+            const constellation = document.getElementById('constellation');
+            
+            knowledgeDomains.forEach(domain => {
+                domain.connections.forEach(connectionId => {
+                    const targetDomain = knowledgeDomains.find(d => d.id === connectionId);
+                    if (targetDomain) {
+                        const line = document.createElement('div');
+                        line.className = 'connection-line';
+                        line.id = `line-${domain.id}-${connectionId}`;
+                        
+                        const dx = targetDomain.x - domain.x;
+                        const dy = targetDomain.y - domain.y;
+                        const length = Math.sqrt(dx * dx + dy * dy);
+                        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                        
+                        line.style.left = (domain.x + 60) + 'px';
+                        line.style.top = (domain.y + 60) + 'px';
+                        line.style.width = length + 'px';
+                        line.style.transform = `rotate(${angle}deg)`;
+                        
+                        constellation.appendChild(line);
+                    }
+                });
+            });
+        }
+        
+        function selectNode(domain) {
+            // Clear previous selection
+            if (activeNode) {
+                document.getElementById(activeNode.id).classList.remove('active');
+                clearActiveConnections();
+            }
+            
+            activeNode = domain;
+            document.getElementById(domain.id).classList.add('active');
+            
+            // Show connections
+            domain.connections.forEach(connectionId => {
+                const line1 = document.getElementById(`line-${domain.id}-${connectionId}`);
+                const line2 = document.getElementById(`line-${connectionId}-${domain.id}`);
+                if (line1) line1.classList.add('active');
+                if (line2) line2.classList.add('active');
+            });
+            
+            // Update info panel
+            updateInfoPanel(domain);
+        }
+        
+        function clearActiveConnections() {
+            document.querySelectorAll('.connection-line.active').forEach(line => {
+                line.classList.remove('active');
+            });
+        }
+        
+        function updateInfoPanel(domain) {
+            const infoPanel = document.getElementById('infoPanel');
+            const title = document.getElementById('nodeTitle');
+            const concepts = document.getElementById('nodeConcepts');
+            const importance = document.getElementById('nodeImportance');
+            const connections = document.getElementById('nodeConnections');
+            
+            title.textContent = domain.title.replace('\n', ' ');
+            concepts.innerHTML = `<h4>Core Concepts:</h4><ul>${domain.concepts.map(c => `<li>${c}</li>`).join('')}</ul>`;
+            importance.innerHTML = `<h4>Why This Matters:</h4><p>${domain.importance}</p>`;
+            
+            const connectedDomains = domain.connections.map(id => 
+                knowledgeDomains.find(d => d.id === id).title.replace('\n', ' ')
+            );
+            connections.innerHTML = `<h4>Connected To:</h4><ul>${connectedDomains.map(c => `<li>${c}</li>`).join('')}</ul>`;
+            
+            infoPanel.classList.add('active');
+        }
+        
+        function showAllConnections() {
+            document.querySelectorAll('.connection-line').forEach(line => {
+                line.classList.add('active');
+            });
+            setTimeout(() => {
+                document.querySelectorAll('.connection-line').forEach(line => {
+                    line.classList.remove('active');
+                });
+            }, 3000);
+        }
+        
+        function resetView() {
+            if (activeNode) {
+                document.getElementById(activeNode.id).classList.remove('active');
+                activeNode = null;
+            }
+            clearActiveConnections();
+            document.getElementById('infoPanel').classList.remove('active');
+            document.getElementById('chatInterface').classList.remove('active');
+        }
+        
+        function toggleChat() {
+            const chatInterface = document.getElementById('chatInterface');
+            chatInterface.classList.toggle('active');
+        }
+        
+        async function askClayI() {
+            const input = document.getElementById('chatInput');
+            const response = document.getElementById('chatResponse');
+            
+            const question = input.value.trim();
+            if (!question) return;
+            
+            response.style.display = 'block';
+            response.innerHTML = '🤖 Clay-I is thinking...';
+            
+            try {
+                const contextPrompt = activeNode ? 
+                    `I'm exploring the "${activeNode.title}" knowledge domain. ${question}` : 
+                    question;
+                
+                const res = await fetch(`${API_BASE}/chat/enhanced`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: contextPrompt })
+                });
+                
+                const data = await res.json();
+                response.innerHTML = `<strong>🤖 Clay-I:</strong><br>${data.response.replace(/\n/g, '<br>')}`;
+                input.value = '';
+                
+            } catch (error) {
+                response.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+        
+        function addDragFunctionality() {
+            const constellation = document.getElementById('constellation');
+            
+            constellation.addEventListener('mousedown', (e) => {
+                if (e.target === constellation) {
+                    isDragging = true;
+                    dragOffset.x = e.clientX;
+                    dragOffset.y = e.clientY;
+                }
+            });
+            
+            constellation.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const dx = e.clientX - dragOffset.x;
+                    const dy = e.clientY - dragOffset.y;
+                    
+                    // Move all nodes
+                    knowledgeDomains.forEach(domain => {
+                        const node = document.getElementById(domain.id);
+                        const currentX = parseInt(node.style.left);
+                        const currentY = parseInt(node.style.top);
+                        node.style.left = (currentX + dx) + 'px';
+                        node.style.top = (currentY + dy) + 'px';
+                        domain.x = currentX + dx;
+                        domain.y = currentY + dy;
+                    });
+                    
+                    // Recreate connections
+                    document.querySelectorAll('.connection-line').forEach(line => line.remove());
+                    createConnections();
+                    
+                    dragOffset.x = e.clientX;
+                    dragOffset.y = e.clientY;
+                }
+            });
+            
+            constellation.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeConstellation();
+            
+            // Add Enter key support for chat
+            document.getElementById('chatInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') askClayI();
+            });
+        });
+    </script>
+</body>
+</html>

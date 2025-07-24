@@ -1,0 +1,10 @@
+{
+  "lesson_title": "Test Connection",
+  "concepts": [
+    "Testing"
+  ],
+  "why_this_matters": "Validation",
+  "scrape_method": "Test",
+  "raw_data_snippet": "",
+  "replication_instruction": "Test successful"
+}

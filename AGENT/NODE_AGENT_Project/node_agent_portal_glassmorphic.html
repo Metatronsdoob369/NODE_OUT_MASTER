@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NODE - Custom Automation Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)), 
+                        url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: white;
+            overflow-x: hidden;
+            transition: background 0.5s ease;
+        }
+
+        /* Background variations with high-res photos */
+        .bg-ocean {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)), 
+                        url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+        }
+
+        .bg-modern {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)), 
+                        url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2058&q=80');
+        }
+
+        .bg-forest {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)), 
+                        url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');
+        }
+
+        .bg-mountain {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)), 
+                        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        }
+
+        .bg-warm {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)), 
+                        url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        }
+
+        .bg-cool {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)), 
+                        url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-side {
+            position: absolute;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left {
+            left: 20px;
+        }
+
+        .header-right {
+            right: 20px;
+        }
+
+        .node-logo {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 20px 40px;
+            display: inline-block;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: white;
+            text-shadow: 0 2px 20px rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .node-logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+
+        .hamburger span {
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 1px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Settings Modal */
+        .settings-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-modal.active {
+            display: flex;
+        }
+
+        .settings-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .settings-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .control-group select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            option {
+                background: rgba(0,0,0,0.8);
+            }
+        }
+
+        .node-logo {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 25px 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-geometric {
+            position: relative;
+            width: 48px;
+            height: 48px;
+        }
+
+        .logo-circle {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            position: absolute;
+            top: 9px;
+            left: 9px;
+        }
+
+        .logo-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 1.5px;
+        }
+
+        .line-1 {
+            width: 18px;
+            height: 3px;
+            top: 12px;
+            left: 3px;
+            transform: rotate(45deg);
+        }
+
+        .line-2 {
+            width: 18px;
+            height: 3px;
+            top: 33px;
+            right: 3px;
+            transform: rotate(-45deg);
+        }
+
+        .line-3 {
+            width: 3px;
+            height: 18px;
+            top: 3px;
+            right: 12px;
+            transform: rotate(90deg);
+        }
+
+        .logo-text {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            color: white;
+            text-shadow: 0 4px 30px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Main Grid */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .agent-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+        }
+
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            opacity: 0;
+            transition: all 0.6s ease;
+            transform: scale(0.8);
+        }
+
+        .agent-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.2),
+                0 0 30px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 0 60px rgba(255, 255, 255, 0.1);
+        }
+
+        .agent-card:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .agent-card:hover .agent-icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
+        }
+
+        .agent-card:hover .agent-icon svg {
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6)) brightness(1.3);
+        }
+
+        .agent-card:hover .agent-title {
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .agent-icon {
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.85);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .agent-icon svg {
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .agent-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.2;
+            letter-spacing: 0.02em;
+            transition: all 0.4s ease;
+            margin: 0;
+        }
+
+        .agent-subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .agent-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .agent-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Voice Selection Panel */
+        .voice-panel {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 35px;
+            margin-top: 30px;
+            position: relative;
+        }
+
+        .voice-panel h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .voice-styles-container {
+            position: relative;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 30px;
+        }
+
+        .voice-styles-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 0 60px;
+        }
+
+        /* Audio waveform effects on sides */
+        .waveform-left, .waveform-right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 60px;
+        }
+
+        .waveform-left {
+            left: 10px;
+        }
+
+        .waveform-right {
+            right: 10px;
+        }
+
+        .wave-bar {
+            position: absolute;
+            width: 3px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 2px;
+            animation: waveAnimation 2s ease-in-out infinite;
+            bottom: 0;
+        }
+
+        .wave-bar:nth-child(1) { left: 0px; height: 20px; animation-delay: 0s; }
+        .wave-bar:nth-child(2) { left: 5px; height: 35px; animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { left: 10px; height: 50px; animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { left: 15px; height: 25px; animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { left: 20px; height: 40px; animation-delay: 0.4s; }
+        .wave-bar:nth-child(6) { left: 25px; height: 30px; animation-delay: 0.5s; }
+        .wave-bar:nth-child(7) { left: 30px; height: 45px; animation-delay: 0.6s; }
+        .wave-bar:nth-child(8) { left: 35px; height: 20px; animation-delay: 0.7s; }
+
+        @keyframes waveAnimation {
+            0%, 100% { transform: scaleY(1); opacity: 0.6; }
+            50% { transform: scaleY(1.5); opacity: 1; }
+        }
+
+        .voice-style {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .voice-style:hover,
+        .voice-style.selected {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .voice-style-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Circular dotted pattern around numbers */
+        .voice-style-number::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 2px dotted rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: rotateDots 8s linear infinite;
+        }
+
+        .voice-style-number::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 1px dotted rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: rotateDots 6s linear infinite reverse;
+        }
+
+        @keyframes rotateDots {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .voice-style-name {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .voice-style-description {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        /* Selected Voice Info */
+        .selected-voice-info {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .selected-voice-info.active {
+            display: block;
+        }
+
+        /* Demo Output */
+        .demo-output {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+            display: none;
+        }
+
+        .demo-output.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .agent-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .voice-styles-grid {
+                grid-template-columns: repeat(2, 1fr);
+                max-width: 250px;
+            }
+            
+            .node-logo {
+                font-size: 2rem;
+                padding: 15px 30px;
+            }
+        }
+
+        /* ElevenLabs Widgets */
+        .elevenlabs-widget {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .elevenlabs-widget:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .elevenlabs-widget h4 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* ElevenLabs iframe styling */
+        .elevenlabs-widget iframe {
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Automation Walkthrough */
+        .automation-panel {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 25px 35px;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .automation-panel h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .automation-nodes {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .node-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .node-icon:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .node-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: rgba(255, 255, 255, 0.8);
+            fill: none;
+        }
+
+        .node-connector {
+            width: 20px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 1px;
+        }
+
+        /* Live Call Panel */
+        .live-call-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+        }
+
+        .call-icon {
+            margin-bottom: 10px;
+        }
+
+        .call-icon svg {
+            width: 48px;
+            height: 48px;
+            stroke: white;
+            stroke-width: 2;
+        }
+
+        /* Excellence text letter illumination */
+        .excellence-text span {
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .excellence-text span:hover {
+            color: rgba(255, 255, 255, 1);
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.8),
+                0 0 20px rgba(255, 255, 255, 0.6),
+                0 0 30px rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with hamburger menu and controls -->
+    <div class="header">
+        <div class="header-side header-left">
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="node-logo">
+            <div class="logo-geometric">
+                <div class="logo-circle"></div>
+                <div class="logo-lines">
+                    <div class="line line-1"></div>
+                    <div class="line line-2"></div>
+                    <div class="line line-3"></div>
+                </div>
+            </div>
+            <div class="logo-text">NODE</div>
+        </div>
+        
+        <div class="header-side header-right">
+            <div class="header-controls">
+                <div class="control-btn" title="Search">SEARCH</div>
+                <div class="control-btn" title="Settings" onclick="openSettings()">SETTINGS</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Main Agent Grid -->
+        <div class="agent-grid">
+            <!-- Social Media Agent -->
+            <div class="agent-card" onclick="tryAgent('social')">
+                <div class="agent-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="currentColor" opacity="0.8"/>
+                        <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="agent-title">Social Media Agent</div>
+            </div>
+
+            <!-- Voice Call Agent -->
+            <div class="agent-card" onclick="tryAgent('voice')">
+                <div class="agent-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 1C12 1 15 4 15 8V12C15 16 12 19 12 19C12 19 9 16 9 12V8C9 4 12 1 12 1Z" fill="currentColor" opacity="0.8"/>
+                        <path d="M5 12C5 16.97 8.58 21 12 21C15.42 21 19 16.97 19 12" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
+                        <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="agent-title">Voice Call Agent</div>
+            </div>
+
+            <!-- Lead Processing -->
+            <div class="agent-card" onclick="tryAgent('leads')">
+                <div class="agent-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        <path d="M7 8H17M7 12H13M7 16H11" stroke="currentColor" stroke-width="1.5" opacity="0.8"/>
+                        <circle cx="17" cy="14" r="2" fill="currentColor" opacity="0.8"/>
+                    </svg>
+                </div>
+                <div class="agent-title">Lead Processing</div>
+            </div>
+
+            <!-- Multi-Agent Orchestration -->
+            <div class="agent-card" onclick="tryAgent('orchestration')">
+                <div class="agent-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Central hub node -->
+                        <circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.8"/>
+                        
+                        <!-- Four corner nodes - perfectly symmetrical -->
+                        <circle cx="6" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        <circle cx="18" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        <circle cx="6" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        <circle cx="18" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        
+                        <!-- Symmetrical connection lines -->
+                        <line x1="8" y1="8" x2="10" y2="10" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="16" y1="8" x2="14" y2="10" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="8" y1="16" x2="10" y2="14" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="16" y1="16" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        
+                        <!-- Cardinal direction nodes for perfect symmetry -->
+                        <circle cx="12" cy="4" r="1.5" fill="currentColor" opacity="0.6"/>
+                        <circle cx="20" cy="12" r="1.5" fill="currentColor" opacity="0.6"/>
+                        <circle cx="12" cy="20" r="1.5" fill="currentColor" opacity="0.6"/>
+                        <circle cx="4" cy="12" r="1.5" fill="currentColor" opacity="0.6"/>
+                        
+                        <!-- Connecting lines to cardinal nodes -->
+                        <line x1="12" y1="6" x2="12" y2="9" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="18" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="12" y1="18" x2="12" y2="15" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="6" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="agent-title">Multi-Agent Orchestration</div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="settings-modal" id="settingsModal">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h2>NODE Settings</h2>
+                    <div class="settings-close" onclick="closeSettings()">×</div>
+                </div>
+                
+                <div class="control-group">
+                    <label>Glass Opacity</label>
+                    <input type="range" id="opacitySlider" min="0.05" max="0.4" step="0.05" value="0.15" oninput="updateGlassEffect()">
+                    <span id="opacityValue" style="font-size: 0.9rem; color: rgba(255,255,255,0.8);">0.15</span>
+                </div>
+                
+                <div class="control-group">
+                    <label>Blur Intensity</label>
+                    <input type="range" id="blurSlider" min="5" max="40" step="5" value="20" oninput="updateGlassEffect()">
+                    <span id="blurValue" style="font-size: 0.9rem; color: rgba(255,255,255,0.8);">20px</span>
+                </div>
+                
+                <div class="control-group">
+                    <label>Background Style</label>
+                    <select id="backgroundSelector" onchange="changeBackground()">
+                        <option value="ocean">Ocean View</option>
+                        <option value="modern">Modern Interior</option>
+                        <option value="forest">Forest Scene</option>
+                        <option value="mountain">Mountain Vista</option>
+                        <option value="warm">Warm Earth</option>
+                        <option value="cool">Cool Steel</option>
+                    </select>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 12px;">
+                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Glassmorphism Standards</div>
+                    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Adjust these settings to establish your NODE design standards. Settings are saved automatically.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Call Panel -->
+        <div class="live-call-panel">
+            <div class="call-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Ouroboros - Serpent eating its own tail -->
+                    <!-- Main serpent body (circular) -->
+                    <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2.5" fill="none" opacity="0.8"/>
+                    
+                    <!-- Serpent head -->
+                    <circle cx="20" cy="12" r="2.5" fill="currentColor" opacity="0.9"/>
+                    <circle cx="21" cy="11" r="0.5" fill="rgba(255,255,255,0.9)"/> <!-- Eye -->
+                    <path d="M22.5 12 L20.5 12.5 L20.5 11.5 Z" fill="currentColor" opacity="0.7"/> <!-- Mouth -->
+                    
+                    <!-- Serpent tail being consumed -->
+                    <path d="M18 12 Q16 12 15 13 Q14 14 13 12 Q12 10 11 12" 
+                          stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
+                    
+                    <!-- Scale details on body -->
+                    <path d="M12 4 L13 5 L12 6" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+                    <path d="M4 12 L5 13 L4 14" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+                    <path d="M12 20 L11 19 L12 18" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+                    <path d="M8 6 L9 7 L8 8" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+                    <path d="M16 18 L15 17 L16 16" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+                    
+                    <!-- Inner energy/flow lines -->
+                    <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="0.8" fill="none" opacity="0.3"/>
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="0.5" fill="none" opacity="0.2"/>
+                </svg>
+            </div>
+            <h2 class="excellence-text">
+                <span>E</span><span>X</span><span>C</span><span>E</span><span>L</span><span>L</span><span>E</span><span>N</span><span>C</span><span>E</span>
+                <span> </span>
+                <span>M</span><span>A</span><span>D</span><span>E</span>
+                <span> </span>
+                <span>E</span><span>F</span><span>F</span><span>O</span><span>R</span><span>T</span><span>L</span><span>E</span><span>S</span><span>S</span>
+            </h2>
+        </div>
+
+        <!-- Voice Agents Panel -->
+        <div class="voice-panel">
+            <h2>VOICE STYLES</h2>
+
+            <div class="voice-styles-container">
+                <!-- Left waveform animation -->
+                <div class="waveform-left">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+
+                <!-- Voice styles grid -->
+                <div class="voice-styles-grid">
+                    <div class="voice-style" onclick="selectVoiceStyle(1, this)">
+                        <div class="voice-style-number">1</div>
+                    </div>
+
+                    <div class="voice-style" onclick="selectVoiceStyle(2, this)">
+                        <div class="voice-style-number">2</div>
+                    </div>
+
+                    <div class="voice-style" onclick="selectVoiceStyle(3, this)">
+                        <div class="voice-style-number">3</div>
+                    </div>
+
+                    <div class="voice-style" onclick="selectVoiceStyle(4, this)">
+                        <div class="voice-style-number">4</div>
+                    </div>
+                </div>
+
+                <!-- Right waveform animation -->
+                <div class="waveform-right">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+            </div>
+
+            <!-- Agent 1 Voice Demonstration - Position 1 -->
+            <div class="agent-1-voice-demo" style="position: relative; margin: 15px 0; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 20px; width: 100%; height: 120px; display: flex; align-items: center; justify-content: center; flex-direction: column; box-shadow: 0 0 25px rgba(255, 255, 255, 0.2); transition: all 0.3s ease;">
+                <div style="font-size: 11px; font-weight: 600; color: rgba(255, 255, 255, 0.9); margin-bottom: 12px; text-align: center; letter-spacing: 1px; text-transform: uppercase;">AGENT 1 DEMO</div>
+                <div id="agent-1-audionative-widget" data-height="85" data-width="100%" data-frameborder="no" data-scrolling="no" data-publicuserid="d5d4288cf7a0b13d9cd917c9221f260ced162e519ff2ac71223e44eef1a47500" data-playerurl="https://elevenlabs.io/player/index.html" data-projectid="U5ZFrZrxOqVM9n2NDgD1" data-voiceid="agent-1-professional">
+                    Agent 1 Professional Voice Loading...
+                </div>
+            </div>
+
+            <!-- ElevenLabs Audio Native - Embedded -->
+            <div class="elevenlabs-widget">
+                <div id="elevenlabs-audionative-widget" data-height="90" data-width="100%" data-frameborder="no" data-scrolling="no" data-publicuserid="d5d4288cf7a0b13d9cd917c9221f260ced162e519ff2ac71223e44eef1a47500" data-playerurl="https://elevenlabs.io/player/index.html">Loading the Elevenlabs Text to Speech AudioNative Player...</div>
+            </div>
+        </div>
+
+        <!-- Automation Walkthrough Section -->
+        <div class="voice-panel" style="margin-top: 30px;">
+            <h2>AUTOMATION WALKTHROUGH</h2>
+            
+            <div style="display: flex; flex-direction: column; align-items: center; padding: 40px;">
+                <div class="workflow-icon" style="cursor: pointer; transition: all 0.3s ease;" onclick="playWalkthroughVideo()">
+                    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Central hub node -->
+                        <circle cx="60" cy="60" r="15" fill="currentColor" opacity="0.8"/>
+                        
+                        <!-- Four corner nodes - perfectly symmetrical -->
+                        <circle cx="30" cy="30" r="10" fill="none" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        <circle cx="90" cy="30" r="10" fill="none" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        <circle cx="30" cy="90" r="10" fill="none" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        <circle cx="90" cy="90" r="10" fill="none" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        
+                        <!-- Symmetrical connection lines -->
+                        <line x1="40" y1="40" x2="50" y2="50" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        <line x1="80" y1="40" x2="70" y2="50" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        <line x1="40" y1="80" x2="50" y2="70" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        <line x1="80" y1="80" x2="70" y2="70" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        
+                        <!-- Cardinal direction nodes for perfect symmetry -->
+                        <circle cx="60" cy="20" r="7" fill="currentColor" opacity="0.6"/>
+                        <circle cx="100" cy="60" r="7" fill="currentColor" opacity="0.6"/>
+                        <circle cx="60" cy="100" r="7" fill="currentColor" opacity="0.6"/>
+                        <circle cx="20" cy="60" r="7" fill="currentColor" opacity="0.6"/>
+                        
+                        <!-- Connecting lines to cardinal nodes -->
+                        <line x1="60" y1="30" x2="60" y2="45" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        <line x1="90" y1="60" x2="75" y2="60" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        <line x1="60" y1="90" x2="60" y2="75" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        <line x1="30" y1="60" x2="45" y2="60" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        
+                        <!-- Play button overlay -->
+                        <circle cx="60" cy="60" r="20" fill="rgba(255, 255, 255, 0.1)" stroke="rgba(255, 255, 255, 0.3)" stroke-width="1"/>
+                        <polygon points="55,50 55,70 75,60" fill="rgba(255, 255, 255, 0.8)"/>
+                    </svg>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <h3 style="color: rgba(255, 255, 255, 0.9); margin-bottom: 10px;">Step-by-Step Automation Demo</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">Click to watch NODE's complete workflow in action</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let selectedVoiceStyle = null;
+        const API_BASE = 'http://localhost:5002';
+
+        // Voice style selection
+        function selectVoiceStyle(styleNumber, element) {
+            selectedVoiceStyle = styleNumber;
+            
+            // Update UI
+            document.querySelectorAll('.voice-style').forEach(el => {
+                el.classList.remove('selected');
+            });
+            if (element) {
+                element.classList.add('selected');
+            }
+
+            // Update info panel
+            const styleDescriptions = {
+                1: "Professional & Authoritative - Perfect for business presentations and formal client calls",
+                2: "Warm & Consultative - Ideal for client consultations and project discussions", 
+                3: "Direct & Reliable - Best for material orders and technical details",
+                4: "Clear & Responsive - Optimized for emergency calls and urgent situations"
+            };
+
+            document.getElementById('selected-style-name').textContent = `Agent ${styleNumber}`;
+            document.getElementById('selected-style-description').textContent = styleDescriptions[styleNumber];
+            document.getElementById('selected-style-info').classList.add('active');
+
+        }
+
+        // Test selected voice
+        function testSelectedVoice() {
+            if (!selectedVoiceStyle) {
+                alert('Please select a voice style first');
+                return;
+            }
+
+            const output = document.getElementById('voiceOutput');
+            output.innerHTML = `
+                <div class="loading"></div>
+                Generating voice sample with Agent ${selectedVoiceStyle} style...
+            `;
+            output.classList.add('active');
+
+            setTimeout(() => {
+                output.innerHTML = `
+                    <strong>Agent ${selectedVoiceStyle} Voice Sample Generated</strong><br><br>
+                    "Hello, this is Preston from NODE in Birmingham, Alabama. This is a demonstration of our Agent ${selectedVoiceStyle} voice style, designed for professional roofing business communications. Our AI-powered system can generate natural, professional voicemails and customer outreach calls that help grow your business."<br><br>
+                    <strong>Voice Quality:</strong> Professional HD<br>
+                    <strong>Response Time:</strong> 0.8 seconds<br>
+                    <strong>Style:</strong> Agent ${selectedVoiceStyle} - ${document.getElementById('selected-style-name').textContent}
+                `;
+            }, 2000);
+        }
+
+        // Agent demonstration functions
+        function tryAgent(agentType) {
+            const outputs = {
+                social: document.getElementById('socialOutput'),
+                voice: document.getElementById('voiceOutput'),
+                leads: document.getElementById('leadsOutput'),
+                orchestration: document.getElementById('orchestrationOutput')
+            };
+
+            const output = outputs[agentType];
+            if (!output) return;
+
+            output.innerHTML = '<div class="loading"></div>Initializing AI agent...';
+            output.classList.add('active');
+
+            setTimeout(() => {
+                const demos = {
+                    social: `
+                        <strong>Social Media Content Generated</strong><br><br>
+                        <strong>Facebook Post:</strong><br>
+                        "Storm season is here, Birmingham! Don't wait until it's too late. NODE offers FREE roof inspections with our AI-powered damage detection system. We've already helped 47 local families prevent costly repairs. Call Preston at 205-307-9153 for your peace of mind inspection. #BirminghamRoofing #StormPrep #NODE"<br><br>
+                        <strong>Engagement Score:</strong> 94% predicted<br>
+                        <strong>Local SEO:</strong> Birmingham keywords optimized<br>
+                        <strong>Call-to-Action:</strong> Phone number emphasized
+                    `,
+                    voice: `
+                        <strong>Voice Agent Demonstration</strong><br><br>
+                        Please select a voice style above to generate a professional voice sample. Our ElevenLabs integration provides 4 distinct voice personalities tailored for different business scenarios.<br><br>
+                        <strong>Available Styles:</strong><br>
+                        • Agent 1: Professional & Authoritative<br>
+                        • Agent 2: Warm & Consultative<br>
+                        • Agent 3: Direct & Reliable<br>
+                        • Agent 4: Clear & Responsive
+                    `,
+                    leads: `
+                        <strong>Lead Processing Analysis</strong><br><br>
+                        <strong>Lead Profile:</strong> Sarah Johnson - Real Estate Agent<br>
+                        <strong>Score:</strong> 92/100 (High Priority)<br>
+                        <strong>Contact History:</strong> 2 previous interactions<br>
+                        <strong>Best Contact Time:</strong> Tuesday 2-4 PM<br><br>
+                        <strong>Recommended Actions:</strong><br>
+                        • Schedule inspection for pending listing<br>
+                        • Send insurance requirement updates<br>
+                        • Offer partnership meeting over coffee<br><br>
+                        <strong>Auto-Generated Follow-up:</strong> "Hi Sarah, Preston from NODE. I have updates on the new insurance requirements affecting your 1247 Oak Street listing..."
+                    `,
+                    orchestration: `
+                        <strong>Multi-Agent Workflow Activated</strong><br><br>
+                        <strong>Workflow:</strong> Real Estate Partnership Outreach<br><br>
+                        <strong>Step 1:</strong> • Lead identification (Social Media Agent)<br>
+                        <strong>Step 2:</strong> • Voice message generation (Voice Agent)<br>
+                        <strong>Step 3:</strong> • Follow-up scheduling (Lead Processor)<br>
+                        <strong>Step 4:</strong> • Social proof content creation<br><br>
+                        <strong>Coordination Results:</strong><br>
+                        • 12 agents identified in Birmingham area<br>
+                        • Voice messages prepared for optimal contact times<br>
+                        • Follow-up sequences automated for 30 days<br>
+                        • Social media content scheduled for credibility building
+                    `
+                };
+
+                output.innerHTML = demos[agentType];
+            }, 1500);
+        }
+
+        // Glassmorphism Controls
+        function updateGlassEffect() {
+            const opacity = document.getElementById('opacitySlider').value;
+            const blur = document.getElementById('blurSlider').value;
+            
+            document.getElementById('opacityValue').textContent = opacity;
+            document.getElementById('blurValue').textContent = blur + 'px';
+            
+            // Update all glass elements
+            const glassElements = document.querySelectorAll('.agent-card, .voice-panel, .node-logo');
+            glassElements.forEach(element => {
+                element.style.background = `rgba(255, 255, 255, ${opacity})`;
+                element.style.backdropFilter = `blur(${blur}px)`;
+            });
+            
+            // Save settings
+            localStorage.setItem('glassOpacity', opacity);
+            localStorage.setItem('glassBlur', blur);
+        }
+        
+        function changeBackground() {
+            const selector = document.getElementById('backgroundSelector');
+            const selectedBg = selector.value;
+            
+            // Remove all background classes
+            document.body.classList.remove('bg-forest', 'bg-ocean', 'bg-mountain', 'bg-modern', 'bg-warm', 'bg-cool');
+            
+            // Add selected background class
+            document.body.classList.add('bg-' + selectedBg);
+            
+            // Save setting
+            localStorage.setItem('backgroundStyle', selectedBg);
+        }
+        
+        // Load saved settings
+        function loadGlassSettings() {
+            const savedOpacity = localStorage.getItem('glassOpacity') || '0.15';
+            const savedBlur = localStorage.getItem('glassBlur') || '20';
+            const savedBackground = localStorage.getItem('backgroundStyle') || 'ocean';
+            
+            document.getElementById('opacitySlider').value = savedOpacity;
+            document.getElementById('blurSlider').value = savedBlur;
+            document.getElementById('backgroundSelector').value = savedBackground;
+            
+            updateGlassEffect();
+            changeBackground();
+        }
+
+        // Menu toggle (placeholder)
+        function toggleMenu() {
+            console.log('Menu toggle - navigation system coming soon');
+            alert('Navigation menu coming soon with multi-page support');
+        }
+
+        // Walkthrough video player
+        function playWalkthroughVideo() {
+            alert('🎬 Walkthrough Video Coming Soon!\n\nThis will showcase NODE\'s complete automation workflow:\n• Voice agent setup\n• Lead processing\n• Real-time orchestration\n• Business integration\n\nReady for your embedded video!');
+        }
+
+        // Settings modal functions
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('settingsModal');
+            if (event.target === modal) {
+                closeSettings();
+            }
+        });
+
+        // Initialize
+        window.onload = function() {
+            console.log('NODE Agent Portal initialized');
+            console.log('ElevenLabs widgets loaded');
+            loadGlassSettings();
+        };
+    </script>
+    
+    <!-- ElevenLabs AudioNative Helper Script -->
+    <script src="https://elevenlabs.io/player/audioNativeHelper.js" type="text/javascript"></script>
+</body>
+</html>

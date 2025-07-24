@@ -1,0 +1,28 @@
+
+GPT Chrome Tools Installer Checklist
+
+Recommended Order for NODE OUT Builders:
+
+1. ChatGPT for Google
+   - Adds ChatGPT answers directly into Google search results.
+   - Install: https://chrome.google.com/webstore/detail/chatgpt-for-google/ohbkdjmjaegibfagkjgpjagfnpgoahpc
+
+2. ChatGPT Sidebar
+   - Floating AI sidebar on any website.
+   - Use for drafting, summarizing, and AI access while browsing.
+   - Install: https://chrome.google.com/webstore/detail/chatgpt-sidebar-supports-c/callhmjmleoeekbcdknjbmlkglgmalik
+
+3. Merlin AI (Optional)
+   - Summarizes YouTube, LinkedIn, full websites.
+   - GPT-4 powered overlay, great for research and content repurposing.
+   - Install: https://chrome.google.com/webstore/detail/merlin-chatgpt-ai-assistan/efnmnjeafhgjdgpbnfphfhphgjfnjdcg
+
+4. Compose AI (Optional)
+   - GPT-powered writing auto-complete.
+   - Works across emails, documents, websites.
+
+Notes:
+✔ Use these for light, fast-access AI tasks (drafts, summaries, quick research).
+✔ Heavy AI logic and content automation stays in N8N, LM, and NODE OUT systems.
+✔ Recommended: Start with 1-2 extensions until they're second nature, add more later.
+

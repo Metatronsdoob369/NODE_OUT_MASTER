@@ -1,0 +1,31 @@
+
+NODE OUT SIP Agent Workflow - Needs List
+
+API Keys & Auth Required:
+✔ Apify API Key
+   - Required for YouTube & X (Twitter) scraping HTTP Request nodes.
+
+✔ OpenAI API Key
+   - Required for AI content generation, research agent logic, content formatting nodes.
+
+✔ LinkedIn API/Auth or Social Scheduler Credentials
+   - Required for "Post on LinkedIn" node.
+   - May require external scheduler (Zapier, Buffer, etc.) if direct API access isn't configured.
+
+External Services to Set Up:
+✔ Apify account with relevant YouTube & X scrapers.
+✔ OpenAI account with API access (GPT-4 recommended).
+✔ LinkedIn account with posting access method (API or scheduler integration).
+✔ Optional: Image generation service (DALL·E, Stability, etc.) if your workflow's image nodes depend on it.
+
+System Assumptions:
+✔ "Simple Memory" nodes handle temporary AI output internally—no external setup.
+✔ Image prompt and content formatting steps require no special setup beyond valid AI responses.
+✔ NODE OUT folder system or LM content can be easily layered into these nodes later.
+
+Next Recommended Steps:
+1. Gather API keys and credentials.
+2. Wire them into the appropriate N8N nodes.
+3. Run partial workflow tests with real data.
+4. Add LM/NODE OUT enhancements when ready.
+

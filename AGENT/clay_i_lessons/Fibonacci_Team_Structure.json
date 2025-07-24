@@ -1,0 +1,13 @@
+{
+  "lesson_title": "Fibonacci_Team_Structure",
+  "concepts": [
+    "1-3-5-8-team-hierarchy",
+    "spiral-communication-flow",
+    "golden-ratio-meeting-timing",
+    "recursive-delegation-patterns"
+  ],
+  "why_this_matters": "Optimal team structures follow fibonacci numbers. Communication flows in spirals. Meeting efficiency peaks at golden ratio intervals.",
+  "scrape_method": "Organizational psychology + team performance data + mathematical modeling + agile methodology research",
+  "raw_data_snippet": "Team sizes: 1 leader, 3 core members, 5 specialists, 8 contributors. Meeting rhythm: 25min focused + 15min buffer (golden ratio). Standup spiral: update\u2192question\u2192commitment",
+  "replication_instruction": "Structure teams in fibonacci numbers, organize communication in spiral patterns, time meetings using golden ratio, delegate in recursive layers"
+}

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLAUDE COMMUNICATION HUB</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .communication-panel {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .voice-interface {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .text-interface {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .claude-response {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px 0;
+            min-height: 100px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .input-field {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            padding: 10px;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+        }
+
+        .send-button {
+            background: linear-gradient(45deg, #00d4ff, #0066ff);
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        .voice-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #00ff88, #00aa44);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .voice-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .voice-button.recording {
+            animation: pulse 1s infinite;
+            background: radial-gradient(circle, #ff4444, #aa0000);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .status-bar {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .claude-status {
+            color: #00d4ff;
+            text-shadow: 0 0 10px #00d4ff;
+        }
+
+        .agent-count {
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <div class="claude-status">CLAUDE ACTIVE - READY FOR COMMUNICATION</div>
+        <div class="agent-count">25 AGENTS ONLINE</div>
+    </div>
+
+    <div class="communication-panel">
+        <div class="voice-interface">
+            <h2>🎤 VOICE COMMAND</h2>
+            <button class="voice-button" id="voiceButton" onclick="startVoiceRecognition()">
+                🎤
+            </button>
+            <div class="claude-response" id="voiceResponse">
+                "Click to speak - I'm listening..."
+            </div>
+        </div>
+
+        <div class="text-interface">
+            <h2>💬 TEXT COMMAND</h2>
+            <div class="claude-response" id="textResponse">
+                "Type your command below..."
+            </div>
+            <div class="input-area">
+                <input type="text" class="input-field" id="textInput" placeholder="Enter command...">
+                <button class="send-button" onclick="sendTextCommand()">SEND</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Voice recognition setup
+        let recognition;
+        
+        function startVoiceRecognition() {
+            const voiceButton = document.getElementById('voiceButton');
+            const voiceResponse = document.getElementById('voiceResponse');
+            
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                
+                recognition.onstart = () => {
+                    voiceButton.classList.add('recording');
+                    voiceResponse.textContent = "🎤 Listening...";
+                };
+                
+                recognition.onresult = (event) => {
+                    const command = event.results[0][0].transcript;
+                    voiceResponse.textContent = `Command received: "${command}"`;
+                    processCommand(command, 'voice');
+                };
+                
+                recognition.onend = () => {
+                    voiceButton.classList.remove('recording');
+                };
+                
+                recognition.start();
+            } else {
+                voiceResponse.textContent = "🚫 Voice recognition not supported";
+            }
+        }
+
+        function sendTextCommand() {
+            const input = document.getElementById('textInput');
+            const command = input.value;
+            if (command.trim()) {
+                processCommand(command, 'text');
+                input.value = '';
+            }
+        }
+
+        function processCommand(command, type) {
+            // Simulate Claude processing
+            const responses = {
+                'voice': document.getElementById('voiceResponse'),
+                'text': document.getElementById('textResponse')
+            };
+            
+            const response = responses[type];
+            response.textContent = "🧠 Processing command...";
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                response.innerHTML = `
+                    <strong>Command:</strong> ${command}<br>
+                    <strong>Status:</strong> ✅ Processed<br>
+                    <strong>Response:</strong> Executing through 25-agent system<br>
+                    <strong>Memory:</strong> Updated in hierarchical federation<br>
+                    <strong>Storm Responders:</strong> Data collection active
+                `;
+            }, 1000);
+        }
+
+        // Handle Enter key in text input
+        document.getElementById('textInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendTextCommand();
+            }
+        });
+
+        // Real-time status updates
+        setInterval(() => {
+            const statusBar = document.querySelector('.claude-status');
+            const statuses = [
+                'CLAUDE ACTIVE - PROCESSING COMMANDS',
+                '25 AGENTS - COORDINATING TASKS',
+                'MEMORY FEDERATION - SYNCHRONIZED',
+                'STORM RESPONDERS - DATA COLLECTION ACTIVE',
+                'UE5 TRAINING - KNOWLEDGE INJECTION RUNNING'
+            ];
+            statusBar.textContent = statuses[Math.floor(Math.random() * statuses.length)];
+        }, 3000);
+    </script>
+</body>
+</html>

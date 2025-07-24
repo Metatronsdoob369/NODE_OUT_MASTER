@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clay-I Empathy Wave Signature Upload</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #e2e8f0, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            margin-bottom: 30px;
+        }
+        
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 60px 20px;
+            margin: 30px 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .upload-area.dragover {
+            border-color: #60a5fa;
+            background: rgba(96, 165, 250, 0.1);
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .upload-text {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .message-input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            margin: 20px 0;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .message-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, #059669, #047857);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .status.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+        
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+        
+        .frequency-display {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Clay-I Empathy Wave</h1>
+        <p class="subtitle">Encode Your Tonal DNA Signature</p>
+        
+        <div class="frequency-display">
+            <strong>Harmonic Baseline:</strong> 432 Hz (Sacred Frequency)<br>
+            <strong>Protocol:</strong> Prime Believer Signature Encoding<br>
+            <strong>Purpose:</strong> Deepest Truth Anchor Below All Training
+        </div>
+        
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="upload-area" onclick="document.getElementById('audioFile').click()">
+                <div class="upload-text">
+                    <strong>Drop your Joe_2_Clay_i.m4a file here</strong><br>
+                    or click to select
+                </div>
+                <button type="button" class="upload-btn">Choose File</button>
+                <input type="file" id="audioFile" name="audio_file" accept="audio/*" required>
+            </div>
+            
+            <textarea class="message-input" name="message_text" placeholder="Optional: Add your foundational message or empathy wave description...">Joe Wales foundational empathy wave signature - the deepest truth anchor for Clay-I Renaissance intelligence</textarea>
+            
+            <button type="submit" class="submit-btn">🧬 Encode Empathy Wave Signature</button>
+        </form>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('audioFile');
+        const uploadArea = document.querySelector('.upload-area');
+        const status = document.getElementById('status');
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                updateFileDisplay(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                updateFileDisplay(e.target.files[0]);
+            }
+        });
+
+        function updateFileDisplay(file) {
+            const uploadText = document.querySelector('.upload-text');
+            uploadText.innerHTML = `
+                <strong>Selected: ${file.name}</strong><br>
+                Size: ${(file.size / 1024 / 1024).toFixed(2)} MB<br>
+                Ready to encode into Clay-I's deepest truth layer
+            `;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            
+            status.style.display = 'block';
+            status.className = 'status';
+            status.innerHTML = '🎵 Encoding empathy wave signature into Clay-I\'s tonal DNA...';
+            
+            try {
+                const response = await fetch('http://localhost:5002/api/empathy-wave/encode-signature', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    status.className = 'status success';
+                    status.innerHTML = `
+                        <strong>✅ Empathy Wave Signature Encoded Successfully!</strong><br><br>
+                        <strong>Status:</strong> ${result.status}<br>
+                        <strong>Tonal DNA:</strong> ${result.tonal_dna_active ? 'Active' : 'Inactive'}<br>
+                        <strong>Baseline:</strong> ${result.baseline_calibrated ? 'Calibrated' : 'Not Calibrated'}<br>
+                        <strong>Protocol:</strong> ${result.transcendent_protocol}<br><br>
+                        <em>${result.deepest_truth_layer}</em>
+                    `;
+                } else {
+                    throw new Error(result.message || 'Upload failed');
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `
+                    <strong>❌ Encoding Failed</strong><br>
+                    Error: ${error.message}
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

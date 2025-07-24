@@ -1,0 +1,732 @@
+{
+  "storm_repair_pro_campaigns": {
+    "emergency_response": {
+      "campaign_name": "Storm Repair Pro - Emergency Response",
+      "campaign_type": "emergency_response",
+      "objective": "Drive immediate calls during storm events",
+      "duration": "24-72 hours (storm duration)",
+      "platforms": [
+        "Facebook",
+        "Instagram",
+        "Google My Business"
+      ],
+      "budget_recommendation": "$200-500/day during storms",
+      "target_audience": {
+        "demographics": {
+          "age_range": "35-65",
+          "income": "$50,000+",
+          "homeownership": "Homeowners",
+          "interests": [
+            "home improvement",
+            "insurance",
+            "local services"
+          ]
+        },
+        "geographic_targeting": {
+          "primary_areas": [
+            "Mountain Brook",
+            "Vestavia Hills",
+            "Hoover",
+            "Homewood",
+            "Trussville",
+            "Chelsea",
+            "Pelham",
+            "Alabaster"
+          ],
+          "radius": "25 miles from Birmingham city center",
+          "weather_events": [
+            "storms",
+            "hail",
+            "wind damage",
+            "tornadoes"
+          ]
+        },
+        "timing_optimization": {
+          "storm_season": "March-June, September-November",
+          "peak_hours": [
+            "6-9 AM",
+            "5-8 PM"
+          ],
+          "weekend_emphasis": "Saturday mornings, Sunday evenings"
+        }
+      },
+      "content_calendar": [
+        {
+          "date": "2025-07-24",
+          "time": "16:47",
+          "platform": "Facebook",
+          "content_type": "Emergency Alert",
+          "post_content": "\ud83d\udea8 STORM ALERT: Severe weather approaching Birmingham area\n\nStorm Repair Pro emergency teams are READY:\n\u2705 24/7 emergency response activated\n\u2705 Licensed crews standing by\n\u2705 Same-day damage assessment\n\nDON'T WAIT - Call at first sign of damage\n\ud83d\udcde (877) 674-5856\n\nYour Birmingham storm damage specialists",
+          "visual_needed": "Storm damage photo + company response",
+          "hashtags": [
+            "#BirminghamStorm",
+            "#EmergencyRepair",
+            "#Available247"
+          ],
+          "priority": "High"
+        },
+        {
+          "date": "2025-07-24",
+          "time": "20:47",
+          "platform": "Facebook",
+          "content_type": "Emergency Alert",
+          "post_content": "\u26a1 STORM UPDATE: Active severe weather in Birmingham area\n\nExperiencing storm damage RIGHT NOW?\n\ud83d\udd27 Emergency crews responding immediately\n\ud83c\udfe0 Temporary protection available\n\ud83d\udccb Insurance documentation assistance\n\nCALL NOW: (877) 674-5856\nAvailable 24/7 during storm events",
+          "visual_needed": "Storm damage photo + company response",
+          "hashtags": [
+            "#BirminghamStorm",
+            "#EmergencyRepair",
+            "#Available247"
+          ],
+          "priority": "High"
+        },
+        {
+          "date": "2025-07-25",
+          "time": "00:47",
+          "platform": "Facebook",
+          "content_type": "Emergency Alert",
+          "post_content": "\ud83c\udf2a\ufe0f STORM DAMAGE RESPONSE: Teams deployed across Birmingham\n\nCurrent status: ACTIVE EMERGENCY RESPONSE\n\u2022 Mountain Brook crew: Available\n\u2022 Vestavia Hills crew: Available  \n\u2022 Hoover area crew: Available\n\nStorm damage? We're coming to you.\n\ud83d\udcde (877) 674-5856 - Call now",
+          "visual_needed": "Storm damage photo + company response",
+          "hashtags": [
+            "#BirminghamStorm",
+            "#EmergencyRepair",
+            "#Available247"
+          ],
+          "priority": "High"
+        },
+        {
+          "date": "2025-07-25",
+          "time": "04:47",
+          "platform": "Facebook",
+          "content_type": "Emergency Alert",
+          "post_content": "\ud83d\udea8 EVENING STORM UPDATE: Emergency service continues\n\nDon't let storm damage sit overnight:\n\u26a1 Water intrusion gets worse\n\u26a1 Structural damage can worsen\n\u26a1 Insurance prefers immediate action\n\nNight emergency service available\n\ud83d\udcde (877) 674-5856 - We answer 24/7",
+          "visual_needed": "Storm damage photo + company response",
+          "hashtags": [
+            "#BirminghamStorm",
+            "#EmergencyRepair",
+            "#Available247"
+          ],
+          "priority": "High"
+        },
+        {
+          "date": "2025-07-25",
+          "time": "16:47",
+          "platform": "Facebook",
+          "content_type": "Emergency Alert",
+          "post_content": "DAY 2 STORM RESPONSE: Still available for emergency calls\n\nYesterday's storm caused widespread damage across Birmingham.\n\n\u2705 Crews working around the clock\n\u2705 Free damage assessments ongoing\n\u2705 Insurance claims assistance\n\nIf you haven't called yet - don't wait longer\n\ud83d\udcde (877) 674-5856",
+          "visual_needed": "Storm damage photo + company response",
+          "hashtags": [
+            "#BirminghamStorm",
+            "#EmergencyRepair",
+            "#Available247"
+          ],
+          "priority": "High"
+        },
+        {
+          "date": "2025-07-25",
+          "time": "20:47",
+          "platform": "Facebook",
+          "content_type": "Emergency Alert",
+          "post_content": "DAY 2 STORM RESPONSE: Still available for emergency calls\n\nYesterday's storm caused widespread damage across Birmingham.\n\n\u2705 Crews working around the clock\n\u2705 Free damage assessments ongoing\n\u2705 Insurance claims assistance\n\nIf you haven't called yet - don't wait longer\n\ud83d\udcde (877) 674-5856",
+          "visual_needed": "Storm damage photo + company response",
+          "hashtags": [
+            "#BirminghamStorm",
+            "#EmergencyRepair",
+            "#Available247"
+          ],
+          "priority": "High"
+        },
+        {
+          "date": "2025-07-26",
+          "time": "00:47",
+          "platform": "Facebook",
+          "content_type": "Emergency Alert",
+          "post_content": "DAY 2 STORM RESPONSE: Still available for emergency calls\n\nYesterday's storm caused widespread damage across Birmingham.\n\n\u2705 Crews working around the clock\n\u2705 Free damage assessments ongoing\n\u2705 Insurance claims assistance\n\nIf you haven't called yet - don't wait longer\n\ud83d\udcde (877) 674-5856",
+          "visual_needed": "Storm damage photo + company response",
+          "hashtags": [
+            "#BirminghamStorm",
+            "#EmergencyRepair",
+            "#Available247"
+          ],
+          "priority": "High"
+        },
+        {
+          "date": "2025-07-26",
+          "time": "04:47",
+          "platform": "Facebook",
+          "content_type": "Emergency Alert",
+          "post_content": "DAY 2 STORM RESPONSE: Still available for emergency calls\n\nYesterday's storm caused widespread damage across Birmingham.\n\n\u2705 Crews working around the clock\n\u2705 Free damage assessments ongoing\n\u2705 Insurance claims assistance\n\nIf you haven't called yet - don't wait longer\n\ud83d\udcde (877) 674-5856",
+          "visual_needed": "Storm damage photo + company response",
+          "hashtags": [
+            "#BirminghamStorm",
+            "#EmergencyRepair",
+            "#Available247"
+          ],
+          "priority": "High"
+        },
+        {
+          "date": "2025-07-26",
+          "time": "16:47",
+          "platform": "Facebook",
+          "content_type": "Emergency Alert",
+          "post_content": "FINAL STORM RESPONSE UPDATE: Last call for emergency service\n\nStorm Repair Pro teams completing emergency responses.\n\n\ud83d\udd27 All Birmingham area damage assessed\n\ud83d\udccb Insurance claims submitted\n\u2705 Temporary repairs completed\n\nNeed help? Limited availability remaining\n\ud83d\udcde (877) 674-5856",
+          "visual_needed": "Storm damage photo + company response",
+          "hashtags": [
+            "#BirminghamStorm",
+            "#EmergencyRepair",
+            "#Available247"
+          ],
+          "priority": "High"
+        },
+        {
+          "date": "2025-07-26",
+          "time": "20:47",
+          "platform": "Facebook",
+          "content_type": "Emergency Alert",
+          "post_content": "FINAL STORM RESPONSE UPDATE: Last call for emergency service\n\nStorm Repair Pro teams completing emergency responses.\n\n\ud83d\udd27 All Birmingham area damage assessed\n\ud83d\udccb Insurance claims submitted\n\u2705 Temporary repairs completed\n\nNeed help? Limited availability remaining\n\ud83d\udcde (877) 674-5856",
+          "visual_needed": "Storm damage photo + company response",
+          "hashtags": [
+            "#BirminghamStorm",
+            "#EmergencyRepair",
+            "#Available247"
+          ],
+          "priority": "High"
+        },
+        {
+          "date": "2025-07-27",
+          "time": "00:47",
+          "platform": "Facebook",
+          "content_type": "Emergency Alert",
+          "post_content": "FINAL STORM RESPONSE UPDATE: Last call for emergency service\n\nStorm Repair Pro teams completing emergency responses.\n\n\ud83d\udd27 All Birmingham area damage assessed\n\ud83d\udccb Insurance claims submitted\n\u2705 Temporary repairs completed\n\nNeed help? Limited availability remaining\n\ud83d\udcde (877) 674-5856",
+          "visual_needed": "Storm damage photo + company response",
+          "hashtags": [
+            "#BirminghamStorm",
+            "#EmergencyRepair",
+            "#Available247"
+          ],
+          "priority": "High"
+        },
+        {
+          "date": "2025-07-27",
+          "time": "04:47",
+          "platform": "Facebook",
+          "content_type": "Emergency Alert",
+          "post_content": "FINAL STORM RESPONSE UPDATE: Last call for emergency service\n\nStorm Repair Pro teams completing emergency responses.\n\n\ud83d\udd27 All Birmingham area damage assessed\n\ud83d\udccb Insurance claims submitted\n\u2705 Temporary repairs completed\n\nNeed help? Limited availability remaining\n\ud83d\udcde (877) 674-5856",
+          "visual_needed": "Storm damage photo + company response",
+          "hashtags": [
+            "#BirminghamStorm",
+            "#EmergencyRepair",
+            "#Available247"
+          ],
+          "priority": "High"
+        }
+      ],
+      "visual_assets_needed": [
+        {
+          "asset_type": "Storm damage photos",
+          "description": "Dramatic before photos showing roof, siding, window damage",
+          "specifications": "1200x1200px, high contrast, professional quality",
+          "text_overlay": "Emergency hotline number prominently displayed",
+          "priority": "High"
+        },
+        {
+          "asset_type": "Emergency response photos",
+          "description": "Team in action during storm response, trucks on scene",
+          "specifications": "1200x1200px, action shots, professional uniformed crew",
+          "text_overlay": "Available 24/7, Birmingham area coverage",
+          "priority": "High"
+        },
+        {
+          "asset_type": "Weather radar graphics",
+          "description": "Birmingham area weather maps showing storm coverage",
+          "specifications": "1200x1200px, clear Birmingham area identification",
+          "text_overlay": "Storm Repair Pro coverage area highlighted",
+          "priority": "Medium"
+        }
+      ],
+      "ad_copy_variations": [
+        "Storm damage? Birmingham's emergency repair experts respond in 30 minutes. Licensed, insured, available 24/7. Call now: (877) 674-5856",
+        "Don't let storm damage get worse! Same-day emergency service across Birmingham area. Free assessment, insurance help included. (877) 674-5856",
+        "\ud83d\udea8 STORM EMERGENCY: Professional repair crews responding now across Birmingham. Licensed experts, 15+ years experience. Call: (877) 674-5856",
+        "Birmingham storm damage repair - Available NOW. Licensed professionals, insurance claim assistance, 24/7 emergency service. (877) 674-5856"
+      ],
+      "success_metrics": [
+        "phone calls",
+        "website visits",
+        "quote requests"
+      ],
+      "deployment_ready": true,
+      "created_at": "2025-07-24T08:47:06.418867"
+    },
+    "authority_building": {
+      "campaign_name": "Storm Repair Pro - Authority Building",
+      "campaign_type": "authority_building",
+      "objective": "Establish market leadership and trust",
+      "duration": "Ongoing (weekly posts)",
+      "platforms": [
+        "Facebook",
+        "LinkedIn",
+        "Google My Business"
+      ],
+      "budget_recommendation": "$100-200/week",
+      "target_audience": {
+        "demographics": {
+          "age_range": "35-65",
+          "income": "$50,000+",
+          "homeownership": "Homeowners",
+          "interests": [
+            "home improvement",
+            "insurance",
+            "local services"
+          ]
+        },
+        "geographic_targeting": {
+          "primary_areas": [
+            "Mountain Brook",
+            "Vestavia Hills",
+            "Hoover",
+            "Homewood",
+            "Trussville",
+            "Chelsea",
+            "Pelham",
+            "Alabaster"
+          ],
+          "radius": "25 miles from Birmingham city center",
+          "weather_events": [
+            "storms",
+            "hail",
+            "wind damage",
+            "tornadoes"
+          ]
+        },
+        "timing_optimization": {
+          "storm_season": "March-June, September-November",
+          "peak_hours": [
+            "6-9 AM",
+            "5-8 PM"
+          ],
+          "weekend_emphasis": "Saturday mornings, Sunday evenings"
+        }
+      },
+      "content_calendar": [
+        {
+          "date": "2025-07-25",
+          "time": "09:00",
+          "platform": "Facebook",
+          "content_type": "Authority Content",
+          "post_content": "MONDAY MORNING READY: Birmingham's Storm Damage Experts\n\n15+ years protecting Birmingham homes from storm damage.\n\n\u2705 Fully licensed & insured\n\u2705 A+ BBB rating\n\u2705 Master craftsmen on every job\n\u2705 24/7 emergency availability\n\nWhy Birmingham families trust Storm Repair Pro:\n\ud83c\udfe0 Over 2,000 homes restored\n\ud83d\udccb 100% insurance claim success rate\n\u26a1 Average response time: 30 minutes\n\nReady when you need us: (877) 674-5856",
+          "visual_needed": "Professional team/work photo",
+          "hashtags": [
+            "#BirminghamExperts",
+            "#Licensed",
+            "#QualityWork"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-07-27",
+          "time": "09:00",
+          "platform": "Facebook",
+          "content_type": "Authority Content",
+          "post_content": "WEDNESDAY WISDOM: Storm Preparation Tips from the Pros\n\nBirmingham homeowners - your roof is your first line of defense.\n\n\ud83d\udd0d MONTHLY INSPECTION CHECKLIST:\n\u2022 Check for loose or missing shingles\n\u2022 Inspect gutters and downspouts\n\u2022 Look for signs of water damage\n\u2022 Trim overhanging tree branches\n\nCaught early = smaller repairs = lower costs\n\nFree roof inspections: (877) 674-5856\nPrevention is the best protection.",
+          "visual_needed": "Professional team/work photo",
+          "hashtags": [
+            "#BirminghamExperts",
+            "#Licensed",
+            "#QualityWork"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-07-29",
+          "time": "09:00",
+          "platform": "Facebook",
+          "content_type": "Authority Content",
+          "post_content": "FRIDAY FEATURE: Meet Your Birmingham Storm Repair Team\n\nBehind every successful restoration is a team of professionals.\n\n\ud83d\udc77\u200d\u2642\ufe0f Master roofers with 15+ years experience\n\ud83d\ude9b Fully equipped emergency response vehicles\n\ud83d\udccb Certified insurance claim specialists\n\ud83c\udfe0 Local Birmingham residents who care\n\nWe're not just contractors - we're your neighbors.\n\nWhen storm damage strikes, you want Birmingham's best.\n\ud83d\udcde (877) 674-5856",
+          "visual_needed": "Professional team/work photo",
+          "hashtags": [
+            "#BirminghamExperts",
+            "#Licensed",
+            "#QualityWork"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-01",
+          "time": "09:00",
+          "platform": "Facebook",
+          "content_type": "Authority Content",
+          "post_content": "MONDAY MORNING READY: Birmingham's Storm Damage Experts\n\n15+ years protecting Birmingham homes from storm damage.\n\n\u2705 Fully licensed & insured\n\u2705 A+ BBB rating\n\u2705 Master craftsmen on every job\n\u2705 24/7 emergency availability\n\nWhy Birmingham families trust Storm Repair Pro:\n\ud83c\udfe0 Over 2,000 homes restored\n\ud83d\udccb 100% insurance claim success rate\n\u26a1 Average response time: 30 minutes\n\nReady when you need us: (877) 674-5856",
+          "visual_needed": "Professional team/work photo",
+          "hashtags": [
+            "#BirminghamExperts",
+            "#Licensed",
+            "#QualityWork"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-03",
+          "time": "09:00",
+          "platform": "Facebook",
+          "content_type": "Authority Content",
+          "post_content": "WEDNESDAY WISDOM: Storm Preparation Tips from the Pros\n\nBirmingham homeowners - your roof is your first line of defense.\n\n\ud83d\udd0d MONTHLY INSPECTION CHECKLIST:\n\u2022 Check for loose or missing shingles\n\u2022 Inspect gutters and downspouts\n\u2022 Look for signs of water damage\n\u2022 Trim overhanging tree branches\n\nCaught early = smaller repairs = lower costs\n\nFree roof inspections: (877) 674-5856\nPrevention is the best protection.",
+          "visual_needed": "Professional team/work photo",
+          "hashtags": [
+            "#BirminghamExperts",
+            "#Licensed",
+            "#QualityWork"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-05",
+          "time": "09:00",
+          "platform": "Facebook",
+          "content_type": "Authority Content",
+          "post_content": "FRIDAY FEATURE: Meet Your Birmingham Storm Repair Team\n\nBehind every successful restoration is a team of professionals.\n\n\ud83d\udc77\u200d\u2642\ufe0f Master roofers with 15+ years experience\n\ud83d\ude9b Fully equipped emergency response vehicles\n\ud83d\udccb Certified insurance claim specialists\n\ud83c\udfe0 Local Birmingham residents who care\n\nWe're not just contractors - we're your neighbors.\n\nWhen storm damage strikes, you want Birmingham's best.\n\ud83d\udcde (877) 674-5856",
+          "visual_needed": "Professional team/work photo",
+          "hashtags": [
+            "#BirminghamExperts",
+            "#Licensed",
+            "#QualityWork"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-08",
+          "time": "09:00",
+          "platform": "Facebook",
+          "content_type": "Authority Content",
+          "post_content": "MONDAY MORNING READY: Birmingham's Storm Damage Experts\n\n15+ years protecting Birmingham homes from storm damage.\n\n\u2705 Fully licensed & insured\n\u2705 A+ BBB rating\n\u2705 Master craftsmen on every job\n\u2705 24/7 emergency availability\n\nWhy Birmingham families trust Storm Repair Pro:\n\ud83c\udfe0 Over 2,000 homes restored\n\ud83d\udccb 100% insurance claim success rate\n\u26a1 Average response time: 30 minutes\n\nReady when you need us: (877) 674-5856",
+          "visual_needed": "Professional team/work photo",
+          "hashtags": [
+            "#BirminghamExperts",
+            "#Licensed",
+            "#QualityWork"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-10",
+          "time": "09:00",
+          "platform": "Facebook",
+          "content_type": "Authority Content",
+          "post_content": "WEDNESDAY WISDOM: Storm Preparation Tips from the Pros\n\nBirmingham homeowners - your roof is your first line of defense.\n\n\ud83d\udd0d MONTHLY INSPECTION CHECKLIST:\n\u2022 Check for loose or missing shingles\n\u2022 Inspect gutters and downspouts\n\u2022 Look for signs of water damage\n\u2022 Trim overhanging tree branches\n\nCaught early = smaller repairs = lower costs\n\nFree roof inspections: (877) 674-5856\nPrevention is the best protection.",
+          "visual_needed": "Professional team/work photo",
+          "hashtags": [
+            "#BirminghamExperts",
+            "#Licensed",
+            "#QualityWork"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-12",
+          "time": "09:00",
+          "platform": "Facebook",
+          "content_type": "Authority Content",
+          "post_content": "FRIDAY FEATURE: Meet Your Birmingham Storm Repair Team\n\nBehind every successful restoration is a team of professionals.\n\n\ud83d\udc77\u200d\u2642\ufe0f Master roofers with 15+ years experience\n\ud83d\ude9b Fully equipped emergency response vehicles\n\ud83d\udccb Certified insurance claim specialists\n\ud83c\udfe0 Local Birmingham residents who care\n\nWe're not just contractors - we're your neighbors.\n\nWhen storm damage strikes, you want Birmingham's best.\n\ud83d\udcde (877) 674-5856",
+          "visual_needed": "Professional team/work photo",
+          "hashtags": [
+            "#BirminghamExperts",
+            "#Licensed",
+            "#QualityWork"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-15",
+          "time": "09:00",
+          "platform": "Facebook",
+          "content_type": "Authority Content",
+          "post_content": "MONDAY MORNING READY: Birmingham's Storm Damage Experts\n\n15+ years protecting Birmingham homes from storm damage.\n\n\u2705 Fully licensed & insured\n\u2705 A+ BBB rating\n\u2705 Master craftsmen on every job\n\u2705 24/7 emergency availability\n\nWhy Birmingham families trust Storm Repair Pro:\n\ud83c\udfe0 Over 2,000 homes restored\n\ud83d\udccb 100% insurance claim success rate\n\u26a1 Average response time: 30 minutes\n\nReady when you need us: (877) 674-5856",
+          "visual_needed": "Professional team/work photo",
+          "hashtags": [
+            "#BirminghamExperts",
+            "#Licensed",
+            "#QualityWork"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-17",
+          "time": "09:00",
+          "platform": "Facebook",
+          "content_type": "Authority Content",
+          "post_content": "WEDNESDAY WISDOM: Storm Preparation Tips from the Pros\n\nBirmingham homeowners - your roof is your first line of defense.\n\n\ud83d\udd0d MONTHLY INSPECTION CHECKLIST:\n\u2022 Check for loose or missing shingles\n\u2022 Inspect gutters and downspouts\n\u2022 Look for signs of water damage\n\u2022 Trim overhanging tree branches\n\nCaught early = smaller repairs = lower costs\n\nFree roof inspections: (877) 674-5856\nPrevention is the best protection.",
+          "visual_needed": "Professional team/work photo",
+          "hashtags": [
+            "#BirminghamExperts",
+            "#Licensed",
+            "#QualityWork"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-19",
+          "time": "09:00",
+          "platform": "Facebook",
+          "content_type": "Authority Content",
+          "post_content": "FRIDAY FEATURE: Meet Your Birmingham Storm Repair Team\n\nBehind every successful restoration is a team of professionals.\n\n\ud83d\udc77\u200d\u2642\ufe0f Master roofers with 15+ years experience\n\ud83d\ude9b Fully equipped emergency response vehicles\n\ud83d\udccb Certified insurance claim specialists\n\ud83c\udfe0 Local Birmingham residents who care\n\nWe're not just contractors - we're your neighbors.\n\nWhen storm damage strikes, you want Birmingham's best.\n\ud83d\udcde (877) 674-5856",
+          "visual_needed": "Professional team/work photo",
+          "hashtags": [
+            "#BirminghamExperts",
+            "#Licensed",
+            "#QualityWork"
+          ],
+          "priority": "Medium"
+        }
+      ],
+      "visual_assets_needed": [
+        {
+          "asset_type": "Professional team photos",
+          "description": "Uniformed crew with trucks, equipment, professional appearance",
+          "specifications": "1200x1200px, high quality, Birmingham landmark background",
+          "text_overlay": "Licensed, insured, 15+ years experience",
+          "priority": "High"
+        },
+        {
+          "asset_type": "Certification badges",
+          "description": "BBB A+ rating, licensing, insurance, certification logos",
+          "specifications": "800x800px, clean graphics, trust-building elements",
+          "text_overlay": "Your trusted Birmingham storm repair experts",
+          "priority": "Medium"
+        },
+        {
+          "asset_type": "Quality work process",
+          "description": "Step-by-step photos of professional repair process",
+          "specifications": "1200x1200px, before/during/after sequence",
+          "text_overlay": "Professional quality, guaranteed results",
+          "priority": "Medium"
+        }
+      ],
+      "ad_copy_variations": [
+        "Birmingham's most trusted storm repair company. 15+ years, A+ BBB rating, fully licensed & insured. Quality work guaranteed. (877) 674-5856",
+        "Why Birmingham homeowners choose Storm Repair Pro: Master craftsmen, 100% insurance success rate, local family business. (877) 674-5856",
+        "Protecting Birmingham homes for 15+ years. Licensed storm damage specialists with A+ rating. Free inspections available. (877) 674-5856",
+        "Storm Repair Pro: Birmingham's premier restoration company. Licensed, insured, certified professionals. Your neighbors trust us. (877) 674-5856"
+      ],
+      "success_metrics": [
+        "engagement rate",
+        "follower growth",
+        "brand mentions"
+      ],
+      "deployment_ready": true,
+      "created_at": "2025-07-24T08:47:06.419081"
+    },
+    "social_proof": {
+      "campaign_name": "Storm Repair Pro - Social Proof",
+      "campaign_type": "social_proof",
+      "objective": "Build trust through customer success stories",
+      "duration": "Ongoing (bi-weekly)",
+      "platforms": [
+        "Facebook",
+        "Instagram",
+        "Google Reviews"
+      ],
+      "budget_recommendation": "$75-150/week",
+      "target_audience": {
+        "demographics": {
+          "age_range": "35-65",
+          "income": "$50,000+",
+          "homeownership": "Homeowners",
+          "interests": [
+            "home improvement",
+            "insurance",
+            "local services"
+          ]
+        },
+        "geographic_targeting": {
+          "primary_areas": [
+            "Mountain Brook",
+            "Vestavia Hills",
+            "Hoover",
+            "Homewood",
+            "Trussville",
+            "Chelsea",
+            "Pelham",
+            "Alabaster"
+          ],
+          "radius": "25 miles from Birmingham city center",
+          "weather_events": [
+            "storms",
+            "hail",
+            "wind damage",
+            "tornadoes"
+          ]
+        },
+        "timing_optimization": {
+          "storm_season": "March-June, September-November",
+          "peak_hours": [
+            "6-9 AM",
+            "5-8 PM"
+          ],
+          "weekend_emphasis": "Saturday mornings, Sunday evenings"
+        }
+      },
+      "content_calendar": [
+        {
+          "date": "2025-07-26",
+          "time": "18:00",
+          "platform": "Facebook",
+          "content_type": "Success Story",
+          "post_content": "TRANSFORMATION TUESDAY: Vestavia Hills Roof Restoration\n\n\"Last month's hail storm destroyed our roof. Storm Repair Pro not only restored it - they made it better than new. The insurance process was seamless and the work quality is outstanding.\" - Jennifer M., Vestavia Hills\n\n\u26a1 Hail damage repair: 3 days\n\ud83c\udfe0 Full roof replacement with premium materials\n\ud83d\udcaf Insurance claim: 100% approved\n\ud83d\ude0a Customer satisfaction: Guaranteed\n\nYour storm damage success story starts here: (877) 674-5856",
+          "visual_needed": "Before/after photos + testimonial",
+          "hashtags": [
+            "#CustomerSuccess",
+            "#Transformation",
+            "#Birmingham"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-07-30",
+          "time": "18:00",
+          "platform": "Facebook",
+          "content_type": "Success Story",
+          "post_content": "TRANSFORMATION TUESDAY: Vestavia Hills Roof Restoration\n\n\"Last month's hail storm destroyed our roof. Storm Repair Pro not only restored it - they made it better than new. The insurance process was seamless and the work quality is outstanding.\" - Jennifer M., Vestavia Hills\n\n\u26a1 Hail damage repair: 3 days\n\ud83c\udfe0 Full roof replacement with premium materials\n\ud83d\udcaf Insurance claim: 100% approved\n\ud83d\ude0a Customer satisfaction: Guaranteed\n\nYour storm damage success story starts here: (877) 674-5856",
+          "visual_needed": "Before/after photos + testimonial",
+          "hashtags": [
+            "#CustomerSuccess",
+            "#Transformation",
+            "#Birmingham"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-02",
+          "time": "18:00",
+          "platform": "Facebook",
+          "content_type": "Success Story",
+          "post_content": "SATURDAY SUCCESS: Mountain Brook Emergency Response\n\n\"Friday evening storm, Saturday morning repair crew at our door. Storm Repair Pro's emergency response saved our home from water damage. Professional, fast, and trustworthy.\" - Robert & Susan K., Mountain Brook\n\n\ud83d\udea8 Emergency call Friday 11 PM\n\ud83d\udd27 Crew on-site Saturday 7 AM\n\ud83c\udfe0 Temporary repairs completed by noon\n\ud83d\udccb Full restoration scheduled within the week\n\n24/7 emergency response: (877) 674-5856",
+          "visual_needed": "Before/after photos + testimonial",
+          "hashtags": [
+            "#CustomerSuccess",
+            "#Transformation",
+            "#Birmingham"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-06",
+          "time": "18:00",
+          "platform": "Facebook",
+          "content_type": "Success Story",
+          "post_content": "SATURDAY SUCCESS: Mountain Brook Emergency Response\n\n\"Friday evening storm, Saturday morning repair crew at our door. Storm Repair Pro's emergency response saved our home from water damage. Professional, fast, and trustworthy.\" - Robert & Susan K., Mountain Brook\n\n\ud83d\udea8 Emergency call Friday 11 PM\n\ud83d\udd27 Crew on-site Saturday 7 AM\n\ud83c\udfe0 Temporary repairs completed by noon\n\ud83d\udccb Full restoration scheduled within the week\n\n24/7 emergency response: (877) 674-5856",
+          "visual_needed": "Before/after photos + testimonial",
+          "hashtags": [
+            "#CustomerSuccess",
+            "#Transformation",
+            "#Birmingham"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-09",
+          "time": "18:00",
+          "platform": "Facebook",
+          "content_type": "Success Story",
+          "post_content": "CUSTOMER SPOTLIGHT: Hoover Family Home Restored\n\n\"We thought our home was ruined after the tornado. Storm Repair Pro gave us hope and delivered beyond our expectations. They handled everything - insurance, permits, quality work. We recommend them to everyone.\" - The Martinez Family, Hoover\n\n\ud83c\udf2a\ufe0f Tornado damage: Extensive\n\u23f1\ufe0f Full restoration: 2 weeks\n\ud83d\udcb0 Insurance claim: $45,000 approved\n\ud83c\udfc6 Result: Beautiful home, happy family\n\nStorm damage doesn't have to be permanent: (877) 674-5856",
+          "visual_needed": "Before/after photos + testimonial",
+          "hashtags": [
+            "#CustomerSuccess",
+            "#Transformation",
+            "#Birmingham"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-13",
+          "time": "18:00",
+          "platform": "Facebook",
+          "content_type": "Success Story",
+          "post_content": "CUSTOMER SPOTLIGHT: Hoover Family Home Restored\n\n\"We thought our home was ruined after the tornado. Storm Repair Pro gave us hope and delivered beyond our expectations. They handled everything - insurance, permits, quality work. We recommend them to everyone.\" - The Martinez Family, Hoover\n\n\ud83c\udf2a\ufe0f Tornado damage: Extensive\n\u23f1\ufe0f Full restoration: 2 weeks\n\ud83d\udcb0 Insurance claim: $45,000 approved\n\ud83c\udfc6 Result: Beautiful home, happy family\n\nStorm damage doesn't have to be permanent: (877) 674-5856",
+          "visual_needed": "Before/after photos + testimonial",
+          "hashtags": [
+            "#CustomerSuccess",
+            "#Transformation",
+            "#Birmingham"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-16",
+          "time": "18:00",
+          "platform": "Facebook",
+          "content_type": "Success Story",
+          "post_content": "TRANSFORMATION TUESDAY: Vestavia Hills Roof Restoration\n\n\"Last month's hail storm destroyed our roof. Storm Repair Pro not only restored it - they made it better than new. The insurance process was seamless and the work quality is outstanding.\" - Jennifer M., Vestavia Hills\n\n\u26a1 Hail damage repair: 3 days\n\ud83c\udfe0 Full roof replacement with premium materials\n\ud83d\udcaf Insurance claim: 100% approved\n\ud83d\ude0a Customer satisfaction: Guaranteed\n\nYour storm damage success story starts here: (877) 674-5856",
+          "visual_needed": "Before/after photos + testimonial",
+          "hashtags": [
+            "#CustomerSuccess",
+            "#Transformation",
+            "#Birmingham"
+          ],
+          "priority": "Medium"
+        },
+        {
+          "date": "2025-08-20",
+          "time": "18:00",
+          "platform": "Facebook",
+          "content_type": "Success Story",
+          "post_content": "TRANSFORMATION TUESDAY: Vestavia Hills Roof Restoration\n\n\"Last month's hail storm destroyed our roof. Storm Repair Pro not only restored it - they made it better than new. The insurance process was seamless and the work quality is outstanding.\" - Jennifer M., Vestavia Hills\n\n\u26a1 Hail damage repair: 3 days\n\ud83c\udfe0 Full roof replacement with premium materials\n\ud83d\udcaf Insurance claim: 100% approved\n\ud83d\ude0a Customer satisfaction: Guaranteed\n\nYour storm damage success story starts here: (877) 674-5856",
+          "visual_needed": "Before/after photos + testimonial",
+          "hashtags": [
+            "#CustomerSuccess",
+            "#Transformation",
+            "#Birmingham"
+          ],
+          "priority": "Medium"
+        }
+      ],
+      "visual_assets_needed": [
+        {
+          "asset_type": "Before/after transformations",
+          "description": "Dramatic transformations showing repair quality",
+          "specifications": "1200x1200px, split-screen or side-by-side format",
+          "text_overlay": "Customer testimonial quote overlaid",
+          "priority": "High"
+        },
+        {
+          "asset_type": "Customer testimonial videos",
+          "description": "Happy customers sharing their experience",
+          "specifications": "1080x1080px video, 30-60 seconds, Birmingham locations",
+          "text_overlay": "Customer name, location, service provided",
+          "priority": "High"
+        },
+        {
+          "asset_type": "Google review screenshots",
+          "description": "5-star Google reviews with customer photos",
+          "specifications": "1200x1200px, authentic review screenshots",
+          "text_overlay": "Join our satisfied Birmingham customers",
+          "priority": "Medium"
+        }
+      ],
+      "ad_copy_variations": [
+        "\"Best storm repair experience ever! Professional, fast, insurance handled perfectly.\" - Sarah M., Mountain Brook. Join satisfied customers: (877) 674-5856",
+        "Over 2,000 Birmingham homes restored. 100% customer satisfaction. Read our reviews, then call the best: (877) 674-5856",
+        "\"They turned our storm disaster into a beautiful home. Highly recommend!\" - Mike & Lisa K., Vestavia Hills. Your turn: (877) 674-5856",
+        "Birmingham families trust Storm Repair Pro. 5-star reviews, guaranteed work, local reputation. Experience the difference: (877) 674-5856"
+      ],
+      "success_metrics": [
+        "shares",
+        "comments",
+        "review generation"
+      ],
+      "deployment_ready": true,
+      "created_at": "2025-07-24T08:47:06.419510"
+    }
+  },
+  "deployment_instructions": {
+    "immediate_deployment": "Emergency response campaign ready for next storm event",
+    "ongoing_campaigns": "Authority building and social proof for consistent presence",
+    "budget_allocation": "Emergency: $1500/month, Authority: $600/month, Social Proof: $400/month",
+    "success_tracking": "Phone calls, website visits, quote requests, engagement rates"
+  },
+  "birmingham_market_analysis": {
+    "peak_storm_season": "March-June, September-November",
+    "target_demographics": "Homeowners 35-65, $50K+ income, premium Birmingham areas",
+    "competitive_advantage": "Professional response time, local reputation, comprehensive service"
+  },
+  "generated_at": "2025-07-24T08:47:06.419532",
+  "ready_for_deployment": true
+}

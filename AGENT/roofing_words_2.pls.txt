@@ -1,0 +1,10 @@
+GAF = gaf
+CertainTeed = certain-teed
+Owens Corning = oh-ens corn-ing
+fascia = fay-shuh
+soffit = soff-it
+underlayment = under-lay-ment
+EPDM = E-P-D-M
+TPO = T-P-O
+ACV = A-C-V
+RCV = R-C-V

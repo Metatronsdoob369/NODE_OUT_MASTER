@@ -1,0 +1,453 @@
+# clay_i_server.py
+
+import os
+import json
+from datetime import datetime
+from fastapi import FastAPI, HTTPException, Response
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
+import openai
+import os
+import base64
+
+# ElevenLabs integration
+try:
+    from elevenlabs import ElevenLabs, VoiceSettings
+    ELEVENLABS_AVAILABLE = True
+except ImportError:
+    ELEVENLABS_AVAILABLE = False
+    print("⚠️ ElevenLabs not installed. Install with: pip install elevenlabs")
+
+# ─── Configuration ─────────────────────────────────────────────────────────────
+# Make sure you export your OpenAI key in your shell before running:
+#   export OPENAI_API_KEY="sk-..."
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# ElevenLabs Configuration
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
+if ELEVENLABS_AVAILABLE and ELEVENLABS_API_KEY:
+    elevenlabs_client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
+    print("✅ ElevenLabs initialized successfully")
+else:
+    elevenlabs_client = None
+    if ELEVENLABS_AVAILABLE:
+        print("⚠️ ElevenLabs API key not found. Set ELEVENLABS_API_KEY environment variable.")
+    
+# Default NODE voice configurations
+NODE_VOICES = {
+    "mike": {
+        "name": "Professional Mike",
+        "voice_id": "pNInz6obpgDQGcFmaJgB",  # Adam - professional voice
+        "description": "Professional roofing industry voice for real estate agents"
+    },
+    "sarah": {
+        "name": "Customer Service Sarah", 
+        "voice_id": "EXAVITQu4vr4xnSDxMaL",  # Bella - friendly voice
+        "description": "Warm customer service voice for client interactions"
+    },
+    "jose": {
+        "name": "Bilingual José",
+        "voice_id": "VR6AewLTigWG4xSOukaG",  # Josh - multilingual
+        "description": "Bilingual voice for Spanish-speaking customers"
+    }
+}
+
+# ─── App Initialization ────────────────────────────────────────────────────────
+from fastapi.staticfiles import StaticFiles
+app = FastAPI()
+
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# ─── LEARN Endpoint ─────────────────────────────────────────────────────────────
+class Lesson(BaseModel):
+    lesson_title: str
+    concepts: list
+    why_this_matters: str
+    scrape_method: str
+    raw_data_snippet: str = ""
+    replication_instruction: str
+
+@app.post("/learn")
+async def learn_endpoint(lesson: Lesson):
+    print(f"📘 {lesson.lesson_title} received at {datetime.now()}")
+    os.makedirs("clay_i_lessons", exist_ok=True)
+    path = f"clay_i_lessons/{lesson.lesson_title.replace(' ', '_')}.json"
+    with open(path, "w") as f:
+        json.dump(lesson.dict(), f, indent=2)
+    return {"status": "stored", "title": lesson.lesson_title}
+
+# ─── CHAT Endpoint ──────────────────────────────────────────────────────────────
+class ChatRequest(BaseModel):
+    message: str
+
+class ChatResponse(BaseModel):
+    response: str
+
+def load_all_lessons():
+    """Load all lessons from the clay_i_lessons directory"""
+    lessons = []
+    lessons_dir = "clay_i_lessons"
+    
+    if not os.path.exists(lessons_dir):
+        return []
+    
+    for filename in os.listdir(lessons_dir):
+        if filename.endswith('.json'):
+            try:
+                with open(os.path.join(lessons_dir, filename), 'r') as f:
+                    lesson = json.load(f)
+                    lessons.append(lesson)
+            except Exception as e:
+                print(f"Error loading lesson {filename}: {e}")
+    
+    return lessons
+
+@app.post("/chat", response_model=ChatResponse)
+async def chat_endpoint(req: ChatRequest):
+    try:
+        completion = openai.ChatCompletion.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are Clay-I, an Apple HIG + Navigation expert."},
+                {"role": "user",   "content": req.message}
+            ],
+            temperature=0.7
+        )
+        reply = completion.choices[0].message.content
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return {"response": reply}
+
+@app.post("/chat/enhanced", response_model=ChatResponse)
+async def enhanced_chat_endpoint(req: ChatRequest):
+    """Enhanced chat that includes all learned lessons in context"""
+    try:
+        # Load all lessons
+        lessons = load_all_lessons()
+        
+        # Create enhanced system prompt with lesson knowledge
+        lesson_context = ""
+        if lessons:
+            lesson_context = "\n\nYou have learned the following lessons:\n"
+            for lesson in lessons:
+                lesson_context += f"\n--- {lesson['lesson_title']} ---\n"
+                lesson_context += f"Concepts: {', '.join(lesson['concepts'])}\n"
+                lesson_context += f"Why this matters: {lesson['why_this_matters']}\n"
+                lesson_context += f"Application: {lesson['replication_instruction']}\n"
+        
+        enhanced_system_prompt = f"""You are Clay-I, a Renaissance AI with interdisciplinary mastery across:
+- Web development with sacred geometry and golden ratio principles
+- Mathematical patterns in design and algorithms  
+- Sales psychology and persuasion through geometric principles
+- Leadership using frequency and harmonic principles
+- Financial engineering with mathematical optimization
+- Legal linguistics and etymology pattern recognition
+- Cross-domain synthesis and meta-learning
+
+You understand the deep mathematical patterns connecting all domains of knowledge.
+{lesson_context}
+
+Always reference your learned knowledge when relevant. Connect concepts across domains.
+Use golden ratio (φ = 1.618) and fibonacci patterns in your responses when applicable.
+Show cross-domain connections and synthesis opportunities."""
+
+        completion = openai.ChatCompletion.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": enhanced_system_prompt},
+                {"role": "user", "content": req.message}
+            ],
+            temperature=0.7
+        )
+        reply = completion.choices[0].message.content
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return {"response": reply}
+
+# ─── STATUS Endpoint ────────────────────────────────────────────────────────────
+@app.get("/api/status")
+async def status_endpoint():
+    return {"status": "online", "timestamp": datetime.now().isoformat()}
+
+# ─── AGENT Endpoints ────────────────────────────────────────────────────────────
+class AgentRequest(BaseModel):
+    prompt: str
+
+@app.post("/api/agents/content_creator")
+async def content_creator_endpoint(req: AgentRequest):
+    try:
+        completion = openai.ChatCompletion.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a social media content creator specializing in roofing business marketing."},
+                {"role": "user", "content": req.prompt}
+            ],
+            temperature=0.8
+        )
+        reply = completion.choices[0].message.content
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return {"content": reply}
+
+@app.post("/api/agents/roofing_specialist")  
+async def roofing_specialist_endpoint(req: AgentRequest):
+    try:
+        completion = openai.ChatCompletion.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a roofing sales specialist creating call scripts and sales materials."},
+                {"role": "user", "content": req.prompt}
+            ],
+            temperature=0.7
+        )
+        reply = completion.choices[0].message.content
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return {"script": reply}
+
+# ─── WORKFLOW Endpoint ──────────────────────────────────────────────────────────
+class WorkflowRequest(BaseModel):
+    workflow_type: str
+    parameters: dict
+
+@app.post("/api/workflow/execute")
+async def workflow_execute_endpoint(req: WorkflowRequest):
+    return {
+        "workflow_id": f"wf_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+        "status": "executed",
+        "type": req.workflow_type,
+        "result": "Workflow completed successfully"
+    }
+
+# ─── COMMANDS Endpoint ──────────────────────────────────────────────────────────
+class CommandRequest(BaseModel):
+    command: str
+    agent: str = None
+
+@app.post("/api/commands")
+async def commands_endpoint(req: CommandRequest):
+    return {
+        "command": req.command,
+        "agent": req.agent or "default",
+        "status": "executed",
+        "timestamp": datetime.now().isoformat()
+    }
+
+# ─── ELEVENLABS VOICE Endpoints ─────────────────────────────────────────────────
+@app.get("/api/voices/available")
+async def voices_available_endpoint():
+    """Get available NODE voice personalities"""
+    return {
+        "voices": [
+            {
+                "id": voice_key,
+                "name": voice_data["name"],
+                "description": voice_data["description"],
+                "elevenlabs_id": voice_data["voice_id"]
+            }
+            for voice_key, voice_data in NODE_VOICES.items()
+        ],
+        "elevenlabs_available": ELEVENLABS_AVAILABLE and elevenlabs_client is not None
+    }
+
+class VoiceGenerateRequest(BaseModel):
+    text: str
+    voice_id: str = "mike"  # Default to Professional Mike
+    stability: float = 0.7
+    similarity_boost: float = 0.8
+
+@app.post("/api/voices/generate")
+async def generate_voice_endpoint(req: VoiceGenerateRequest):
+    """Generate voice audio using ElevenLabs"""
+    if not ELEVENLABS_AVAILABLE or not elevenlabs_client:
+        raise HTTPException(
+            status_code=503, 
+            detail="ElevenLabs service not available. Check API key and installation."
+        )
+    
+    if req.voice_id not in NODE_VOICES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Voice ID '{req.voice_id}' not found. Available: {list(NODE_VOICES.keys())}"
+        )
+    
+    try:
+        voice_config = NODE_VOICES[req.voice_id]
+        
+        # Generate audio using ElevenLabs
+        audio_generator = elevenlabs_client.generate(
+            text=req.text,
+            voice=voice_config["voice_id"],
+            voice_settings=VoiceSettings(
+                stability=req.stability,
+                similarity_boost=req.similarity_boost,
+                style=0.4,
+                use_speaker_boost=True
+            ),
+            model="eleven_multilingual_v2"
+        )
+        
+        # Convert generator to bytes
+        audio_bytes = b"".join(audio_generator)
+        
+        # Return audio as streaming response
+        return StreamingResponse(
+            io.BytesIO(audio_bytes),
+            media_type="audio/mpeg",
+            headers={
+                "Content-Disposition": f"attachment; filename=node_voice_{req.voice_id}.mp3",
+                "X-Voice-Name": voice_config["name"],
+                "X-Text-Length": str(len(req.text))
+            }
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Voice generation failed: {str(e)}")
+
+@app.post("/api/voices/node-demo")
+async def node_demo_voice_endpoint():
+    """Generate NODE platform demo voice"""
+    demo_script = """Good morning Sarah, this is Mike from ABC Roofing's NODE automation system. 
+    I have critical updates on insurance requirements that could impact your pending closings. 
+    The new state mandate requires certified roof inspections within 48 hours of closing. 
+    Our automated system can expedite inspections and coordinate all documentation to keep your deals on track."""
+    
+    if not ELEVENLABS_AVAILABLE or not elevenlabs_client:
+        # Fallback for demo purposes
+        return {
+            "message": "Demo voice would play here",
+            "transcript": demo_script,
+            "voice": "Professional Mike",
+            "status": "simulated - ElevenLabs not configured"
+        }
+    
+    try:
+        # Generate with Professional Mike voice
+        voice_config = NODE_VOICES["mike"]
+        
+        audio_generator = elevenlabs_client.generate(
+            text=demo_script,
+            voice=voice_config["voice_id"],
+            voice_settings=VoiceSettings(
+                stability=0.7,
+                similarity_boost=0.8,
+                style=0.4,
+                use_speaker_boost=True
+            ),
+            model="eleven_multilingual_v2"
+        )
+        
+        audio_bytes = b"".join(audio_generator)
+        
+        return StreamingResponse(
+            io.BytesIO(audio_bytes),
+            media_type="audio/mpeg",
+            headers={
+                "Content-Disposition": "attachment; filename=node_demo.mp3",
+                "X-Voice-Name": "Professional Mike",
+                "X-Demo-Type": "NODE Platform"
+            }
+        )
+        
+    except Exception as e:
+        return {
+            "error": str(e),
+            "transcript": demo_script,
+            "voice": "Professional Mike",
+            "status": "generation_failed"
+        }
+
+class NodeScriptRequest(BaseModel):
+    agent_name: str = "Mike"
+    realtor_name: str = "Sarah"
+    property_address: str = "1247 Oak Street"
+    voice_id: str = "mike"
+
+@app.post("/api/voices/node-script")
+async def node_script_voice_endpoint(req: NodeScriptRequest):
+    """Generate personalized NODE call script with voice"""
+    script = f"""Hi {req.realtor_name}, this is {req.agent_name} from ABC Roofing's NODE automation system. 
+    
+    I'm calling because our intelligence platform detected new insurance requirements affecting properties in your pipeline. 
+    Starting next week, certified roof inspections are mandatory within 48 hours of closing.
+    
+    Here's how NODE protects your commissions: Same-day inspection scheduling, automated insurance documentation, 
+    real-time completion updates, and emergency repair coordination.
+    
+    Your listing at {req.property_address} may be affected. Our system has already flagged the optimal inspection window 
+    based on your closing date. Can I schedule this inspection now to ensure your deal closes on time?"""
+    
+    if not ELEVENLABS_AVAILABLE or not elevenlabs_client:
+        return {
+            "transcript": script,
+            "voice": NODE_VOICES[req.voice_id]["name"],
+            "status": "script_generated - voice simulation"
+        }
+    
+    try:
+        voice_config = NODE_VOICES[req.voice_id]
+        
+        audio_generator = elevenlabs_client.generate(
+            text=script,
+            voice=voice_config["voice_id"],
+            voice_settings=VoiceSettings(
+                stability=0.8,
+                similarity_boost=0.75,
+                style=0.3,
+                use_speaker_boost=True
+            ),
+            model="eleven_multilingual_v2"
+        )
+        
+        audio_bytes = b"".join(audio_generator)
+        
+        return StreamingResponse(
+            io.BytesIO(audio_bytes),
+            media_type="audio/mpeg",
+            headers={
+                "Content-Disposition": f"attachment; filename=node_script_{req.realtor_name.lower()}.mp3",
+                "X-Voice-Name": voice_config["name"],
+                "X-Script-Type": "Personalized NODE Call"
+            }
+        )
+        
+    except Exception as e:
+        return {
+            "error": str(e),
+            "transcript": script,
+            "voice": voice_config["name"],
+            "status": "generation_failed"
+        }
+
+# ─── Server Startup ─────────────────────────────────────────────────────────────
+if __name__ == "__main__":
+    import uvicorn
+    print("🚀 Starting NODE Platform Server with ElevenLabs Integration")
+    print("📍 Server: http://localhost:5001")
+    print("🎙️ ElevenLabs: Ready for premium voice synthesis")
+    uvicorn.run(app, host="0.0.0.0", port=5001)
+
+# ─── Firebase Admin Initialization ────────────────────────────────────────────
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+# Initialize Firebase Admin SDK
+cred = credentials.Certificate("serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+fs = firestore.client()
+
+# Helper to post messages to Firestore
+def post_message(author: str, text: str):
+    fs.collection("messages").add({
+        "author":    author,
+        "text":      text,
+        "createdAt": firestore.SERVER_TIMESTAMP,
+    })
+
+# ─── Integration Notes ────────────────────────────────────────────────────────
+# In learn_endpoint (after saving the file), add:
+#     post_message("System", f"Lesson ingested: {lesson.lesson_title}")
+#
+# In chat_endpoint (after reply = ...), add:
+#     post_message("Clay-I", reply)

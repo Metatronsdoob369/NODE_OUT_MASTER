@@ -1,0 +1,578 @@
+{
+  "name": "NODE_OUT Voice Assistant Complete Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "voice-assistant-trigger",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Incoming Call Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [180, 300],
+      "webhookId": "voice-assistant-incoming"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "call-type-check",
+              "leftValue": "={{ $json.call_type }}",
+              "rightValue": "emergency",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "emergency-check",
+      "name": "Emergency Call Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/{{ $('Set Voice Config').item.json.voice_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.ai_response }}"
+            },
+            {
+              "name": "voice_settings",
+              "value": "={{ $('Set Voice Config').item.json.voice_settings }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "elevenlabs-tts",
+      "name": "ElevenLabs Text-to-Speech",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1000, 200],
+      "credentials": {
+        "headerAuth": {
+          "id": "elevenlabs-api",
+          "name": "ElevenLabs API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "voice-config",
+              "name": "voice_id",
+              "value": "EXAVITQu4vr4xnSDxMaL",
+              "type": "string"
+            },
+            {
+              "id": "voice-settings",
+              "name": "voice_settings",
+              "value": {
+                "stability": 0.85,
+                "similarity_boost": 0.90,
+                "style": 0.25,
+                "use_speaker_boost": true
+              },
+              "type": "object"
+            },
+            {
+              "id": "company-info",
+              "name": "company_name",
+              "value": "Premier Roofing",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "voice-config",
+      "name": "Set Voice Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [600, 100]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "operation": "create",
+        "model": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are Sarah, a professional AI assistant for {{ $('Set Voice Config').item.json.company_name }}. You are empathetic, efficient, and always helpful. You can schedule appointments, answer billing questions, handle emergencies, and provide project updates. Keep responses natural and conversational, under 100 words. Always offer specific next steps."
+            },
+            {
+              "role": "user",
+              "content": "={{ $json.customer_input || 'Hello, I need help with my roofing project.' }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 150
+        }
+      },
+      "id": "openai-response",
+      "name": "Generate AI Response",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.3,
+      "position": [800, 200],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-api",
+          "name": "OpenAI API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "accountSid": "={{ $env.TWILIO_ACCOUNT_SID }}",
+        "resource": "call",
+        "operation": "make",
+        "from": "={{ $env.TWILIO_PHONE_NUMBER }}",
+        "to": "={{ $json.customer_phone }}",
+        "url": "{{ $env.BASE_URL }}/webhook/twilio-voice-response"
+      },
+      "id": "twilio-call",
+      "name": "Make Twilio Call",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 2,
+      "position": [1200, 200],
+      "credentials": {
+        "twilioApi": {
+          "id": "twilio-api",
+          "name": "Twilio API Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": "{{ $env.AIRTABLE_BASE_ID }}",
+        "table": "Voice_Call_Logs",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "customer_phone": "={{ $json.customer_phone }}",
+            "call_type": "={{ $json.call_type }}",
+            "ai_response": "={{ $('Generate AI Response').item.json.choices[0].message.content }}",
+            "timestamp": "={{ $now }}",
+            "call_sid": "={{ $('Make Twilio Call').item.json.sid }}",
+            "status": "initiated",
+            "customer_sentiment": "={{ $json.sentiment || 'neutral' }}",
+            "actions_triggered": "={{ $json.actions_triggered || [] }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        }
+      },
+      "id": "log-to-airtable",
+      "name": "Log Call to Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [1400, 200],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "airtable-api",
+          "name": "Airtable API Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "appointment-keyword",
+              "leftValue": "={{ $('Generate AI Response').item.json.choices[0].message.content }}",
+              "rightValue": "schedule|appointment|estimate|inspection",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "appointment-check",
+      "name": "Check for Appointment Request",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1000, 400]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "requestMethod": "POST",
+        "url": "https://api.calendly.com/scheduled_events",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "event_type",
+              "value": "{{ $json.call_type === 'emergency' ? 'emergency-inspection' : 'standard-estimate' }}"
+            },
+            {
+              "name": "start_time",
+              "value": "={{ $json.preferred_time || DateTime.now().plus({hours: 24}).toISO() }}"
+            },
+            {
+              "name": "invitee",
+              "value": {
+                "email": "{{ $json.customer_email || 'customer@placeholder.com' }}",
+                "name": "{{ $json.customer_name || 'Valued Customer' }}",
+                "phone": "={{ $json.customer_phone }}"
+              }
+            }
+          ]
+        }
+      },
+      "id": "calendly-booking",
+      "name": "Create Calendly Appointment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1200, 500],
+      "credentials": {
+        "oAuth2Api": {
+          "id": "calendly-oauth",
+          "name": "Calendly OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "emergency-routing",
+              "name": "priority_level",
+              "value": "URGENT",
+              "type": "string"
+            },
+            {
+              "id": "emergency-team",
+              "name": "assigned_team",
+              "value": "emergency_response",
+              "type": "string"
+            },
+            {
+              "id": "response-time",
+              "name": "target_response_time",
+              "value": "2_hours",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "emergency-routing",
+      "name": "Emergency Call Routing",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [600, 500]
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "to": "{{ $env.EMERGENCY_TEAM_PHONE }}",
+        "message": "🚨 EMERGENCY ROOFING CALL\n\nCustomer: {{ $json.customer_phone }}\nType: {{ $json.call_type }}\nAI Response: {{ $('Generate AI Response').item.json.choices[0].message.content }}\n\nImmediate response required!"
+      },
+      "id": "emergency-sms",
+      "name": "Send Emergency SMS Alert",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 2,
+      "position": [800, 500],
+      "credentials": {
+        "twilioApi": {
+          "id": "twilio-api",
+          "name": "Twilio API Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": "{{ $env.AIRTABLE_BASE_ID }}",
+        "table": "Emergency_Alerts",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "customer_phone": "={{ $json.customer_phone }}",
+            "alert_sent_time": "={{ $now }}",
+            "response_team_notified": true,
+            "priority_level": "URGENT",
+            "call_details": "={{ $('Generate AI Response').item.json.choices[0].message.content }}",
+            "status": "active"
+          }
+        }
+      },
+      "id": "log-emergency",
+      "name": "Log Emergency Alert",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [1000, 600]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "billing-keyword",
+              "leftValue": "={{ $('Generate AI Response').item.json.choices[0].message.content }}",
+              "rightValue": "billing|invoice|payment|cost|price|bill",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "billing-check",
+      "name": "Check for Billing Question",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1000, 800]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": "{{ $env.AIRTABLE_BASE_ID }}",
+        "table": "Customer_Projects",
+        "filterByFormula": "SEARCH('{{ $json.customer_phone }}', {Phone}) > 0"
+      },
+      "id": "lookup-customer",
+      "name": "Lookup Customer Project",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [1200, 900],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "airtable-api",
+          "name": "Airtable API Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {\n  \"success\": true,\n  \"call_initiated\": true,\n  \"ai_response\": $('Generate AI Response').item.json.choices[0].message.content,\n  \"voice_generated\": true,\n  \"actions_taken\": [\n    $json.call_type === 'emergency' ? 'Emergency team notified' : null,\n    $('Check for Appointment Request').item ? 'Appointment scheduled' : null,\n    $('Check for Billing Question').item ? 'Customer data retrieved' : null\n  ].filter(action => action !== null),\n  \"call_sid\": $('Make Twilio Call').item.json.sid,\n  \"timestamp\": $now\n} }}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "Send Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1600, 300]
+    }
+  ],
+  "connections": {
+    "Incoming Call Webhook": {
+      "main": [
+        [
+          {
+            "node": "Emergency Call Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emergency Call Check": {
+      "main": [
+        [
+          {
+            "node": "Emergency Call Routing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Voice Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Voice Config": {
+      "main": [
+        [
+          {
+            "node": "Generate AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate AI Response": {
+      "main": [
+        [
+          {
+            "node": "ElevenLabs Text-to-Speech",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check for Appointment Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check for Billing Question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ElevenLabs Text-to-Speech": {
+      "main": [
+        [
+          {
+            "node": "Make Twilio Call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Make Twilio Call": {
+      "main": [
+        [
+          {
+            "node": "Log Call to Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Call to Airtable": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for Appointment Request": {
+      "main": [
+        [
+          {
+            "node": "Create Calendly Appointment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emergency Call Routing": {
+      "main": [
+        [
+          {
+            "node": "Send Emergency SMS Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Emergency SMS Alert": {
+      "main": [
+        [
+          {
+            "node": "Log Emergency Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Set Voice Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for Billing Question": {
+      "main": [
+        [
+          {
+            "node": "Lookup Customer Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-20T10:30:00.000Z",
+  "versionId": "voice-assistant-v1"
+}

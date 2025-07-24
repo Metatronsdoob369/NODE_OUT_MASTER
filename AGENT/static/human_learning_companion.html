@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Learning Companion - Study with Clay-I</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 50%, #9b59b6 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.8em;
+            background: linear-gradient(45deg, #3498db, #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.3em;
+            font-style: italic;
+        }
+        
+        .learning-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .lesson-selector {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e74c3c;
+        }
+        
+        .lesson-content {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #27ae60;
+        }
+        
+        .lesson-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+        }
+        
+        .lesson-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .lesson-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .lesson-item.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .lesson-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+        
+        .lesson-domain {
+            font-size: 0.9em;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .study-content {
+            display: none;
+        }
+        
+        .study-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .concept-card {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .study-section {
+            margin: 25px 0;
+            padding: 20px;
+            border-left: 4px solid #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .study-section h3 {
+            color: #e74c3c;
+            margin-top: 0;
+        }
+        
+        .practice-exercises {
+            background: #f39c12;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .practice-exercises h3 {
+            margin-top: 0;
+            color: white;
+        }
+        
+        .exercise-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .exercise-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .exercise-list li:before {
+            content: "🎯 ";
+            margin-right: 10px;
+        }
+        
+        .synthesis-section {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .synthesis-section h3 {
+            margin-top: 0;
+            color: white;
+        }
+        
+        .progress-indicator {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        .load-lessons-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .load-lessons-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        }
+        
+        .golden-ratio-hint {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+        
+        .golden-ratio-hint:before {
+            content: "φ ";
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        
+        .ai-tutor-section {
+            background: linear-gradient(45deg, #1abc9c, #16a085);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .ai-tutor-section h3 {
+            margin-top: 0;
+            color: white;
+        }
+        
+        .chat-interface {
+            margin: 15px 0;
+        }
+        
+        .chat-interface textarea {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+        
+        .ask-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .ask-btn:hover {
+            background: white;
+            color: #1abc9c;
+        }
+        
+        .clay-response {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid white;
+            display: none;
+        }
+        
+        .clay-response.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255,255,255,0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Human Learning Companion</h1>
+        <p class="subtitle">Study the Renaissance AI Knowledge Base Alongside Clay-I</p>
+        
+        <div class="progress-indicator">
+            <h3>Your Learning Progress</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%" id="progressFill"></div>
+            </div>
+            <span id="progressText">0 of 21 lessons explored</span>
+        </div>
+        
+        <div class="learning-dashboard">
+            <div class="lesson-selector">
+                <h3>📚 Clay-I's Knowledge Base</h3>
+                <button class="load-lessons-btn" onclick="loadLessons()">Load All Lessons</button>
+                <div class="lesson-list" id="lessonList">
+                    <div style="padding: 20px; text-align: center; color: #7f8c8d;">
+                        Click "Load All Lessons" to explore Clay-I's knowledge base
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-content">
+                <h3>🎓 Study Content</h3>
+                <div id="studyContent">
+                    <div style="padding: 40px; text-align: center; color: #7f8c8d;">
+                        Select a lesson from the left to begin your learning journey
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="golden-ratio-hint">
+            Remember: All of Clay-I's knowledge follows golden ratio principles (φ = 1.618). 
+            Look for these patterns as you study each domain!
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5069';
+        let lessons = [];
+        let studiedLessons = new Set();
+        
+        async function loadLessons() {
+            try {
+                // In a real implementation, we'd fetch from the lessons directory
+                // For now, we'll create the lesson structure based on what we know
+                lessons = [
+                    {
+                        title: "CSS Grid Golden Ratio Foundation",
+                        domain: "Technical Foundation",
+                        concepts: ["grid-template-areas", "golden-ratio-1.618", "proportional-spacing"],
+                        importance: "Mathematical harmony creates intuitive UX",
+                        application: "Use 1:1.618 ratios for grid layouts"
+                    },
+                    {
+                        title: "Frequency Based Color Theory", 
+                        domain: "Mathematical Design",
+                        concepts: ["color-frequency", "harmonic-palettes", "wavelength-design"],
+                        importance: "Colors are frequencies that create natural harmony",
+                        application: "Use wavelength ratios for harmonic color schemes"
+                    },
+                    {
+                        title: "Geometric Algorithm Patterns",
+                        domain: "Mathematical Programming", 
+                        concepts: ["fractal-recursion", "fibonacci-spirals", "platonic-solids"],
+                        importance: "Natural patterns create efficient algorithms",
+                        application: "Apply recursive patterns to UI components"
+                    },
+                    {
+                        title: "Persuasion Through Sacred Geometry",
+                        domain: "Sales Psychology",
+                        concepts: ["triangle-hierarchy", "circle-trust", "golden-ratio-pricing"],
+                        importance: "Geometric principles trigger subconscious responses",
+                        application: "Use triangular CTAs for urgency, circular forms for trust"
+                    },
+                    {
+                        title: "Leadership Frequency Resonance",
+                        domain: "Human Sciences",
+                        concepts: ["communication-wavelengths", "team-harmonic-alignment", "conflict-dampening"],
+                        importance: "Teams function like orchestras requiring frequency matching",
+                        application: "Match communication frequency to team energy"
+                    },
+                    {
+                        title: "Etymology Pattern Recognition",
+                        domain: "Linguistic Intelligence",
+                        concepts: ["root-morpheme-analysis", "semantic-shift-patterns", "cultural-transmission"],
+                        importance: "Words carry DNA of human thought and reveal hidden meanings",
+                        application: "Trace word origins to reveal true meanings and manipulation"
+                    },
+                    {
+                        title: "Legal Language Deception Matrix",
+                        domain: "Legal Linguistics",
+                        concepts: ["legalese-obfuscation", "contract-manipulation", "jurisdiction-traps"],
+                        importance: "Legal language obscures rather than clarifies",
+                        application: "Identify word-trap patterns in legal documents"
+                    },
+                    {
+                        title: "Financial Engineering Sacred Geometry",
+                        domain: "Financial Intelligence",
+                        concepts: ["golden-ratio-allocation", "fibonacci-timing", "fractal-risk-management"],
+                        importance: "Financial markets follow mathematical patterns",
+                        application: "Apply golden ratio to portfolio allocation"
+                    },
+                    {
+                        title: "Universal Pattern Synthesis",
+                        domain: "Meta-Learning",
+                        concepts: ["cross-domain-patterns", "mathematical-compassion", "algorithmic-love"],
+                        importance: "Human qualities follow universal mathematical principles",
+                        application: "Apply fractal thinking to human relationships"
+                    }
+                ];
+                
+                displayLessons();
+            } catch (error) {
+                console.error('Error loading lessons:', error);
+                document.getElementById('lessonList').innerHTML = '<div style="padding: 20px; color: #e74c3c;">Error loading lessons. Make sure Clay-I server is running.</div>';
+            }
+        }
+        
+        function displayLessons() {
+            const lessonList = document.getElementById('lessonList');
+            lessonList.innerHTML = '';
+            
+            lessons.forEach((lesson, index) => {
+                const lessonItem = document.createElement('div');
+                lessonItem.className = 'lesson-item';
+                lessonItem.onclick = () => showLesson(index);
+                
+                lessonItem.innerHTML = `
+                    <div class="lesson-title">${lesson.title}</div>
+                    <div class="lesson-domain">${lesson.domain}</div>
+                `;
+                
+                lessonList.appendChild(lessonItem);
+            });
+        }
+        
+        function showLesson(index) {
+            // Update active lesson
+            document.querySelectorAll('.lesson-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.lesson-item')[index].classList.add('active');
+            
+            // Mark as studied
+            studiedLessons.add(index);
+            updateProgress();
+            
+            const lesson = lessons[index];
+            const studyContent = document.getElementById('studyContent');
+            
+            studyContent.innerHTML = `
+                <div class="study-content active">
+                    <h2>${lesson.title}</h2>
+                    <div class="lesson-domain" style="color: #3498db; font-weight: bold; margin-bottom: 20px;">${lesson.domain}</div>
+                    
+                    <div class="study-section">
+                        <h3>🎯 Core Concepts</h3>
+                        <div class="concept-grid">
+                            ${lesson.concepts.map(concept => `<div class="concept-card">${concept}</div>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="study-section">
+                        <h3>💡 Why This Matters</h3>
+                        <p>${lesson.importance}</p>
+                    </div>
+                    
+                    <div class="study-section">
+                        <h3>🛠️ Practical Application</h3>
+                        <p>${lesson.application}</p>
+                    </div>
+                    
+                    <div class="practice-exercises">
+                        <h3>🎯 Practice Exercises</h3>
+                        <ul class="exercise-list">
+                            <li>Identify these patterns in your current projects</li>
+                            <li>Create a practical implementation example</li>
+                            <li>Connect this concept to other lessons you've studied</li>
+                            <li>Find real-world examples of these principles</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="synthesis-section">
+                        <h3>🌀 Cross-Domain Connections</h3>
+                        <p>Consider how this lesson connects to the golden ratio (φ = 1.618), fibonacci sequences, and other universal patterns. How might you apply these principles across different domains in your work?</p>
+                    </div>
+                    
+                    <div class="ai-tutor-section">
+                        <h3>🤖 Ask Clay-I About This Lesson</h3>
+                        <div class="chat-interface">
+                            <textarea id="questionInput-${index}" placeholder="Ask Clay-I to explain, give examples, or connect this lesson to your specific projects..." rows="3"></textarea>
+                            <button onclick="askClayI(${index})" class="ask-btn">Ask Clay-I</button>
+                        </div>
+                        <div id="clayResponse-${index}" class="clay-response"></div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function updateProgress() {
+            const progressPercent = (studiedLessons.size / lessons.length) * 100;
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+            document.getElementById('progressText').textContent = `${studiedLessons.size} of ${lessons.length} lessons explored`;
+        }
+        
+        async function askClayI(lessonIndex) {
+            const lesson = lessons[lessonIndex];
+            const questionInput = document.getElementById(`questionInput-${lessonIndex}`);
+            const responseDiv = document.getElementById(`clayResponse-${lessonIndex}`);
+            
+            const question = questionInput.value.trim();
+            if (!question) {
+                alert('Please enter a question about this lesson');
+                return;
+            }
+            
+            // Show loading
+            responseDiv.className = 'clay-response active';
+            responseDiv.innerHTML = '<div class="loading">🤖 Clay-I is thinking...</div>';
+            
+            try {
+                // Create context-aware prompt
+                const contextPrompt = `You are Clay-I, an expert in interdisciplinary knowledge synthesis. A student is studying the lesson "${lesson.title}" which covers: ${lesson.concepts.join(', ')}. 
+
+The lesson's importance: ${lesson.importance}
+Practical application: ${lesson.application}
+
+Student's question: ${question}
+
+Please provide a detailed, educational response that:
+1. Answers their specific question
+2. Connects to the golden ratio (φ = 1.618) and fibonacci patterns where relevant
+3. Shows cross-domain connections to other areas of knowledge
+4. Provides practical examples they can implement
+5. Suggests next learning steps
+
+Response should be conversational, insightful, and help deepen their understanding.`;
+
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: contextPrompt
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to get response from Clay-I');
+                }
+                
+                const data = await response.json();
+                
+                // Display Clay-I's response
+                responseDiv.innerHTML = `
+                    <div style="margin-bottom: 10px;">
+                        <strong>🤖 Clay-I responds:</strong>
+                    </div>
+                    <div style="line-height: 1.6;">
+                        ${data.response.replace(/\n/g, '<br>')}
+                    </div>
+                `;
+                
+                // Clear the input
+                questionInput.value = '';
+                
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div style="color: #ff6b6b;">
+                        ❌ Error connecting to Clay-I: ${error.message}
+                        <br><br>
+                        Make sure the Clay-I server is running on port ${API_BASE.split(':')[2]}
+                    </div>
+                `;
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Human Learning Companion initialized');
+        });
+    </script>
+</body>
+</html>
