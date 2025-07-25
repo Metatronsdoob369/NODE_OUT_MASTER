@@ -14,6 +14,7 @@ import pickle
 from datetime import datetime
 from typing import Dict, Any, List
 import uuid
+from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 import io
 import asyncio
@@ -39,6 +40,10 @@ import os
 from twilio.rest import Client
 import stripe
 
+# --- Load Configuration from Main Config File ---
+# Load the main config.env file from the project root
+load_dotenv(dotenv_path="../../config.env")
+
 # --- Configuration ---
 ROOFING_COMPANY_CONFIG = {
     "company_name": "NODE",
@@ -62,13 +67,14 @@ ROOFING_COMPANY_CONFIG = {
     ]
 }
 
-TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', 'ACd5b68feb41a52449fe96ff64f6595fdc')
-TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', 'b64f2eaddb60ee206eecc309fd0322e8')
-TWILIO_PHONE_NUMBER = os.environ.get('TWILIO_PHONE_NUMBER', '+18776745856')
+# API Configuration - Now loaded from config.env
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN') 
+TWILIO_PHONE_NUMBER = os.environ.get('TWILIO_PHONE_NUMBER')
 
-# Stripe Configuration
-STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_51RoOc6BWsn8icDzjvark29t6SK9KGcvSibFhjWQViSrPsNrqdI2V4JnddpfZ5mehvie5hwiAmr99x5H1AwFZxWMS00Ga6nfxnG')
-STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', 'pk_test_51RoOc6BWsn8icDzjI641I5BXoNSm09TZchNrSfCMwwjhvQApy8afrpxFSuNZJN3efC6brnmEdFSvRU7BsGQIyutg00gfuQTRgA')
+# Stripe Configuration - Live Production Keys from config.env
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
 stripe.api_key = STRIPE_SECRET_KEY
 
 def send_sms_via_twilio(to_number, message):
