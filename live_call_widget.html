@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NODE OUT - Live Call Widget</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .call-widget {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .widget-title {
+            font-size: 2.5em;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #00d4ff;
+        }
+
+        .call-status {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .call-button {
+            background: linear-gradient(45deg, #00ff88, #00d4ff);
+            border: none;
+            border-radius: 50px;
+            padding: 25px 50px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #000;
+            margin: 10px;
+        }
+
+        .call-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .call-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .agent-status {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .agent-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        .agent-active {
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
+        }
+
+        .agent-idle {
+            background: #666;
+        }
+
+        .call-log {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid #ff6b35;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .real-time-display {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .enterprise-badge {
+            background: linear-gradient(45deg, #ff6b35, #00d4ff);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="call-widget">
+        <h1 class="widget-title">NODE OUT LIVE CALL</h1>
+        
+        <div class="enterprise-badge">ENTERPRISE AI AUTOMATION</div>
+        
+        <div class="call-status">
+            <h3>25-Agent System Status</h3>
+            <div class="agent-status" id="agentStatus">
+                <!-- 25 agent dots will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="real-time-display">
+            <h4>Real-Time Processing</h4>
+            <div id="processingLog">Initializing 25-agent system...</div>
+        </div>
+
+        <div class="call-log" id="callLog">
+            <strong>Live Call Log:</strong><br>
+            <div id="logEntries">Ready for enterprise consultation...</div>
+        </div>
+
+        <button class="call-button" onclick="startCall()">
+            📞 START CONSULTATION CALL
+        </button>
+        
+        <button class="call-button" onclick="scheduleDemo()">
+            📅 SCHEDULE DEMO
+        </button>
+
+        <div class="enterprise-badge">
+            $2,500 Complete System
+        </div>
+    </div>
+
+    <script>
+        // Simulate 25-agent system
+        const agents = Array(25).fill().map((_, i) => ({
+            id: i + 1,
+            name: `Agent ${i + 1}`,
+            status: 'idle',
+            specialization: ['AI Strategy', 'Content Generation', 'Voice Processing', 'Social Media', 'Data Analysis'][i % 5]
+        }));
+
+        function initializeAgents() {
+            const agentStatus = document.getElementById('agentStatus');
+            agentStatus.innerHTML = '';
+            
+            agents.forEach(agent => {
+                const dot = document.createElement('div');
+                dot.className = 'agent-dot agent-idle';
+                dot.title = `${agent.name} - ${agent.specialization}`;
+                dot.id = `agent-${agent.id}`;
+                agentStatus.appendChild(dot);
+            });
+        }
+
+        function startCall() {
+            document.getElementById('processingLog').innerHTML = 
+                '🚀 Activating 25-agent consultation system...';
+            
+            // Simulate agent activation
+            agents.forEach((agent, index) => {
+                setTimeout(() => {
+                    const dot = document.getElementById(`agent-${agent.id}`);
+                    dot.className = 'agent-dot agent-active';
+                    
+                    const log = document.getElementById('logEntries');
+                    log.innerHTML += `<br>${agent.name} (${agent.specialization}): Active`;
+                    
+                    if (index === 24) {
+                        log.innerHTML += '<br><br>✅ All 25 agents ready for consultation!';
+                        log.innerHTML += '<br>🎙️ ElevenLabs voice synthesis active';
+                        log.innerHTML += '<br>💰 Stripe payment processing ready';
+                        log.innerHTML += '<br>📊 Real-time data processing enabled';
+                    }
+                }, index * 100);
+            });
+        }
+
+        function scheduleDemo() {
+            window.open('https://calendly.com/node-out/demo', '_blank');
+        }
+
+        // Initialize on load
+        initializeAgents();
+
+        // Real-time updates
+        setInterval(() => {
+            const processingLog = document.getElementById('processingLog');
+            const messages = [
+                'Processing voice synthesis...',
+                'Analyzing social media trends...', 
+                'Generating enterprise insights...',
+                'Optimizing 25-agent coordination...',
+                'Preparing enterprise automation...'
+            ];
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            processingLog.innerHTML = `🔄 ${randomMessage}`;
+        }, 3000);
+    </script>
+</body>
+</html>

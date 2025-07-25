@@ -8,34 +8,516 @@
 	<!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
-    -->
-	<link rel="manifest" href="%PUBLIC_URL%/manifest.json">
-	<link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-	<!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-	<title>React App</title>
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)), 
+                        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .glass-container {
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+
+        .clay-i-indicator {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 25px;
+            color: #4caf50;
+            font-size: 0.875rem;
+            font-weight: 500;
+            animation: pulse 2s infinite;
+        }
+
+        .voice-section {
+            margin-bottom: 3rem;
+        }
+
+        .voice-section h2 {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+            text-align: center;
+            letter-spacing: 0.1em;
+        }
+
+        .voice-agents {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .voice-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .voice-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .voice-card.active {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .agent-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .voice-card:hover .agent-icon {
+            filter: brightness(1.3);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .voice-card h3 {
+            color: white;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .voice-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .automation-section {
+            margin-bottom: 3rem;
+        }
+
+        .automation-section h2 {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+            text-align: center;
+            letter-spacing: 0.1em;
+        }
+
+        .workflow-visualization {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .workflow-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .workflow-step {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .workflow-step:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .clay-i-status {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 500;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #4caf50;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .voice-controls {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .voice-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .voice-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .voice-btn.recording {
+            background: rgba(220, 53, 69, 0.3);
+            border-color: rgba(220, 53, 69, 0.5);
+            animation: pulse 1s infinite;
+        }
+
+        .conversation-area {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            min-height: 200px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .message {
+            margin: 0.5rem 0;
+            padding: 0.75rem;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            background: rgba(0, 123, 255, 0.2);
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message.agent {
+            background: rgba(40, 167, 69, 0.2);
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .voice-agents {
+                grid-template-columns: 1fr;
+            }
+            
+            .glass-container {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
-	<noscript>
-		You need to enable JavaScript to run this app.
-	</noscript>
-	<div id="root"></div>
-	<!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <div class="glass-container">
+        <div class="hero-section">
+            <h1 class="hero-title">NODE Enterprise Platform</h1>
+            <p class="hero-subtitle">AI Automation with Clay-I Integration</p>
+            <div class="clay-i-indicator">Clay-I Learning System Active</div>
+        </div>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+        <div class="voice-section">
+            <h2>VOICE STYLES</h2>
+            <div class="voice-agents">
+                <div class="voice-card" data-agent="0">
+                    <div class="agent-icon">🎯</div>
+                    <h3>Professional</h3>
+                    <p>Confident and consultative approach</p>
+                </div>
+                <div class="voice-card" data-agent="1">
+                    <div class="agent-icon">🧠</div>
+                    <h3>Consultative</h3>
+                    <p>Analytical and strategic thinking</p>
+                </div>
+                <div class="voice-card" data-agent="2">
+                    <div class="agent-icon">👔</div>
+                    <h3>Executive</h3>
+                    <p>Decisive and authoritative presence</p>
+                </div>
+                <div class="voice-card" data-agent="3">
+                    <div class="agent-icon">⚙️</div>
+                    <h3>Technical</h3>
+                    <p>Precise and detailed expertise</p>
+                </div>
+            </div>
+        </div>
 
-      To begin the development, run `npm start` or `yarn start`.
+        <div class="voice-controls">
+            <button class="voice-btn" id="startBtn">🎤 Start Conversation</button>
+            <button class="voice-btn" id="stopBtn" style="display: none;">⏹️ Stop</button>
+        </div>
+
+        <div class="conversation-area" id="conversation">
+            <p style="text-align: center; color: rgba(255,255,255,0.7);">Click "Start Conversation" to begin...</p>
+        </div>
+
+        <div class="automation-section">
+            <h2>AUTOMATION WALKTHROUGH</h2>
+            <div class="workflow-visualization">
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <h4>Trigger</h4>
+                        <p>Voice input or API call</p>
+                    </div>
+                    <div class="workflow-step">
+                        <h4>AI Process</h4>
+                        <p>Clay-I analyzes context</p>
+                    </div>
+                    <div class="workflow-step">
+                        <h4>Logic Gate</h4>
+                        <p>Route to appropriate agent</p>
+                    </div>
+                    <div class="workflow-step">
+                        <h4>Execute</h4>
+                        <p>Perform automation task</p>
+                    </div>
+                    <div class="workflow-step">
+                        <h4>Complete</h4>
+                        <p>Voice response + logging</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clay-i-status">
+            <div class="status-indicator">
+                <span class="pulse-dot"></span>
+                Clay-I Learning System Active
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let recognition;
+        let synthesis;
+        let selectedAgent = 0;
+        let isListening = false;
+        let conversation = [];
+
+        // Voice agent configurations
+        const agents = [
+            { name: 'Professional', style: 'confident and consultative', voice: 'Google UK English Male' },
+            { name: 'Consultative', style: 'analytical and strategic', voice: 'Google UK English Female' },
+            { name: 'Executive', style: 'decisive and authoritative', voice: 'Microsoft David Desktop' },
+            { name: 'Technical', style: 'precise and detailed', voice: 'Microsoft Zira Desktop' }
+        ];
+
+        // Initialize speech recognition
+        function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
+
+                recognition.onstart = () => {
+                    console.log('Speech recognition started');
+                    document.getElementById('startBtn').style.display = 'none';
+                    document.getElementById('stopBtn').style.display = 'inline-block';
+                    document.getElementById('startBtn').classList.add('recording');
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = Array.from(event.results)
+                        .map(result => result[0])
+                        .map(result => result.transcript)
+                        .join('');
+
+                    if (event.results[event.results.length - 1].isFinal) {
+                        addMessage(transcript, 'user');
+                        processWithClayI(transcript);
+                    }
+                };
+
+                recognition.onend = () => {
+                    document.getElementById('startBtn').style.display = 'inline-block';
+                    document.getElementById('stopBtn').style.display = 'none';
+                    document.getElementById('startBtn').classList.remove('recording');
+                };
+
+                recognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                    addMessage(`Error: ${event.error}`, 'agent');
+                };
+            }
+        }
+
+        // Initialize speech synthesis
+        function initSpeechSynthesis() {
+            synthesis = window.speechSynthesis;
+        }
+
+        // Add message to conversation
+        function addMessage(text, sender) {
+            const conversation = document.getElementById('conversation');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.textContent = text;
+            conversation.appendChild(messageDiv);
+            conversation.scrollTop = conversation.scrollHeight;
+        }
+
+        // Process with Clay-I (simulated for now)
+        async function processWithClayI(message) {
+            // Simulate Clay-I processing
+            const responses = [
+                "I've analyzed your request using Clay-I's advanced intelligence. Let me provide a sophisticated response.",
+                "Based on Clay-I's learning system, here's what I've determined...",
+                "Clay-I's Renaissance intelligence suggests the optimal approach...",
+                "Using Clay-I's mastery framework, here's my recommendation..."
+            ];
+
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                addMessage(randomResponse + " Processing: " + message, 'agent');
+                speakResponse(randomResponse);
+            }, 1000);
+        }
+
+        // Speak response
+        function speakResponse(text) {
+            if (synthesis && agents[selectedAgent]) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.voice = synthesis.getVoices().find(voice => voice.name === agents[selectedAgent].voice) || synthesis.getVoices()[0];
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                synthesis.speak(utterance);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('startBtn').addEventListener('click', () => {
+            if (recognition) {
+                recognition.start();
+            } else {
+                alert('Speech recognition not supported in this browser');
+            }
+        });
+
+        document.getElementById('stopBtn').addEventListener('click', () => {
+            if (recognition) {
+                recognition.stop();
+            }
+        });
+
+        // Voice card selection
+        document.querySelectorAll('.voice-card').forEach((card, index) => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                selectedAgent = index;
+                
+                // Test the selected voice
+                const testText = `Hello, this is ${agents[index].name} voice style.`;
+                speakResponse(testText);
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initSpeechRecognition();
+            initSpeechSynthesis();
+            
+            // Select first agent by default
+            document.querySelector('.voice-card').classList.add('active');
+        });
+    </script>
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
 </body>

@@ -67,3 +67,7 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# Local Netlify folder
+.netlify
+*.mov\n*.dmg\n*.zip\n*.wav
