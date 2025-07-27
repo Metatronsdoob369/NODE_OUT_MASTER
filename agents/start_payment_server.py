@@ -12,7 +12,7 @@ from pathlib import Path
 # Change to the agents directory
 os.chdir('/Users/joewales/NODE_OUT_Master/agents')
 
-PORT = 8001
+PORT = 5173
 
 class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):

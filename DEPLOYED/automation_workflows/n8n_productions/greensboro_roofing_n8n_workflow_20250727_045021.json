@@ -1,0 +1,329 @@
+{
+  "id": "525cb5ee-c3e7-4e2c-9ec5-e115f9620222",
+  "name": "Greensboro Roofing Social Media Automation Suite",
+  "active": true,
+  "nodes": [
+    {
+      "id": "webhook_trigger",
+      "name": "\ud83d\ude80 Daily Content Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6 * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "content_generator",
+      "name": "\ud83d\udcdd NotebookLM Content Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        460,
+        300
+      ],
+      "parameters": {
+        "url": "https://notebooklm.google.com/api/generate",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "industry",
+              "value": "roofing"
+            },
+            {
+              "name": "location",
+              "value": "Greensboro NC"
+            },
+            {
+              "name": "content_type",
+              "value": "social_media"
+            },
+            {
+              "name": "batch_size",
+              "value": "90"
+            },
+            {
+              "name": "tone",
+              "value": "professional_local"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "content_processor",
+      "name": "\ud83c\udfaf Content Processor",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ],
+      "parameters": {
+        "functionCode": "// Process NotebookLM content for daily posting\nconst contentBatch = $input.all();\nconst dailyContent = [];\n\nfor (const item of contentBatch) {\n    const rawContent = item.json.generated_content;\n    \n    // Split content into daily posts\n    const posts = rawContent.split('---').filter(post => post.trim());\n    \n    posts.forEach((post, index) => {\n        const postDate = new Date();\n        postDate.setDate(postDate.getDate() + index);\n        \n        dailyContent.push({\n            post_id: 'greensboro_' + index,\n            content: post.trim(),\n            scheduled_date: postDate.toISOString(),\n            platforms: ['facebook', 'instagram'],\n            hashtags: ['#GreensboroRoofing', '#NCRoof', '#RoofRepair', '#LocalBusiness'],\n            location: 'Greensboro, NC',\n            call_to_action: 'Call for free estimate!'\n        });\n    });\n}\n\nreturn dailyContent;"
+      }
+    },
+    {
+      "id": "facebook_publisher",
+      "name": "\ud83d\udcf1 Facebook Publisher",
+      "type": "n8n-nodes-base.facebook",
+      "typeVersion": 1,
+      "position": [
+        900,
+        200
+      ],
+      "parameters": {
+        "operation": "post",
+        "content": "={{ $json.content }}",
+        "additionalFields": {
+          "link": "https://greensbororoofing.com",
+          "published": true,
+          "scheduledPublishTime": "={{ $json.scheduled_date }}"
+        }
+      }
+    },
+    {
+      "id": "instagram_publisher",
+      "name": "\ud83d\udcf8 Instagram Publisher",
+      "type": "n8n-nodes-base.instagram",
+      "typeVersion": 1,
+      "position": [
+        900,
+        400
+      ],
+      "parameters": {
+        "operation": "post",
+        "mediaType": "image",
+        "binaryData": false,
+        "caption": "={{ $json.content }} {{ $json.hashtags.join(' ') }}",
+        "additionalFields": {
+          "location": "={{ $json.location }}"
+        }
+      }
+    },
+    {
+      "id": "calendly_integration",
+      "name": "\ud83d\udcc5 Calendly Lead Capture",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1120,
+        300
+      ],
+      "parameters": {
+        "url": "https://api.calendly.com/scheduled_events",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "event_type",
+              "value": "roofing_consultation"
+            },
+            {
+              "name": "location",
+              "value": "Greensboro NC"
+            },
+            {
+              "name": "duration",
+              "value": "30"
+            },
+            {
+              "name": "description",
+              "value": "Free roofing estimate and consultation"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "lead_tracker",
+      "name": "\ud83d\udcca Lead Analytics",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1340,
+        300
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": "greensboro_roofing_leads",
+        "sheetName": "Daily Leads",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ $now.format('yyyy-MM-dd') }}",
+            "platform": "={{ $json.platform }}",
+            "content_type": "social_media",
+            "engagement": "={{ $json.engagement_metrics }}",
+            "leads_generated": "={{ $json.calendly_bookings }}",
+            "location": "Greensboro NC"
+          }
+        }
+      }
+    },
+    {
+      "id": "response_handler",
+      "name": "\u2705 Success Response",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        300
+      ],
+      "parameters": {}
+    }
+  ],
+  "connections": {
+    "webhook_trigger": {
+      "main": [
+        [
+          {
+            "node": "content_generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "content_generator": {
+      "main": [
+        [
+          {
+            "node": "content_processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "content_processor": {
+      "main": [
+        [
+          {
+            "node": "facebook_publisher",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "instagram_publisher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "facebook_publisher": {
+      "main": [
+        [
+          {
+            "node": "calendly_integration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "instagram_publisher": {
+      "main": [
+        [
+          {
+            "node": "calendly_integration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "calendly_integration": {
+      "main": [
+        [
+          {
+            "node": "lead_tracker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "lead_tracker": {
+      "main": [
+        [
+          {
+            "node": "response_handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "saveDataSuccessExecution": "all",
+    "saveDataErrorExecution": "all",
+    "executionTimeout": 3600,
+    "timezone": "America/New_York"
+  },
+  "staticData": {
+    "workflow_metadata": {
+      "created_by": "Pathsassin",
+      "client": "Greensboro Roofing Company",
+      "automation_type": "social_media_lead_generation",
+      "content_source": "NotebookLM",
+      "scheduling": "Calendly",
+      "batch_size": "90_days",
+      "platforms": [
+        "Facebook",
+        "Instagram"
+      ],
+      "location": "Greensboro NC",
+      "created_at": "2025-07-27T04:50:21.624652",
+      "features": [
+        "3-month content batching",
+        "Daily automated posting",
+        "Lead capture integration",
+        "Analytics tracking",
+        "Local market optimization"
+      ]
+    },
+    "pathsassin_intelligence": {
+      "industry_focus": "roofing",
+      "local_seo_optimization": true,
+      "lead_generation_focus": true,
+      "content_automation": "high",
+      "social_media_strategy": "professional_local",
+      "conversion_optimization": true
+    }
+  },
+  "tags": [
+    "pathsassin",
+    "roofing",
+    "greensboro",
+    "social-media",
+    "lead-generation"
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-07-27T04:50:21.624664",
+  "versionId": "525cb5ee-c3e7-4e2c-9ec5-e115f9620222"
+}
