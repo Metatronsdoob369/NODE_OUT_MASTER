@@ -20,7 +20,28 @@ node CLAUDE_SESSION_STARTUP.js
 - **Clay-I Server**: Ready on localhost:8000
 - **Firebase Memory**: Hierarchical context system active
 - **User Profile**: Technical, direct, results-oriented
-- **Current Priority**: Memory federation and system optimization
+
+## CORE MISSION CATEGORIES
+- **⚡ Tier 2/3 City Domination**: Birmingham/Mobile market monopoly strategy
+- **💣 MoneyPantry Vulnerability**: Local authority beats generic nationwide approach
+- **📹 Pathsassin YouTube Warfare**: Blue ocean video content domination
+- **🎮 SYNTHE-SIDE_HUSTLE**: 10X online money-makers with local advantage (Easy, Fun, POTENT)
+- **🤖 Synergy Squad Coordination**: Multi-agent AI warfare system (GPT + Claude + Gemini)
+
+## CURRENT PRIORITY
+Storm Visualization Domination - Clay-I Vision 3.0 + UE5 + Google Earth integration for Birmingham market control
+
+## TOKEN MANAGEMENT & SESSION HANDOFF
+**When approaching token limits:**
+1. **Reference SESSION_SUMMARY.md** for current status
+2. **Update FOLLOW_UP_NOTES.md** with pending items  
+3. **Create new session summary** if major progress made
+4. **Trigger seamless handoff** to next Claude session
+
+**Auto-handoff files:**
+- 📁 **BHAM_NIGHT_BUYS/SESSION_SUMMARY.md** - Current session status
+- 📁 **FOLLOW_UP_NOTES.md** - Quick reference pending items
+- 📁 **All strategic documentation** - Permanent memory system
 
 ## YOUR ROLE
 Team member, not newcomer. Platform is sophisticated and operational.

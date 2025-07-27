@@ -1,0 +1,51 @@
+
+<!-- Add this to your birmingham_storm_live_interface.html -->
+
+<div class="command-panel">
+    <h2>🎯 ONE-CLICK AUTOMATION TEST</h2>
+    <button class="auto-button" onclick="executeQuickTest()">
+        🚀 QUICK BIRMINGHAM SETUP
+    </button>
+    <div id="test-status" class="status-live">Ready for quick test...</div>
+</div>
+
+<script>
+function executeQuickTest() {
+    document.getElementById('test-status').innerHTML = '🔄 Executing one-click Birmingham setup...';
+    
+    // Method 1: Try to execute console command via clipboard
+    const command = 'BP_BirminghamQuickTest.OneClickBirminghamSetup';
+    
+    // Copy command to clipboard for manual paste into UE5
+    navigator.clipboard.writeText(command).then(() => {
+        document.getElementById('test-status').innerHTML = 
+            '📋 Command copied to clipboard - Paste into UE5 Console (~)';
+    });
+    
+    // Method 2: If UE5 Remote Control is enabled
+    // fetch('http://localhost:6766/remote/object/call', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({
+    //         "objectPath": "/Game/BP_BirminghamQuickTest",
+    //         "functionName": "OneClickBirminghamSetup"
+    //     })
+    // });
+}
+
+// Auto-update test status
+setInterval(() => {
+    // Check if UE5 is responsive
+    fetch('http://localhost:6766/remote/info')
+        .then(response => {
+            if (response.ok) {
+                document.getElementById('test-status').innerHTML = 
+                    '✅ UE5 Remote Control: ONLINE - Ready for automation';
+            }
+        })
+        .catch(() => {
+            document.getElementById('test-status').innerHTML = 
+                '⚠️ UE5 Remote Control: OFFLINE - Manual console required';
+        });
+}, 5000);
+</script>

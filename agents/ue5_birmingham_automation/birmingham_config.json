@@ -1,0 +1,21 @@
+{
+  "birmingham_coordinates": {
+    "latitude": 33.5186,
+    "longitude": -86.8104,
+    "height": 500
+  },
+  "cesium_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3NWZlMjM4My1hNDEyLTQ3M2EtYTM0Yi03NGM5NTYyZjAwOTgiLCJpZCI6MzI1NjM3LCJpYXQiOjE3NTM1ODk3ODl9.VO1wNwH11krpTP0oXUCE57-9yUiqOGvoD2xNysDbfLs",
+  "automation_steps": [
+    "Setup Cesium Georeference",
+    "Load Photorealistic Tiles",
+    "Configure Optimal Camera",
+    "Setup Storm Lighting",
+    "Validate Complete Setup"
+  ],
+  "performance_settings": {
+    "maximum_screen_space_error": 16.0,
+    "preload_ancestors": true,
+    "preload_siblings": true,
+    "forbid_holes": true
+  }
+}

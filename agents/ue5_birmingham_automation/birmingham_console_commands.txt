@@ -1,0 +1,14 @@
+# UE5 Console Commands for Birmingham Auto-Navigation
+# Execute these in UE5 Console (~ key) for manual setup
+
+CesiumGeoreference.SetOriginLatitude 33.5186
+CesiumGeoreference.SetOriginLongitude -86.8104
+CesiumGeoreference.SetOriginHeight 500
+CesiumGeoreference.RefreshGeoreference
+Cesium3DTileset.SetUrl https://assets.cesium.com/1
+Cesium3DTileset.SetIonAccessToken eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3NWZlMjM4My1hNDEyLTQ3M2EtYTM0Yi03NGM5NTYyZjAwOTgiLCJpZCI6MzI1NjM3LCJpYXQiOjE3NTM1ODk3ODl9.VO1wNwH11krpTP0oXUCE57-9yUiqOGvoD2xNysDbfLs
+Cesium3DTileset.SetMaximumScreenSpaceError 16.0
+Camera.SetLocation 0 0 100000
+Camera.SetRotation -45 0 0
+CesiumSunSky.SetTimeOfDay 14.0
+CesiumSunSky.SetCloudOpacity 0.7

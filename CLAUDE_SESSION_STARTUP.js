@@ -132,7 +132,22 @@ async function loadClaudeContext() {
       console.log(`  ${status ? '✅' : '❌'} ${system}: ${status ? 'ONLINE' : 'OFFLINE'}`);
     });
     
+    console.log('\n🎯 CORE MISSION CATEGORIES:');
+    console.log('  ⚡ Tier 2/3 City Domination - Birmingham/Mobile market monopoly');
+    console.log('  💣 MoneyPantry Vulnerability Exploitation - Local authority vs generic');  
+    console.log('  📹 Pathsassin YouTube Warfare - Blue ocean video domination');
+    console.log('  🎮 SYNTHE-SIDE_HUSTLE - 10X online money-makers with local advantage');
+    console.log('  🤖 Synergy Squad Coordination - Multi-agent AI warfare system');
+    
     console.log('\n🚀 STATUS: Ready for immediate contribution to NODE platform');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+    
+    // Auto Session Handoff Warning
+    console.log('⚠️  TOKEN MANAGEMENT: Monitor conversation length');
+    console.log('🔄 AUTO-HANDOFF: When approaching token limit, reference:');
+    console.log('   📁 BHAM_NIGHT_BUYS/SESSION_SUMMARY.md');
+    console.log('   📁 FOLLOW_UP_NOTES.md');
+    console.log('   📁 Current session achievements and next steps');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
     
     return startupContext;
