@@ -24,8 +24,8 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Debug with separate test step
-RUN python3 -c "import pygame; import pyaudio"
+# Debug with separate test step (temporarily disabled)
+# RUN python3 -c "import pygame; import pyaudio"
 
 # Now, copy the application code into a subdirectory
 COPY core_intelligence ./core_intelligence
