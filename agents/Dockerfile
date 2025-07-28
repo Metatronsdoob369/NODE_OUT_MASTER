@@ -19,10 +19,10 @@ RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
     libsndfile1 \
-    espeak \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-RUN pip install --no-cache-dir -r requirements.txt
-RUN python3 -c "import pygame, pyaudio"
+    espeak && \
+    pip install --no-cache-dir -r requirements.txt && \
+    python3 -c "import pygame, pyaudio" && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Now, copy the application code into a subdirectory
 COPY core_intelligence ./core_intelligence
@@ -35,7 +35,7 @@ WORKDIR /app/core_intelligence
 EXPOSE 8000
 
 # Define environment variables
-ENV OPENAI_API_KEY your_openai_api_key_here
+ENV OPENAI_API_KEY=""
 
 # Correct command to run the application with reload in the correct directory
-CMD ["uvicorn", "clay_i_server:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "debug", "--reload", "--reload-dir", "."]
+CMD ["uvicorn", "clay_i_server:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "debug", "--reload", "--reload-dir", "/app/core_intelligence"]
