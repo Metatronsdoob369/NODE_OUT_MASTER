@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clay-i-server
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clay-i
+  template:
+    metadata:
+      labels:
+        app: clay-i
+    spec:
+      containers:
+      - name: clay-i
+        image: python:3.11-slim
+        ports:
+        - containerPort: 8000
+        command: ["/bin/bash"]
+        args: ["-c", "cd /app && pip install fastapi uvicorn requests && python -m uvicorn main:app --host 0.0.0.0 --port 8000"]
+        volumeMounts:
+        - name: clay-i-source
+          mountPath: /app
+        env:
+        - name: PYTHONPATH
+          value: "/app"
+      volumes:
+      - name: clay-i-source
+        hostPath:
+          path: /Users/joewales/NODE_OUT_Master/AGENT/local_ai_agent_frontend_backend/backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clay-i-service
+spec:
+  selector:
+    app: clay-i
+  ports:
+  - port: 8000
+    targetPort: 8000
+  type: LoadBalancer

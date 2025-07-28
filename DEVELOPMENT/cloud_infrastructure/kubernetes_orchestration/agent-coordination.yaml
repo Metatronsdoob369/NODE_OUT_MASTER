@@ -1,0 +1,110 @@
+# PATHSASSIN AGENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pathsassin-agent
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pathsassin
+  template:
+    metadata:
+      labels:
+        app: pathsassin
+    spec:
+      containers:
+      - name: pathsassin
+        image: python:3.11-slim
+        ports:
+        - containerPort: 8000  # Same port as Clay-I, no conflict!
+        env:
+        - name: CLAY_I_URL
+          value: "http://clay-i-service:8000"  # Auto-discovery
+        - name: REVENUE_AGENT_URL
+          value: "http://revenue-agent-service:8000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pathsassin-service
+spec:
+  selector:
+    app: pathsassin
+  ports:
+  - port: 8000
+    targetPort: 8000
+---
+# REVENUE GENERATOR AGENT  
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: revenue-agent
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: revenue-agent
+  template:
+    metadata:
+      labels:
+        app: revenue-agent
+    spec:
+      containers:
+      - name: revenue-agent
+        image: python:3.11-slim
+        ports:
+        - containerPort: 8000  # Same port again, still no conflict!
+        env:
+        - name: CLAY_I_URL
+          value: "http://clay-i-service:8000"
+        - name: PATHSASSIN_URL
+          value: "http://pathsassin-service:8000"
+        - name: PAYMENT_PORTAL_URL
+          value: "http://payment-portal-simple-service:80"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: revenue-agent-service
+spec:
+  selector:
+    app: revenue-agent
+  ports:
+  - port: 8000
+    targetPort: 8000
+---
+# SYNERGY SQUAD COORDINATOR
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synergy-squad
+spec:
+  replicas: 1  # Single coordinator
+  selector:
+    matchLabels:
+      app: synergy-squad
+  template:
+    metadata:
+      labels:
+        app: synergy-squad
+    spec:
+      containers:
+      - name: coordinator
+        image: python:3.11-slim
+        ports:
+        - containerPort: 8000
+        env:
+        - name: AGENT_SERVICES
+          value: "clay-i-service:8000,pathsassin-service:8000,revenue-agent-service:8000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: synergy-squad-service
+spec:
+  selector:
+    app: synergy-squad
+  ports:
+  - port: 8000
+    targetPort: 8000

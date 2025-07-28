@@ -31,11 +31,11 @@ const PROJECT_CONTEXT = {
     
     // Hot files (instant access)
     hot_files: [
-        'CLAUDE_SESSION_STARTUP.js',
-        'agents/clay_i_server.py',
-        'agents/Pathsassin_agent.py',
-        'automated_city_builder.py',
-        'BHAM_NIGHT_BUYS/SESSION_SUMMARY.md'
+        'INTEL/CLAUDE.md',
+        'agents/core_intelligence/clay_i_server.py',
+        'agents/specialized_agents/Pathsassin_agent.py',
+        'domains/automation/automated_city_builder.py',
+        'domains/birmingham_storm/SESSION_SUMMARY.md'
     ],
     
     // Quick actions
@@ -76,12 +76,23 @@ function detectEditor() {
     return 'generic';
 }
 
+function injectVSCodeSnippets() { console.log('⚙️  VS Code snippet injection (placeholder)'); }
+function setupVSCodeTasks() { console.log('⚙️  VS Code task integration (placeholder)'); }
+function setupCursorProject() { console.log('⚙️  Cursor project setup (placeholder)'); }
+function linkCursorAgents() { console.log('⚙️  Cursor agent linking (placeholder)'); }
+function setupWindsurfCascade() { console.log('⚙️  Windsurf Cascade setup (placeholder)'); }
+function linkWindsurfIntelligence() { console.log('⚙️  Windsurf intelligence linking (placeholder)'); }
+
 function setupVSCodeWorkspace() {
+    fs.mkdirSync('.vscode', { recursive: true });
     const workspaceConfig = {
         folders: [
             { path: "." },
+            { path: "./ONBOARDING", name: "🚀 Onboarding" },
+            { path: "./INTEL", name: "🎯 Intel" },
+            { path: "./intelligence", name: "📚 Intelligence" },
             { path: "./agents", name: "🤖 Agents" },
-            { path: "./BHAM_NIGHT_BUYS", name: "⚡ Birmingham" },
+            { path: "./domains", name: "🌐 Domains" },
             { path: "./workflows", name: "🔧 Workflows" }
         ],
         settings: {
@@ -116,6 +127,7 @@ function setupVSCodeWorkspace() {
 }
 
 function injectCursorContext() {
+    fs.mkdirSync('.cursor', { recursive: true });
     const cursorContext = {
         project_type: "AI Agent Coordination Platform",
         main_technologies: ["Node.js", "Python", "N8N", "UE5", "Firebase"],
@@ -138,6 +150,17 @@ function cascadeIntelligence() {
         console.log('⚠️  Clay-I memory not available, using local context');
     }
     
+    // Load integration notes
+    try {
+        const integrationNotePath = path.resolve(__dirname, '../../../INTEL/EDITOR_INTEGRATION_NOTE.md');
+        const integrationNoteContent = fs.readFileSync(integrationNotePath, 'utf8');
+        console.log('\n📝 Latest Integration Notes Loaded');
+        // Add to project context for other modules to use
+        PROJECT_CONTEXT.integration_notes = integrationNoteContent;
+    } catch (e) {
+        console.log('⚠️  Could not load EDITOR_INTEGRATION_NOTE.md:', e.message);
+    }
+
     // Setup agent coordination
     const agentStatus = checkAgentStatus();
     console.log('🤖 Agent coordination status:', agentStatus);
@@ -157,7 +180,7 @@ function checkAgentStatus() {
 
 function analyzeProjectStructure() {
     const structure = {};
-    const dirs = ['agents', 'BHAM_NIGHT_BUYS', 'workflows', 'CODE'];
+    const dirs = ['ONBOARDING', 'INTEL', 'intelligence', 'agents', 'domains', 'workflows'];
     
     dirs.forEach(dir => {
         if (fs.existsSync(dir)) {
@@ -170,10 +193,11 @@ function analyzeProjectStructure() {
 
 function setupQuickActions() {
     // Create quick action scripts
+    fs.mkdirSync('.editor-actions', { recursive: true });
     const quickActions = {
-        'start-agents.sh': '#!/bin/bash\npython agents/clay_i_server.py &\npython agents/Pathsassin_agent.py &',
+        'start-agents.sh': '#!/bin/bash\npython agents/core_intelligence/clay_i_server.py &\npython agents/specialized_agents/Pathsassin_agent.py &',
         'deploy-payment.sh': '#!/bin/bash\nnpm run dev &\necho "Payment portal: localhost:5173"',
-        'birmingham-automation.sh': '#!/bin/bash\npython automated_city_builder.py'
+        'birmingham-automation.sh': '#!/bin/bash\npython domains/automation/automated_city_builder.py'
     };
     
     Object.entries(quickActions).forEach(([name, script]) => {
@@ -206,6 +230,12 @@ function executeEditorCascade() {
     console.log('🧠 Intelligence Cascaded');
     console.log('');
     console.log('Ready for immediate productivity.');
+
+    if (PROJECT_CONTEXT.integration_notes) {
+        console.log('\n--- 📝 Integration Briefing ---');
+        console.log(PROJECT_CONTEXT.integration_notes);
+        console.log('------------------------------------\n');
+    }
 }
 
 // Execute if run directly

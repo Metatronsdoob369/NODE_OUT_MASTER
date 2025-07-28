@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-portal
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payment-portal
+  template:
+    metadata:
+      labels:
+        app: payment-portal
+    spec:
+      containers:
+      - name: payment-portal
+        image: node:18-alpine
+        ports:
+        - containerPort: 5173
+        command: ["/bin/sh"]
+        args: ["-c", "cd /app && npm install && npm run dev"]
+        volumeMounts:
+        - name: app-source
+          mountPath: /app
+        env:
+        - name: PORT
+          value: "5173"
+        - name: NODE_ENV
+          value: "production"
+      volumes:
+      - name: app-source
+        hostPath:
+          path: /Users/joewales/NODE_OUT_Master/DEPLOYED/payment_systems/storm_payment_portal
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-portal-service
+spec:
+  selector:
+    app: payment-portal
+  ports:
+  - port: 80
+    targetPort: 5173
+  type: LoadBalancer

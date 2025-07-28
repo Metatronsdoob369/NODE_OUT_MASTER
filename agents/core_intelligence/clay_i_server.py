@@ -22,6 +22,20 @@ import anthropic
 import os
 import base64
 
+# ─── Voice Agent Integration ──────────────────────────────────────────────────
+import sys
+# Add the parent 'agents' directory to the system path to allow cross-module imports
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+try:
+    from voice_synthesis.CLAUDE_Voice_integration_system import VoiceAgent, RoofingVoiceAgent
+    VOICE_AGENT_AVAILABLE = True
+    print("✅ VoiceAgent integration modules loaded successfully")
+except ImportError as e:
+    VOICE_AGENT_AVAILABLE = False
+    print(f"⚠️ VoiceAgent integration failed: {e}")
+# ────────────────────────────────────────────────────────────────────────────────
+
 # ElevenLabs integration - temporarily disabled for testing
 ELEVENLABS_AVAILABLE = False
 print("⚠️ ElevenLabs temporarily disabled for One0 learning profile testing")
@@ -464,6 +478,60 @@ NODE_VOICES = {
 # ─── App Initialization ────────────────────────────────────────────────────────
 from fastapi.staticfiles import StaticFiles
 app = FastAPI()
+
+# ─── Architectural Adapters & Component Initialization ────────────────────────
+
+# This adapter makes the functional memory system compatible with the object-oriented VoiceAgent.
+class MemoryAdapter:
+    def __init__(self, memory_functions):
+        self._memory = memory_functions
+
+    def get_mastery_status(self):
+        # This is a placeholder. The VoiceAgent requires this method, but it doesn't exist
+        # in the firebase memory system. We will return a default value.
+        print("⚠️  MemoryAdapter: get_mastery_status() is a placeholder.")
+        return {'overall_mastery': 0, 'total_interactions': 0}
+
+    def add_interaction(self, interaction_type, user_input, response, session_id):
+        # This is a placeholder. The VoiceAgent requires this method.
+        print(f"⚠️  MemoryAdapter: add_interaction() is a placeholder for session {session_id}.")
+        pass
+
+# This adapter provides the methods required by the VoiceAgent.
+class ContentReactorAdapter:
+    def analyze_content_for_pathsassin(self, *args, **kwargs):
+        print("⚠️  ContentReactorAdapter: analyze_content_for_pathsassin() is a placeholder.")
+        return {'pathsassin_topics': [], 'overall_viral_score': 0}
+
+    def generate_pathsassin_content_strategy(self, *args, **kwargs):
+        print("⚠️  ContentReactorAdapter: generate_pathsassin_content_strategy() is a placeholder.")
+        return {}
+
+class AgentAPIAdapter:
+    def __init__(self):
+        self.base_system_prompt = ""
+
+    def generate_response_with_prompt(self, *args, **kwargs):
+        print("⚠️  AgentAPIAdapter: generate_response_with_prompt() is a placeholder.")
+        return "I am currently unable to generate a response."
+
+# Initialize the adapters
+memory_adapter = MemoryAdapter(None)
+content_reactor_adapter = ContentReactorAdapter()
+agent_api_adapter = AgentAPIAdapter()
+
+# Initialize Voice Agent if available
+if VOICE_AGENT_AVAILABLE:
+    voice_agent = VoiceAgent(memory_adapter, content_reactor_adapter, agent_api_adapter)
+    roofing_voice_agent = RoofingVoiceAgent(voice_agent, None)  # 'None' for roofing_engine for now
+    print("✅ VoiceAgent initialized successfully using MemoryAdapter")
+else:
+    voice_agent = None
+    roofing_voice_agent = None
+    print("⚠️ VoiceAgent not initialized")
+# ────────────────────────────────────────────────────────────────────────────────
+
+
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -1116,6 +1184,14 @@ async def learn_endpoint(lesson: Lesson):
     return {"status": "stored", "title": lesson.lesson_title}
 
 # ─── CHAT Endpoint ──────────────────────────────────────────────────────────────
+class EmpathyWaveRequest(BaseModel):
+    base64_audio: str
+    user_id: str = "joe_wales"
+
+class VoiceSynthesisRequest(BaseModel):
+    text: str
+    voice_name: str = "Rachel"
+
 class ChatRequest(BaseModel):
     message: str
     user_identity: str = "Anonymous"
@@ -1240,6 +1316,28 @@ Show cross-domain connections and synthesis opportunities."""
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     return {"response": reply}
+
+# ─── Voice Synthesis Endpoint ───────────────────────────────────────────────────
+@app.post("/api/voice/synthesize")
+async def synthesize_voice(request: VoiceSynthesisRequest):
+    if not voice_agent or not VOICE_AGENT_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Voice agent not available.")
+
+    try:
+        # Note: The underlying elevenlabs client may have been disabled in the agent's code.
+        audio_data = await voice_agent.generate_elevenlabs_speech(
+            text=request.text,
+            voice_name=request.voice_name
+        )
+
+        if not audio_data:
+            raise HTTPException(status_code=500, detail="Failed to generate speech. The service may be disabled or encountering an error.")
+
+        return StreamingResponse(iter([audio_data]), media_type="audio/mpeg")
+
+    except Exception as e:
+        print(f"❌ Error during voice synthesis: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ─── STATUS Endpoint ────────────────────────────────────────────────────────────
 @app.get("/api/status")
@@ -2908,7 +3006,8 @@ from firebase_admin import credentials, firestore
 
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate("serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
+if not firebase_admin._apps:
+    firebase_admin.initialize_app(cred)
 fs = firestore.client()
 
 # Helper to post messages to Firestore

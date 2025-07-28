@@ -1,0 +1,58 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "./ONBOARDING",
+      "name": "🚀 Onboarding"
+    },
+    {
+      "path": "./INTEL",
+      "name": "🎯 Intel"
+    },
+    {
+      "path": "./intelligence",
+      "name": "📚 Intelligence"
+    },
+    {
+      "path": "./agents",
+      "name": "🤖 Agents"
+    },
+    {
+      "path": "./domains",
+      "name": "🌐 Domains"
+    },
+    {
+      "path": "./workflows",
+      "name": "🔧 Workflows"
+    }
+  ],
+  "settings": {
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "files.associations": {
+      "*.clay": "javascript",
+      "CLAUDE*": "markdown"
+    }
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "🚀 Start Clay-I",
+        "type": "shell",
+        "command": "python agents/clay_i_server.py",
+        "group": "build"
+      },
+      {
+        "label": "💰 Launch Payment Portal",
+        "type": "shell",
+        "command": "npm run dev",
+        "options": {
+          "cwd": "${workspaceFolder}"
+        },
+        "group": "build"
+      }
+    ]
+  }
+}

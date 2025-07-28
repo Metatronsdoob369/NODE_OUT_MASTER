@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clay-i-deployment
+  labels:
+    app: clay-i
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clay-i
+  template:
+    metadata:
+      labels:
+        app: clay-i
+    spec:
+      imagePullSecrets:
+      - name: ghcr-secret
+      containers:
+      - name: clay-i-container
+        image: ghcr.io/metatronsdoob369/clay-i-agent:v8
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        env:
+        - name: OPENAI_API_KEY
+          value: "your_openai_api_key_here"
+        - name: ANTHROPIC_API_KEY
+          value: "your_anthropic_api_key_here"

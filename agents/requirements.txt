@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+openai
+anthropic
+requests
+firebase-admin
+python-multipart
+SpeechRecognition
+pyttsx3
+pygame
+elevenlabs
+pyaudio
+soundfile
+numpy
+yt-dlp
+opencv-python-headless

@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-portal-simple
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payment-portal-simple
+  template:
+    metadata:
+      labels:
+        app: payment-portal-simple
+    spec:
+      containers:
+      - name: payment-portal
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html-content
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html-content
+        configMap:
+          name: payment-portal-html
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: payment-portal-html
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>NODE OUT Storm Response - Payment Portal</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+            .container { max-width: 800px; margin: 0 auto; text-align: center; }
+            .service-card { background: rgba(255,255,255,0.1); padding: 30px; margin: 20px 0; border-radius: 15px; backdrop-filter: blur(10px); }
+            .price { font-size: 2em; color: #ffd700; font-weight: bold; }
+            .btn { background: #ff6b35; color: white; padding: 15px 30px; border: none; border-radius: 25px; font-size: 1.2em; cursor: pointer; margin: 10px; }
+            .btn:hover { background: #e55a30; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🌪️ NODE OUT STORM RESPONSE</h1>
+            <h2>Emergency Storm Damage Services - Live on Kubernetes</h2>
+            
+            <div class="service-card">
+                <h3>🛡️ Emergency Tarp Installation</h3>
+                <div class="price">From $299</div>
+                <p>Immediate protection for damaged roofs</p>
+                <button class="btn" onclick="initiatePayment('tarp', 299)">Book Emergency Tarp</button>
+            </div>
+            
+            <div class="service-card">
+                <h3>🔧 Storm Damage Assessment</h3>
+                <div class="price">From $199</div>
+                <p>Professional damage evaluation</p>
+                <button class="btn" onclick="initiatePayment('assessment', 199)">Schedule Assessment</button>
+            </div>
+            
+            <div class="service-card">
+                <h3>🏠 Complete Roof Replacement</h3>
+                <div class="price">From $8,999</div>
+                <p>Full roof restoration and replacement</p>
+                <button class="btn" onclick="initiatePayment('roof', 8999)">Get Roof Quote</button>
+            </div>
+            
+            <div class="service-card">
+                <h3>⚡ Emergency Board-Up</h3>
+                <div class="price">From $149</div>
+                <p>Secure damaged windows and openings</p>
+                <button class="btn" onclick="initiatePayment('boardup', 149)">Emergency Board-Up</button>
+            </div>
+            
+            <div style="margin-top: 40px;">
+                <h3>🚀 Powered by Kubernetes</h3>
+                <p>Auto-scaling payment processing • Zero downtime • Enterprise reliability</p>
+                <p><strong>Status:</strong> <span style="color: #00ff00;">● LIVE</span> | <strong>Pods:</strong> <span id="pod-count">2</span> | <strong>Load Balanced:</strong> ✅</p>
+            </div>
+        </div>
+        
+        <script>
+            function initiatePayment(service, amount) {
+                alert(`Initiating ${service} payment for $${amount}\n\nThis is running on Kubernetes!\n- Auto-scaling enabled\n- High availability\n- Load balanced across multiple pods`);
+                
+                // Simulate payment processing
+                setTimeout(() => {
+                    alert(`Payment processed successfully!\n\nService: ${service}\nAmount: $${amount}\n\nKubernetes handled the transaction seamlessly.`);
+                }, 1500);
+            }
+            
+            // Update pod count dynamically
+            setInterval(() => {
+                fetch('/api/pods').catch(() => {
+                    document.getElementById('pod-count').textContent = '2+';
+                });
+            }, 5000);
+        </script>
+    </body>
+    </html>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-portal-simple-service
+spec:
+  selector:
+    app: payment-portal-simple
+  ports:
+  - port: 80
+    targetPort: 80
+  type: LoadBalancer
