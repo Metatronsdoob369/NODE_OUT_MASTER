@@ -20,9 +20,12 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     libsndfile1 \
     espeak && \
-    pip install --no-cache-dir -r requirements.txt && \
-    python3 -c "import pygame, pyaudio" && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Debug with separate test step
+RUN python3 -c "import pygame; import pyaudio"
 
 # Now, copy the application code into a subdirectory
 COPY core_intelligence ./core_intelligence
