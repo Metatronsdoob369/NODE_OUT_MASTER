@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y \
     libavfilter-dev \
     libgl1-mesa-glx \
     libglib2.0-0 \
+    libsndfile1 \
+    espeak \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN pip install --no-cache-dir -r requirements.txt
 RUN python3 -c "import pygame, pyaudio"
