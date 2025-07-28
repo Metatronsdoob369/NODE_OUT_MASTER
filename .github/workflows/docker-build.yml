@@ -25,4 +25,4 @@ jobs:
         context: ./agents
         file: ./agents/Dockerfile
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/clay-i-agent:latest,ghcr.io/${{ github.repository_owner }}/clay-i-agent:${{ github.sha }}
+        tags: ghcr.io/${{ github.repository_owner }}/clay-i-agent:latest,ghcr.io/${{ github.repository_owner }}/clay-i-agent:v14
