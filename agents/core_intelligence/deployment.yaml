@@ -18,8 +18,8 @@ spec:
       - name: ghcr-secret
       containers:
       - name: clay-i-container
-        image: ghcr.io/metatronsdoob369/clay-i-agent:v8
-        imagePullPolicy: IfNotPresent
+        image: clay-i-agent:v13
+        imagePullPolicy: Never
         ports:
         - containerPort: 8000
         env:

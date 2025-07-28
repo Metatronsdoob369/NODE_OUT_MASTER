@@ -9,10 +9,13 @@ WORKDIR /app
 # Copy the requirements file and install dependencies first
 COPY requirements.txt .
 RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
     python3-dev \
     libasound2-dev \
     libportaudio2 \
     libportaudiocpp0 \
+    portaudio19-dev \
     ffmpeg \
     libavdevice-dev \
     libavfilter-dev \
@@ -24,8 +27,8 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Debug with separate test step (temporarily disabled)
-# RUN python3 -c "import pygame; import pyaudio"
+# Debug with separate test step
+RUN python3 -c "import pygame; import pyaudio"
 
 # Now, copy the application code into a subdirectory
 COPY core_intelligence ./core_intelligence

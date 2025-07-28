@@ -544,35 +544,71 @@
         
         let elements;
         let paymentElement;
+        let clientSecret;
         
-        // Get URL parameters
+        // Get service data from URL parameters or use defaults
         const urlParams = new URLSearchParams(window.location.search);
-        const clientSecret = urlParams.get('payment_intent');
-        const quoteId = urlParams.get('quote_id');
+        const serviceData = {
+            service_type: urlParams.get('service') || 'storm_response',
+            service_name: urlParams.get('name') || 'Storm Response Service',
+            amount: parseFloat(urlParams.get('amount')) || 299.00,
+            customer_email: urlParams.get('email') || '',
+            description: urlParams.get('description') || 'Professional storm response and repair service',
+            quote_id: urlParams.get('quote_id') || 'QT-' + Date.now()
+        };
         
-        // Enhanced mock quote data with more details
+        // Mock quote data for display (will be replaced by real service data)
         const mockQuoteData = {
-            quote_id: quoteId || 'Q-STORM-2025',
-            customer_name: 'Sarah Johnson',
-            customer_address: '1247 Oak Street, Birmingham, AL 35203',
-            damage_type: 'Severe Roof Damage',
-            urgency_level: 'Emergency Service',
-            amount: 9880.38,
-            payment_type: 'Emergency Payment',
-            timeline: 'Same day emergency service'
+            quote_id: serviceData.quote_id,
+            customer_name: 'Customer',
+            customer_address: 'Service Location',
+            damage_type: serviceData.service_name,
+            urgency_level: 'Standard',
+            amount: serviceData.amount,
+            payment_type: 'Service Payment',
+            timeline: 'Upon Payment'
         };
         
         // Initialize payment form with glassmorphic styling
         async function initializePayment() {
-            if (!clientSecret) {
-                showError('Invalid payment link. Please contact our support team at (205) 307-9153');
-                return;
+            try {
+                // Create payment intent via backend API
+                const response = await fetch('/api/create-payment-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        service_type: serviceData.service_type,
+                        service_name: serviceData.service_name,
+                        amount: serviceData.amount,
+                        currency: 'usd',
+                        customer_email: serviceData.customer_email,
+                        description: serviceData.description,
+                        metadata: {
+                            quote_id: serviceData.quote_id
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to create payment intent');
+                }
+                
+                const data = await response.json();
+                clientSecret = data.client_secret;
+                
+                if (!clientSecret) {
+                    throw new Error('No client secret received');
+                }
+                
+            } catch (error) {
+                console.error('Payment initialization failed:', error);
+                // Fallback for testing - remove in production
+                console.log('Using test mode - payment will not process');
+                clientSecret = 'pi_test_fallback_secret';
             }
             
-            // Update UI with quote data
-            updateQuoteDisplay();
-            
-            // Create Stripe elements with custom styling
             elements = stripe.elements({
                 clientSecret: clientSecret,
                 appearance: {

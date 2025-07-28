@@ -47,9 +47,20 @@ class VoiceAgent:
         # Initialize voice engines
         if VOICE_LIBS_AVAILABLE:
             self.speech_recognizer = sr.Recognizer()
-            self.microphone = sr.Microphone()
-            self.tts_engine = pyttsx3.init()
-            self.setup_tts_engine()
+            try:
+                self.microphone = sr.Microphone()
+                print("✅ Microphone initialized successfully")
+            except OSError as e:
+                print(f"⚠️ Microphone initialization failed (containerized environment): {e}")
+                self.microphone = None
+            
+            try:
+                self.tts_engine = pyttsx3.init()
+                self.setup_tts_engine()
+                print("✅ TTS engine initialized successfully")
+            except Exception as e:
+                print(f"⚠️ TTS engine initialization failed: {e}")
+                self.tts_engine = None
             
         # ElevenLabs setup
         self.elevenlabs_api_key = os.getenv('ELEVENLABS_API_KEY')
