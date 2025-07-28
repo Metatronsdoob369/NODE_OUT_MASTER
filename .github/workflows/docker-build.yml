@@ -22,6 +22,12 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Convert owner name to lowercase
+      id: string
+      uses: vishalmamidi/lowercase-action@v1
+      with:
+        string: ${{ github.repository_owner }}
+
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
@@ -29,5 +35,5 @@ jobs:
         file: ./agents/Dockerfile
         push: true
         tags: |
-          ghcr.io/${{ github.repository_owner,, }}/clay-i-agent:latest
-          ghcr.io/${{ github.repository_owner,, }}/clay-i-agent:v15
+          ghcr.io/${{ steps.string.outputs.lowercase }}/clay-i-agent:latest
+          ghcr.io/${{ steps.string.outputs.lowercase }}/clay-i-agent:v15
