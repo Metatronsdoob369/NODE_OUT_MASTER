@@ -1,5 +1,5 @@
 name: Docker Image CI
-# Docker Hub authentication configured
+# Docker Hub authentication configured with correct username
 
 on:
   workflow_dispatch:
