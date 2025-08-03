@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NODE OUT - Enterprise AI Automation</title>
+    <title>NODE OUT - Enterprise AI Automation System</title>
     <script src="https://js.stripe.com/v3/"></script>
     <style>
         * {
@@ -13,119 +13,108 @@
         }
 
         body {
-            background: #1a1a1a;
-            color: #ffffff;
+            background: #ffffff;
+            color: #333333;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             line-height: 1.6;
             padding: 40px 20px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
-            background: #2a2a2a;
-            border: 1px solid #404040;
+            background: #ffffff;
+            border: 1px solid #e1e1e1;
             border-radius: 8px;
             padding: 60px 40px;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 50px;
         }
 
         .title {
-            font-size: 2.5em;
-            color: #ffffff;
-            margin-bottom: 20px;
+            font-size: 2.2em;
+            color: #333333;
+            margin-bottom: 15px;
             font-weight: 600;
         }
 
         .subtitle {
-            font-size: 1.2em;
-            color: #cccccc;
+            font-size: 1.1em;
+            color: #666666;
             margin-bottom: 40px;
         }
 
-        .services {
-            margin: 40px 0;
+        .main-offer {
+            text-align: center;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 40px 30px;
+            margin-bottom: 40px;
         }
 
-        .service {
-            background: #333333;
-            border: 1px solid #505050;
-            border-radius: 6px;
-            padding: 30px;
+        .offer-title {
+            font-size: 1.5em;
+            color: #333333;
             margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            font-weight: 500;
         }
 
-        .service-info h3 {
-            font-size: 1.4em;
-            color: #ffffff;
-            margin-bottom: 8px;
+        .offer-description {
+            color: #666666;
+            margin-bottom: 30px;
+            font-size: 1em;
+            line-height: 1.7;
         }
 
-        .service-info p {
-            color: #cccccc;
-            font-size: 0.95em;
-        }
-
-        .service-price {
-            font-size: 1.8em;
-            color: #ffffff;
+        .price {
+            font-size: 2.5em;
+            color: #333333;
             font-weight: 600;
-            margin-right: 20px;
+            margin-bottom: 30px;
         }
 
         .buy-button {
-            background: #0070f3;
+            background: #007bff;
             border: none;
             border-radius: 4px;
-            padding: 12px 24px;
-            font-size: 1em;
+            padding: 15px 40px;
+            font-size: 1.1em;
             font-weight: 500;
             cursor: pointer;
             color: #ffffff;
             transition: background-color 0.2s;
+            width: 100%;
+            max-width: 300px;
         }
 
         .buy-button:hover {
-            background: #0051cc;
+            background: #0056b3;
         }
 
         .contact {
             text-align: center;
-            margin-top: 60px;
-            padding-top: 40px;
-            border-top: 1px solid #404040;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #e1e1e1;
         }
 
         .contact p {
-            color: #cccccc;
-            margin-bottom: 20px;
+            color: #666666;
+            margin-bottom: 15px;
+            font-size: 0.95em;
         }
 
         .contact a {
-            color: #0070f3;
+            color: #007bff;
             text-decoration: none;
         }
 
         .contact a:hover {
             text-decoration: underline;
-        }
-
-        @media (max-width: 600px) {
-            .service {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .service-price {
-                margin: 20px 0;
-            }
         }
     </style>
 </head>
@@ -133,57 +122,24 @@
     <div class="container">
         <div class="header">
             <h1 class="title">NODE OUT</h1>
-            <p class="subtitle">Enterprise AI Automation Platform</p>
+            <p class="subtitle">Enterprise AI Automation System</p>
         </div>
         
-        <div class="services">
-            <div class="service">
-                <div class="service-info">
-                    <h3>ANYmate 3D Asset System</h3>
-                    <p>Complete 3D asset generation system with Blender integration</p>
-                </div>
-                <div class="service-price">$997</div>
-                <button class="buy-button" onclick="buyService('price_1RoOZ8BlowCOiyeDo3uHa97', 'ANYmate 3D Asset System')">
-                    Purchase
-                </button>
-            </div>
-
-            <div class="service">
-                <div class="service-info">
-                    <h3>AI Consciousness Consulting</h3>
-                    <p>AI strategy and implementation consulting</p>
-                </div>
-                <div class="service-price">$497</div>
-                <button class="buy-button" onclick="buyService('price_1RoOZ9BlowCOiyeDkL4vWx3', 'AI Consciousness Consulting')">
-                    Purchase
-                </button>
-            </div>
-
-            <div class="service">
-                <div class="service-info">
-                    <h3>PRD Implementation Plan</h3>
-                    <p>Technical implementation plan with documentation</p>
-                </div>
-                <div class="service-price">$297</div>
-                <button class="buy-button" onclick="buyService('price_1RoOZABlowCOiyeDtHx8NpQ', 'PRD Implementation Plan')">
-                    Purchase
-                </button>
-            </div>
-
-            <div class="service">
-                <div class="service-info">
-                    <h3>PATHsassin Viral Strategy</h3>
-                    <p>Viral content strategy implementation</p>
-                </div>
-                <div class="service-price">$197</div>
-                <button class="buy-button" onclick="buyService('price_1RoOZBBlowCOiyeDmNx7VkP', 'PATHsassin Viral Strategy')">
-                    Purchase
-                </button>
-            </div>
+        <div class="main-offer">
+            <h2 class="offer-title">Complete Enterprise AI Solution</h2>
+            <p class="offer-description">
+                Full-service AI automation implementation including 25-agent network, 
+                3D asset generation, consciousness-enhanced processing, and enterprise integration. 
+                Everything you need for immediate deployment.
+            </p>
+            <div class="price">$2,500</div>
+            <button class="buy-button" onclick="buyService('price_1RoOZ8BlowCOiyeDo3uHa97', 'NODE OUT Enterprise AI System')">
+                Purchase Now
+            </button>
         </div>
 
         <div class="contact">
-            <p>For enterprise inquiries or custom implementations:</p>
+            <p>Questions or custom requirements?</p>
             <p><a href="mailto:contact@nodeout.com">contact@nodeout.com</a></p>
         </div>
     </div>
