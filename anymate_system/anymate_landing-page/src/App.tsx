@@ -1,12 +1,42 @@
-import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Outlet, Link } from 'react-router-dom';
 import NodeLanding from './pages/NodeLanding';
 import PATHsassin3D from './pages/PATHsassin3D';
 import AgentInterface from './pages/AgentInterface';
 import NotFound from './pages/NotFound';
-import Waitlist from './pages/Waitlist';
+import Waitlist from './components/Waitlist';
+import ActivatePanel from './components/ActivatePanel';
+
+function HeaderBar(){
+  const [open, setOpen] = useState(false);
+  return (
+    <header className="flex justify-between items-center px-4 py-3 sticky top-0 bg-black/60 backdrop-blur-md z-50 border-b border-white/10">
+      <div className="font-bold text-xl text-white">ANYM⁸</div>
+      <nav className="flex gap-4 items-center">
+        <Link to="/waitlist" className="text-white hover:text-emerald-400 transition-colors">
+          Get early access
+        </Link>
+        <button 
+          onClick={() => setOpen(true)} 
+          aria-expanded={open} 
+          aria-controls="activate-panel" 
+          className="px-4 py-2 border border-white/20 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors font-medium"
+        >
+          ACTIVATE
+        </button>
+      </nav>
+      <ActivatePanel open={open} onClose={() => setOpen(false)} />
+    </header>
+  );
+}
 
 function AppLayout() {
-  return <Outlet />;
+  return (
+    <>
+      <HeaderBar />
+      <Outlet />
+    </>
+  );
 }
 
 function App() {
