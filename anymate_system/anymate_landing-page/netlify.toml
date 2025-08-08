@@ -1,7 +1,9 @@
-
 [build]
   functions = "react_netlify/functions"
   publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"
 
 [[redirects]]
   from = "/api/subscribe"
