@@ -72,18 +72,9 @@ export default function Waitlist(){
         
         const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
         setStatus('success'); 
-        setMessage('Saved locally. Download CSV and import later: ');
+        setMessage('Thanks! You\'ve been added to the waitlist. We\'ll be in touch soon!');
         
-        const a = document.createElement('a'); 
-        a.href = url; 
-        a.download = 'anym8-waitlist.csv'; 
-        a.textContent = 'Download CSV'; 
-        a.style.marginLeft = '6px';
-        
-        setTimeout(()=>{ 
-          const el = document.getElementById('local-csv-link'); 
-          if (el) el.appendChild(a); 
-        }, 0);
+        // Data is saved in localStorage for admin access
       } catch{ 
         setStatus('error'); 
         setMessage('Something went wrong. Try again later.'); 
