@@ -1,0 +1,705 @@
+/* Color Variables based on AnyMATE logo */
+:root {
+    --color-orange: #FF6600; /* A vibrant orange, similar to logo */
+    --color-blue: #003366;   /* A deep blue, similar to logo */
+    --color-dark-background: #1a1a1a;
+    --color-dark-texture: #252525;
+    --color-light-text: #f0f0f0;
+    --color-white-text: #ffffff;
+    --color-soft-text: #cccccc;
+    --color-tab-bg: #333333; /* For the trigger tab */
+    --color-panel-bg: #2a2a2a; /* For the control panel */
+    --color-button-bg: #444444; /* General button background */
+    --color-button-hover: var(--color-orange); /* Button hover color */
+    --color-tile-bg: #222222; /* Background for lore tiles */
+    --color-glow: var(--color-orange); /* Glow color */
+    --color-tier-bg: #222222; /* Background for pricing tiers */
+    --color-featured-tier-bg: #333333; /* Slightly darker for featured tier */
+}
+
+/* Basic Reset & Body Styling */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    font-family: 'Montserrat', sans-serif; /* Applied Montserrat */
+    color: var(--color-light-text); /* Use color variable */
+    background-color: var(--color-dark-background); /* Use color variable */
+}
+
+/* Background Texture (Example: Hexagon Pattern) */
+body {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="10" height="10" fill="%231a1a1a"/><path d="M5 0L10 2.5V7.5L5 10L0 7.5V2.5L5 0ZM5 1L1 3L1 7L5 9L9 7L9 3L5 1Z" fill="%23252525"/></svg>'); /* Subtle dark hexagon pattern */
+    background-repeat: repeat;
+    background-size: 10px 10px; /* Adjust size as needed */
+}
+
+/* Section Styling */
+.full-height-section {
+    min-height: 100vh; /* Each section takes at least the full viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in element's total width and height */
+    text-align: center;
+    position: relative; /* For potential positioning of elements within */
+}
+
+/* Act I Specific Styling */
+#act-i {
+    background-color: transparent; /* Allows body background to show through */
+}
+
+.headline {
+    font-size: 3em; /* Larger font size for impact */
+    margin-bottom: 20px;
+    color: var(--color-white-text); /* Use color variable */
+    font-weight: 700; /* Make headline bold */
+}
+
+.tagline {
+    font-size: 1.2em;
+    max-width: 800px; /* Limit width for readability */
+    line-height: 1.6;
+    color: var(--color-soft-text); /* Use color variable */
+    font-weight: 300; /* Make tagline lighter for contrast */
+}
+
+/* Act II Specific Styling */
+#act-ii.interactive-section {
+    flex-direction: row; /* Arrange carousel and text side-by-side (conceptual) */
+    justify-content: space-around;
+    align-items: center;
+    overflow: hidden; /* Crucial for sliding animations */
+    position: relative; /* For absolutely positioned tab/panel */
+}
+
+.act-ii-content {
+    display: flex;
+    flex-direction: column; /* Stack carousel and distorted text vertically */
+    align-items: center;
+    justify-content: center;
+    gap: 40px; /* Space between carousel and text */
+    flex-grow: 1; /* Allow content to take available space */
+    transition: transform 0.8s ease-out; /* Smooth slide for content */
+}
+
+.asset-carousel-container {
+    width: 600px; /* Example fixed width */
+    height: 400px; /* Example fixed height */
+    background-color: rgba(0, 0, 0, 0.3); /* Slightly transparent background for the carousel area */
+    border-radius: 10px;
+    overflow: hidden; /* Hide extra images */
+    position: relative;
+    display: flex; /* To center images within */
+    justify-content: center;
+    align-items: center;
+}
+
+.asset-carousel {
+    display: flex;
+    width: 100%; /* Take full width of container */
+    height: 100%; /* Take full height of container */
+    position: relative;
+}
+
+.carousel-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Ensure images fit without cropping */
+    display: none; /* Hide all by default */
+    position: absolute; /* Position images on top of each other */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.carousel-image.active {
+    display: block; /* Show active image */
+    opacity: 1;
+}
+
+/* Distorted Text Styling */
+.distorted-text-container {
+    margin-top: 20px;
+    max-width: 700px;
+}
+
+.distorted-text {
+    font-size: 1.8em;
+    line-height: 1.5;
+    color: var(--color-soft-text);
+    /* Initial distortion effect */
+    filter: blur(3px) contrast(0.8); /* Fuzzy effect */
+    letter-spacing: 0.1em; /* Spread letters a bit */
+    opacity: 0.7;
+    transition: filter 0.8s ease-out, letter-spacing 0.8s ease-out, opacity 0.8s ease-out; /* For snapping clarity */
+}
+
+/* Styles for when text is clear */
+.distorted-text.clear {
+    filter: none; /* Remove blur/contrast */
+    letter-spacing: normal; /* Normal spacing */
+    opacity: 1;
+    font-style: normal; /* Ensure no italic if unicode creates it */
+}
+
+/* Trigger Tab Styling */
+.trigger-tab {
+    position: fixed; /* Fixed position on screen */
+    right: -50px; /* Initially off-screen, will slide in */
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg); /* Center vertically and rotate */
+    background-color: var(--color-tab-bg);
+    color: var(--color-white-text);
+    padding: 15px 30px;
+    border-radius: 8px 8px 0 0; /* Rounded top corners (when rotated) */
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+    transition: right 0.8s ease-out, transform 0.3s ease-in-out; /* For sliding in and hover */
+    z-index: 1000; /* Ensure it's above other content */
+    border: 1px solid var(--color-orange); /* Orange accent */
+    border-bottom: none; /* No bottom border when rotated */
+}
+
+.trigger-tab:hover {
+    right: -40px; /* Slight movement on hover */
+    /* We'll add the reflective jolt animation with JS/CSS later */
+}
+
+/* Pulsing Animation for Trigger Tab */
+@keyframes pulse {
+    0% { box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(255, 102, 0, 0.7); }
+    70% { box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5), 0 0 0 10px rgba(255, 102, 0, 0); }
+    100% { box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(255, 102, 0, 0); }
+}
+
+.trigger-tab.pulsing {
+    animation: pulse 1.5s infinite;
+}
+
+/* Control Panel Styling (initially hidden/off-screen) */
+.control-panel {
+    position: fixed; /* Fixed position on screen */
+    right: -400px; /* Initially completely off-screen */
+    top: 0;
+    height: 100%;
+    width: 350px; /* Width of the panel */
+    background-color: var(--color-panel-bg);
+    box-shadow: -10px 0 20px rgba(0, 0, 0, 0.7);
+    z-index: 999; /* Below the trigger tab, but above main content */
+    transition: right 0.8s ease-out; /* Smooth slide in/out */
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center content within panel */
+    border-left: 2px solid var(--color-orange); /* Accent border */
+}
+
+/* State when panel is active */
+.control-panel.active {
+    right: 0; /* Slide fully onto screen */
+}
+
+/* Adjust main content when panel is active */
+#act-ii.active .act-ii-content {
+    transform: translateX(-200px); /* Move content to the left */
+}
+
+/* Mini-Generator Styles */
+.control-panel h2 {
+    color: var(--color-orange);
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.mini-generator-viewer {
+    width: 100%;
+    max-width: 300px; /* Limit viewer width */
+    height: 250px; /* Viewer height */
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--color-blue);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+#generated-asset-preview {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.generator-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 280px;
+}
+
+.generator-options p {
+    margin-bottom: 10px;
+    color: var(--color-soft-text);
+    font-size: 0.9em;
+}
+
+.generate-btn {
+    background-color: var(--color-button-bg);
+    color: var(--color-white-text);
+    border: 1px solid var(--color-orange);
+    padding: 12px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1em;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.generate-btn:hover {
+    background-color: var(--color-button-hover);
+    border-color: var(--color-blue); /* Subtle change on hover */
+    transform: translateY(-2px); /* Slight lift */
+}
+.generate-btn:active {
+    transform: translateY(0); /* Press effect */
+    background-color: var(--color-orange);
+    filter: brightness(0.8);
+}
+
+/* Act III: The Lore Specific Styling */
+#act-iii.lore-section {
+    justify-content: flex-start; /* Align content to top, but still centered horizontally */
+    padding-top: 80px; /* Space from top */
+    min-height: 120vh; /* Make section taller to allow for scroll animation */
+}
+
+.lore-title {
+    font-size: 2.5em;
+    color: var(--color-orange);
+    margin-bottom: 60px; /* More space below title */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    text-shadow: 0 0 10px rgba(255, 102, 0, 0.5); /* Subtle glow on title */
+}
+
+.lore-tiles-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow tiles to wrap to next line */
+    justify-content: center;
+    gap: 40px; /* Space between tiles */
+    max-width: 1200px; /* Limit overall width of tiles layout */
+    margin-bottom: 80px; /* Space before next section */
+}
+
+.lore-tile {
+    background-color: var(--color-tile-bg);
+    border: 1px solid var(--color-blue);
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 350px;
+    text-align: left;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden; /* For inner glow effect */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    cursor: default; /* Indicate not directly clickable */
+
+    /* Initial hidden state */
+    opacity: 0;
+    transform: translateY(50px) scale(0.95); /* Start slightly below and smaller */
+}
+
+/* Animation for when the tile becomes visible/active */
+.lore-tile[data-status="visible"] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out; /* Smooth reveal */
+}
+
+.lore-tile:hover {
+    transform: translateY(-5px) scale(1.02); /* Slight lift on hover */
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5), 0 0 20px var(--color-glow); /* Enhanced shadow and glow */
+}
+
+.lore-tile p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: var(--color-light-text);
+    font-weight: 300; /* Lighter weight for quotes */
+}
+
+.lore-tile .character-name {
+    display: block;
+    text-align: right;
+    font-size: 0.9em;
+    color: var(--color-orange); /* Character name in accent color */
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+}
+
+/* Act IV: Pricing Section Styling */
+#act-iv.pricing-section {
+    justify-content: flex-start; /* Align content to top */
+    padding-top: 80px;
+    padding-bottom: 80px; /* Ensure space at bottom */
+    min-height: 100vh;
+}
+
+.pricing-title {
+    font-size: 2.8em;
+    color: var(--color-white-text);
+    margin-bottom: 60px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.pricing-tiers-container {
+    display: flex;
+    gap: 30px; /* Space between columns */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: center;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.pricing-tier {
+    background-color: var(--color-tier-bg);
+    border: 1px solid var(--color-blue);
+    border-radius: 10px;
+    padding: 40px 20px;
+    flex: 1; /* Allow columns to grow and shrink */
+    min-width: 280px; /* Minimum width before wrapping */
+    max-width: 350px; /* Max width for a single column */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative; /* For the ribbon */
+}
+
+.pricing-tier:hover {
+    transform: translateY(-10px); /* Lift on hover */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px var(--color-orange);
+}
+
+.pricing-tier.featured-tier {
+    background-color: var(--color-featured-tier-bg);
+    border-color: var(--color-orange); /* Accent border for featured */
+    transform: scale(1.05); /* Slightly larger */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 25px var(--color-orange);
+}
+
+.pricing-tier.featured-tier:hover {
+    transform: translateY(-10px) scale(1.07); /* Enhanced lift for featured */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 30px var(--color-orange);
+}
+
+.pricing-tier h3 {
+    font-size: 2em;
+    color: var(--color-white-text);
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.pricing-tier .price {
+    font-size: 3.5em;
+    color: var(--color-orange);
+    font-weight: 900;
+    margin-bottom: 25px;
+    line-height: 1; /* Tighter line height */
+}
+
+.pricing-tier .price span {
+    font-size: 0.4em; /* Smaller for '/month' */
+    font-weight: 400;
+    color: var(--color-soft-text);
+}
+
+.pricing-tier .features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+    text-align: center;
+    width: 100%;
+}
+
+.pricing-tier .features-list li {
+    font-size: 1.05em;
+    margin-bottom: 12px;
+    color: var(--color-light-text);
+    font-weight: 300;
+    line-height: 1.4;
+}
+
+.pricing-tier .features-list li strong {
+    color: var(--color-orange); /* Highlight important features */
+    font-weight: 600;
+}
+
+
+/* Ribbon for Featured Tier */
+.ribbon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 30px;
+    background-color: var(--color-orange);
+    color: var(--color-white-text);
+    text-align: center;
+    font-size: 0.8em;
+    font-weight: 700;
+    line-height: 30px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transform: translateY(-50%) translateX(25%) rotate(45deg);
+    transform-origin: 100% 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    z-index: 10;
+}
+/* A small triangle to make the ribbon pointy */
+.ribbon::before, .ribbon::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    border-style: solid;
+    border-color: transparent;
+}
+.ribbon::before {
+    left: 0;
+    border-width: 0 0 10px 10px;
+    border-left-color: var(--color-orange); /* Match ribbon color */
+    border-bottom-color: var(--color-orange);
+}
+.ribbon::after {
+    right: 0;
+    border-width: 0 10px 10px 0;
+    border-right-color: var(--color-orange); /* Match ribbon color */
+    border-bottom-color: var(--color-orange);
+}
+
+
+/* CTA Button - General Styling (from mini-generator, now more general) */
+.cta-button {
+    background-color: var(--color-button-bg);
+    color: var(--color-white-text);
+    border: 1px solid var(--color-orange);
+    padding: 15px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1.1em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none; /* Remove underline from links */
+    display: inline-block; /* Allow padding and sizing */
+    position: relative; /* For reflective jolt animation */
+    overflow: hidden; /* Hide the jolt initially */
+    z-index: 1; /* Ensure text is above jolt */
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+}
+
+/* Reflective Jolt Animation (CSS Keyframes & pseudo-element) */
+@keyframes reflectiveJolt {
+    0% {
+        transform: scaleX(0) rotate(45deg);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scaleX(2.5) rotate(45deg); /* Adjust scale for wider sweep */
+        opacity: 0.6;
+    }
+    100% {
+        transform: scaleX(0) rotate(45deg);
+        opacity: 0;
+    }
+}
+
+.cta-button.reflective-jolt::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%; /* Start off-left */
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5); /* White highlight */
+    transform: rotate(45deg);
+    transition: none; /* No transition on this element by default */
+    z-index: -1; /* Behind the text */
+}
+
+.cta-button.reflective-jolt:hover::after {
+    animation: reflectiveJolt 0.7s cubic-bezier(0.165, 0.84, 0.44, 1); /* Custom ease for bounce */
+}
+
+.cta-button.reflective-jolt:hover {
+    background-color: var(--color-button-hover);
+    border-color: var(--color-blue);
+    transform: translateY(-3px); /* Slightly more pronounced lift on hover */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5); /* Subtle shadow on lift */
+}
+
+.cta-button.reflective-jolt:active {
+    transform: translateY(0);
+    filter: brightness(0.8);
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .asset-carousel-container {
+        width: 450px;
+        height: 300px;
+    }
+    .distorted-text {
+        font-size: 1.5em;
+    }
+    .control-panel {
+        width: 300px;
+    }
+    .lore-tile {
+        max-width: 300px;
+    }
+    .lore-title {
+        font-size: 2em;
+    }
+    .pricing-tier {
+        padding: 30px 15px;
+        min-width: 250px;
+        max-width: 320px;
+    }
+    .pricing-title {
+        font-size: 2.2em;
+        margin-bottom: 40px;
+    }
+    .pricing-tier h3 {
+        font-size: 1.8em;
+    }
+    .pricing-tier .price {
+        font-size: 3em;
+    }
+    .pricing-tier .features-list li {
+        font-size: 1em;
+    }
+    .cta-button {
+        padding: 12px 25px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 768px) {
+    #act-ii.interactive-section {
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+    }
+    .asset-carousel-container {
+        width: 90%;
+        height: 250px;
+    }
+    .distorted-text {
+        font-size: 1.2em;
+    }
+    .trigger-tab {
+        position: fixed;
+        right: 0;
+        top: auto;
+        bottom: 20px;
+        transform: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        border: 1px solid var(--color-orange);
+    }
+    .trigger-tab:hover {
+        right: 10px;
+    }
+    .control-panel {
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100%;
+        border-left: none;
+        border-top: 2px solid var(--color-orange);
+        justify-content: flex-start;
+        padding-top: 50px;
+    }
+    .control-panel.active {
+        right: 0;
+    }
+    #act-ii.active .act-ii-content {
+        transform: translateX(0);
+        filter: brightness(0.5);
+    }
+    .mini-generator-viewer {
+        height: 200px;
+    }
+    #act-iii.lore-section {
+        padding-top: 50px;
+    }
+    .lore-title {
+        font-size: 1.8em;
+        margin-bottom: 40px;
+    }
+    .lore-tiles-container {
+        gap: 20px;
+        flex-direction: column;
+        align-items: center;
+    }
+    .lore-tile {
+        max-width: 90%;
+        padding: 20px;
+    }
+    #act-iv.pricing-section {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+    .pricing-title {
+        font-size: 1.8em;
+        margin-bottom: 30px;
+    }
+    .pricing-tiers-container {
+        flex-direction: column; /* Stack vertically on small screens */
+        gap: 25px;
+    }
+    .pricing-tier {
+        width: 90%; /* Take up more width */
+        max-width: 400px; /* Limit max width even when stacked */
+        padding: 30px 20px;
+    }
+    .pricing-tier.featured-tier {
+        transform: scale(1.02); /* Less pronounced scale on mobile */
+    }
+    .pricing-tier.featured-tier:hover {
+        transform: translateY(-5px) scale(1.04); /* Adjusted hover for mobile featured */
+    }
+    .pricing-tier:hover {
+        transform: translateY(-5px); /* Less pronounced lift on hover for standard tiers */
+    }
+}
