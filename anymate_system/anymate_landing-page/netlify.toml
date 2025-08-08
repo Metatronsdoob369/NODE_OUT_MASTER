@@ -10,6 +10,11 @@
   to = "/.netlify/functions/subscribe"
   status = 200
 
+[[redirects]]
+  from = "/api/admin-leads"
+  to = "/.netlify/functions/admin-leads"
+  status = 200
+
 # SPA fallback for React Router
 [[redirects]]
   from = "/*"

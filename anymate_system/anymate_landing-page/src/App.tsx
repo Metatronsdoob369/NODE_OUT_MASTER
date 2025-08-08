@@ -6,6 +6,7 @@ import AgentInterface from './pages/AgentInterface';
 import NotFound from './pages/NotFound';
 import Waitlist from './components/Waitlist';
 import ActivatePanel from './components/ActivatePanel';
+import { AdminDashboard } from './components/AdminDashboard';
 
 function HeaderBar(){
   const [open, setOpen] = useState(false);
@@ -48,6 +49,7 @@ function App() {
           <Route path="/pathsassin-3d" element={<PATHsassin3D />} />
           <Route path="/agent" element={<AgentInterface />} />
           <Route path="/waitlist" element={<Waitlist />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
