@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Input, Textarea, InputLabel } from './input';
 import { Loading } from './loading';
 import { Badge } from './badge';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from './card';
+
+// Only show CSV download in DEV or when you explicitly enable it in localStorage
+const IS_DEV = import.meta.env?.DEV;
+const ALLOW_LOCAL_CSV = 
+  (!!IS_DEV) || localStorage.getItem('ANYM8_CSV_DEBUG') === '1';
 
 type FormState = { 
   name: string; 
@@ -20,10 +26,46 @@ const initialState: FormState = {
   consent: false 
 };
 
+function getLocalQueue() {
+  const k = 'anym8_waitlist';
+  return { k, arr: JSON.parse(localStorage.getItem(k) || '[]') as any[] };
+}
+
+async function flushQueue() {
+  const { k, arr } = getLocalQueue();
+  if (!arr.length) return;
+  const keep: any[] = [];
+  for (const row of arr) {
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: row.name,
+          email: row.email,
+          role: row.role,
+          first_use: row.first_use
+        })
+      });
+      if (!res.ok) throw new Error('bad status');
+    } catch {
+      keep.push(row);
+    }
+  }
+  localStorage.setItem(k, JSON.stringify(keep));
+}
+
 export default function Waitlist(){
+  const navigate = useNavigate();
   const [form, setForm] = useState<FormState>(initialState);
   const [status, setStatus] = useState<'idle'|'submitting'|'success'|'error'>('idle');
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    flushQueue();
+    window.addEventListener('online', flushQueue);
+    return () => window.removeEventListener('online', flushQueue);
+  }, []);
 
   function onChange(e: React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>){
     const { name, value, type, checked } = e.target as HTMLInputElement;
@@ -57,27 +99,41 @@ export default function Waitlist(){
       setStatus('success'); 
       setMessage("You're on the list!");
       setForm(initialState);
-    } catch(err) {
-      try{
-        const k='anym8_waitlist'; 
-        const prev = JSON.parse(localStorage.getItem(k) || '[]');
-        const row = { ...form, ts: new Date().toISOString() }; 
-        prev.push(row); 
-        localStorage.setItem(k, JSON.stringify(prev));
-        
+    } catch (err) {
+      // Fallback: queue locally so you never lose a lead
+      const k = 'anym8_waitlist';
+      const prev = JSON.parse(localStorage.getItem(k) || '[]');
+      const row = { ...form, ts: new Date().toISOString() };
+      prev.push(row);
+      localStorage.setItem(k, JSON.stringify(prev));
+
+      setStatus('success');
+      // Public-safe message (no CSV link shown)
+      setMessage("You're on the list! We'll email you when access opens.");
+
+      if (ALLOW_LOCAL_CSV) {
+        // Admin/dev-only CSV download
         const csv = ['name,email,role,first_use,ts']
-          .concat(prev.map((o:any)=>[o.name,o.email,o.role,o.first_use,o.ts]
-          .map((v:any)=>'"'+String(v??'').replace('"','""')+'"').join(',')))
+          .concat(
+            prev.map((o:any) =>
+              [o.name, o.email, o.role, o.first_use, o.ts]
+                .map((v:any) => `"${String(v ?? '').replace('"','""')}"`)
+                .join(',')
+            )
+          )
           .join('\n');
-        
-        const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
-        setStatus('success'); 
-        setMessage('Thanks! You\'ve been added to the waitlist. We\'ll be in touch soon!');
-        
-        // Data is saved in localStorage for admin access
-      } catch{ 
-        setStatus('error'); 
-        setMessage('Something went wrong. Try again later.'); 
+
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+        a.download = 'anym8-waitlist.csv';
+        a.textContent = ' Download CSV (admin)';
+        a.id = 'admin-csv-link';
+        a.style.marginLeft = '6px';
+
+        setTimeout(() => {
+          const box = document.getElementById('local-csv-link');
+          if (box && !document.getElementById('admin-csv-link')) box.appendChild(a);
+        }, 0);
       }
     }
   }
@@ -87,9 +143,18 @@ export default function Waitlist(){
       <div className="max-w-3xl mx-auto">
         <Card variant="glass" className="border border-white/10 bg-white/5 backdrop-blur">
           <CardHeader>
-            <div className="flex items-center gap-2">
-              <Badge variant="bioluminescent">ANYM⁸</Badge>
-              <CardTitle>Waitlist</CardTitle>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Badge variant="bioluminescent">ANYM⁸</Badge>
+                <CardTitle>Waitlist</CardTitle>
+              </div>
+              <button
+                onClick={() => navigate('/')}
+                className="px-3 py-1 text-sm text-white/70 hover:text-white transition-colors
+                          border border-white/20 rounded-md hover:border-white/40"
+              >
+                ← Back
+              </button>
             </div>
             <CardDescription>
               Be first to access math-powered 3D asset generation and the marketplace.
