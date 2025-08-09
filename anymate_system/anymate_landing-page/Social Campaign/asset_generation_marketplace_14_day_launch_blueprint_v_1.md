@@ -226,7 +226,8 @@ Alert thresholds: CPA warn, CVR drop, refund spike, creator inactivity.
 
 ## 12) What to Build Today (checklist)
 
--
+-Black ops Style
+
 
 ---
 
