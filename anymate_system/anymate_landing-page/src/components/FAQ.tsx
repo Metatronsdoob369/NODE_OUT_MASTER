@@ -2,7 +2,7 @@ const Q = [
   ['What license comes with a pack?',
    'Non-exclusive, perpetual commercial use on your projects. Resale outside the marketplace is not allowed.'],
   ['Do you allow refunds?',
-   'If a pack doesn't improve your flow in 14 days, we'll swap or credit your account.'],
+   'If a pack doesn\'t improve your flow in 14 days, we\'ll swap or credit your account.'],
   ['How do creators get paid?',
    'Stripe Connect (Express). Payouts typically clear after a short refund window.'],
   ['Do you disclose AI usage?',

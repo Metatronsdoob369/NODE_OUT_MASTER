@@ -7,7 +7,7 @@ import NotFound from './pages/NotFound';
 import Waitlist from './components/Waitlist';
 import ActivatePanel from './components/ActivatePanel';
 import { AdminDashboard } from './components/AdminDashboard';
-import Wordmark from './components/Wordmark';
+import LogoMark from './components/LogoMark';
 import AssetStrip from './components/AssetStrip';
 import ProofBar from './components/ProofBar';
 import HowItWorks from './components/HowItWorks';
@@ -18,7 +18,7 @@ function HeaderBar(){
   const [open, setOpen] = useState(false);
   return (
     <header className="flex justify-between items-center px-4 py-3 sticky top-0 bg-black/60 backdrop-blur-md z-50 border-b border-white/10">
-      <div><Wordmark /></div>
+      <div><LogoMark /></div>
       <nav className="flex gap-4 items-center">
         <Link to="/waitlist" className="text-white hover:text-emerald-400 transition-colors" data-evt="cta_waitlist_header">
           Get early access
