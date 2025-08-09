@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+<defs>
+
+  <linearGradient id="ember" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#FF3B1F"/>
+    <stop offset="52%" stop-color="#FF5A14"/>
+    <stop offset="100%" stop-color="#FFD166"/>
+  </linearGradient>
+
+
+  <linearGradient id="deepblue" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#0B1F3A"/>
+    <stop offset="56%" stop-color="#113B70"/>
+    <stop offset="100%" stop-color="#2F74C0"/>
+  </linearGradient>
+
+</defs>
+<rect width="240" height="240" rx="44" fill="#0b0d12"/>
+<circle cx="96" cy="120" r="72" fill="url(#deepblue)"/>
+<circle cx="144" cy="120" r="72" fill="url(#ember)"/>
+<!-- subtle overlap highlight -->
+<ellipse cx="120" cy="120" rx="20" ry="64" fill="#0b0d12" opacity=".18"/>
+</svg>
