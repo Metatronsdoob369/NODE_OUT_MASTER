@@ -64,8 +64,21 @@ export default function Waitlist(){
   useEffect(() => {
     flushQueue();
     window.addEventListener('online', flushQueue);
-    return () => window.removeEventListener('online', flushQueue);
-  }, []);
+    
+    // Tactical exit: ESC key for stealth mode
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        navigate('/');
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyPress);
+    
+    return () => {
+      window.removeEventListener('online', flushQueue);
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [navigate]);
 
   function onChange(e: React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>){
     const { name, value, type, checked } = e.target as HTMLInputElement;
@@ -150,10 +163,13 @@ export default function Waitlist(){
               </div>
               <button
                 onClick={() => navigate('/')}
-                className="px-3 py-1 text-sm text-white/70 hover:text-white transition-colors
-                          border border-white/20 rounded-md hover:border-white/40"
+                className="group flex items-center gap-2 px-3 py-1.5 text-xs text-white/40 hover:text-white/80 
+                          transition-all duration-300 hover:bg-white/5 rounded-md
+                          border border-white/10 hover:border-white/30"
+                title="Exit tactical mode"
               >
-                ← Back
+                <span className="text-xs">🥷</span>
+                <span className="font-mono uppercase tracking-wider">Low KEY</span>
               </button>
             </div>
             <CardDescription>
