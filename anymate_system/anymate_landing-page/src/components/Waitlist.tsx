@@ -6,7 +6,7 @@ import { Badge } from './badge';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from './card';
 
 // Only show CSV download in DEV or when you explicitly enable it in localStorage
-const IS_DEV = import.meta.env?.DEV;
+const IS_DEV = import.meta.env?.DEV || false;
 const ALLOW_LOCAL_CSV = 
   (!!IS_DEV) || localStorage.getItem('ANYM8_CSV_DEBUG') === '1';
 

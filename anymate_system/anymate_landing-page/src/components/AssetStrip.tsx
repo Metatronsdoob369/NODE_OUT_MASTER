@@ -1,4 +1,3 @@
-import React from 'react';
 
 type Item = { title: string; tag: string; price?: string; };
 const items: Item[] = [
