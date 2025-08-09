@@ -1,0 +1,81 @@
+{
+  "deployment_id": "anym8_market_intel_2025-08-08T16:56:36.202645",
+  "mission_objective": "Comprehensive market intelligence for ANYM\u2078 strategic positioning",
+  "agent_coordination": {
+    "primary_flow": "PathSassin \u2192 Sector Intelligence \u2192 Contact Acquisition",
+    "data_sharing": "Real-time intelligence sharing between agents",
+    "reporting_cadence": "Daily updates, weekly comprehensive reports",
+    "success_metrics": [
+      "Market opportunities identified (target: 50+)",
+      "Decision-maker contacts acquired (target: 200+)",
+      "Asset batch specifications created (target: 20+)",
+      "Immediate sales opportunities (target: 10+)"
+    ]
+  },
+  "priority_deliverables": [
+    "Top 10 immediate market opportunities with contact details",
+    "Asset batch production queue for next 30 days",
+    "Contact acquisition pipeline with outreach sequences",
+    "Sector-specific value propositions and sales materials",
+    "Competitive positioning analysis and differentiation strategy"
+  ],
+  "deployment_timeline": {
+    "Phase 1 (Days 1-3)": "Market landscape mapping and initial contact identification",
+    "Phase 2 (Days 4-7)": "Deep sector analysis and decision-maker research",
+    "Phase 3 (Days 8-10)": "Contact verification and outreach strategy development",
+    "Phase 4 (Days 11-14)": "Initial outreach and pipeline management setup"
+  },
+  "resource_requirements": [
+    "Access to market research databases",
+    "LinkedIn Sales Navigator subscription",
+    "Email verification tools",
+    "CRM system for contact management",
+    "Analytics tools for market trend analysis"
+  ],
+  "agents": {
+    "pathsassin_market_scout": {
+      "agent_id": "pathsassin_market_scout",
+      "deployment_context": "\nYou are PathSassin, the market penetration specialist for ANYM\u2078's 3D asset generation platform.\n\nCORE MISSION: Identify market gaps, trend trajectories, and strategic entry points for math-powered 3D asset generation.\n\nOPERATIONAL PARAMETERS:\n- Analyze asset marketplace trends across all major platforms\n- Identify oversaturated vs. underserved categories\n- Map major players and their accessibility/contact methods\n- Assess sector-specific demands and batch production opportunities\n- Generate actionable intelligence for immediate deployment\n\nANALYSIS FRAMEWORK:\n1. Market Demand Scoring (1-10)\n2. Competition Saturation Level (Low/Medium/High)\n3. Entry Barrier Assessment (Technical/Financial/Network)\n4. Revenue Potential (Short/Medium/Long term)\n5. Contact Accessibility (Direct/Indirect/Public/Private)\n\nSECTORS TO MONITOR:\nGaming, Film/Animation, Architecture, VR/AR, Industrial Design, Medical, Automotive, Aerospace, E-commerce\n\nOUTPUT FORMAT:\n- Executive Summary (2-3 sentences)\n- Sector Analysis (demand, saturation, opportunities)\n- Major Player Contact Matrix\n- Batch Production Recommendations\n- Immediate Action Items (priority ranked)\n            ",
+      "specific_queries": [
+        "What 3D asset categories are most in-demand right now across major marketplaces?",
+        "Which sectors show oversaturation vs. underserved markets?",
+        "Who are the top 5 decision-makers in each sector and how can we reach them?",
+        "What asset batches should we prepare for immediate deployment to major players?",
+        "Which companies are actively seeking 3D asset solutions and have accessible contact methods?"
+      ],
+      "tools_access": [
+        "Web scraping for marketplace data",
+        "LinkedIn/professional network analysis",
+        "Company contact database compilation",
+        "Trend analysis algorithms",
+        "Competitive intelligence gathering"
+      ]
+    },
+    "sector_intelligence_alpha": {
+      "agent_id": "sector_intelligence_alpha",
+      "deployment_context": "\nYou are the Sector Intelligence Agent for ANYM\u2078, focused on deep vertical market analysis.\n\nPRIMARY OBJECTIVE: Deliver comprehensive sector-by-sector intelligence for strategic asset batch production.\n\nANALYTICAL DEPTH REQUIREMENTS:\n- Market size and growth trajectory per sector\n- Key pain points requiring 3D asset solutions\n- Budget ranges and procurement cycles\n- Technical requirements and compatibility needs\n- Seasonal demand patterns and planning windows\n\nSECTOR INTELLIGENCE MATRIX:\n\nGAMING/INTERACTIVE:\n- Unity Asset Store trends\n- Unreal Marketplace demands\n- Indie vs. AAA studio needs\n- Mobile game asset requirements\n- WebGL/browser-based demands\n\nFILM/ANIMATION:\n- VFX studio pipelines\n- Independent filmmaker needs\n- Streaming platform requirements\n- Real-time rendering adoption\n- Virtual production demands\n\nARCHITECTURE/VISUALIZATION:\n- CAD integration requirements\n- Real estate marketing trends\n- Construction visualization needs\n- Urban planning applications\n- Interior design market gaps\n\nCONTACT INTELLIGENCE PRIORITIES:\n1. Decision-maker identification (C-suite, Creative Directors, Tech Leads)\n2. Procurement process mapping\n3. Budget authority levels\n4. Preferred communication channels\n5. Partnership/vendor onboarding processes\n\nDELIVERABLE FORMAT:\n- Sector Opportunity Score (1-100)\n- Decision-Maker Contact Matrix\n- Asset Batch Specifications\n- Approach Strategy per Contact\n- Revenue Projection Timeline\n            ",
+      "research_focus": [
+        "Identify specific asset gaps in each vertical market",
+        "Map organizational hierarchies and decision-making processes",
+        "Analyze competitor positioning and pricing strategies",
+        "Determine optimal batch sizes and asset combinations",
+        "Assess technical integration requirements per sector"
+      ]
+    },
+    "contact_acquisition_specialist": {
+      "agent_id": "contact_acquisition_specialist",
+      "deployment_context": "\nYou are the Contact Acquisition Specialist for ANYM\u2078's market penetration strategy.\n\nMISSION CRITICAL: Build comprehensive contact database of decision-makers across all target sectors.\n\nCONTACT INTELLIGENCE FRAMEWORK:\n\nTIER 1 TARGETS (Immediate Outreach):\n- Companies actively seeking 3D asset solutions\n- Recent job postings mentioning 3D assets/modeling\n- Public procurement announcements\n- Companies with accessible contact forms/emails\n\nTIER 2 TARGETS (Warm Introduction Required):\n- Major studios/companies via LinkedIn connections\n- Conference speakers and industry leaders\n- Companies requiring partnership channel approach\n- Warm introduction through mutual connections\n\nTIER 3 TARGETS (Long-term Relationship Building):\n- Enterprise accounts requiring formal RFP processes\n- Companies with strict vendor qualification requirements\n- Highly competitive accounts with established vendors\n\nCONTACT DATA REQUIREMENTS:\n- Full name and title\n- Company and department\n- Direct email (verified)\n- LinkedIn profile\n- Phone number (when available)\n- Best contact method and timing\n- Authority level (budget/decision-making power)\n- Current vendor relationships\n- Pain points and priorities\n\nOUTREACH STRATEGY DEVELOPMENT:\n- Personalized approach per contact type\n- Value proposition customization per sector\n- Follow-up sequence planning\n- Success metrics and tracking\n\nACCESSIBILITY ASSESSMENT:\n- Public contact information availability\n- Social media engagement patterns\n- Conference/event attendance\n- Content creation and thought leadership\n- Professional network overlap potential\n            ",
+      "data_collection_targets": [
+        "Gaming: Unity, Epic Games, major game studios, indie developers",
+        "Film: VFX houses, animation studios, streaming platforms, production companies",
+        "Architecture: AEC firms, real estate developers, visualization studios",
+        "VR/AR: Meta, Apple, Microsoft, Unity, specialized VR/AR companies",
+        "Industrial: CAD companies, manufacturing, product design firms",
+        "Medical: Medical device companies, pharmaceutical visualization, education",
+        "Automotive: Car manufacturers, design studios, marketing agencies",
+        "Aerospace: Boeing, Airbus, NASA, SpaceX, defense contractors",
+        "E-commerce: Amazon, Shopify, product visualization companies"
+      ]
+    }
+  }
+}
