@@ -4,9 +4,9 @@
 
 @layer base {
   :root {
-    --fire-1: #FF3B1F; /* deeper red/orange */
-    --fire-2: #FF6A1A; /* hot orange */
-    --fire-3: #FFD166; /* ember gold */
+    --fire-1: #FF2A15; /* more red */
+    --fire-2: #FF5A14; /* hot orange */
+    --fire-3: #FFC14D; /* gold/ember */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
