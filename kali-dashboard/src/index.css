@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply bg-kali-dark text-white;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-kali-gray-900;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-kali-gray-700 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-kali-green;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-kali-green text-black px-4 py-2 rounded-lg font-medium hover:bg-kali-green/90 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-kali-green/50;
+  }
+  
+  .btn-secondary {
+    @apply bg-kali-gray-800 text-white px-4 py-2 rounded-lg font-medium hover:bg-kali-gray-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-kali-gray-600;
+  }
+  
+  .btn-danger {
+    @apply bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500/50;
+  }
+  
+  .input-field {
+    @apply bg-kali-gray-900 border border-kali-gray-700 text-white px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-kali-green/50 focus:border-kali-green transition-all duration-200;
+  }
+  
+  .card {
+    @apply bg-kali-gray-900/50 backdrop-blur-sm border border-kali-gray-800 rounded-xl p-6;
+  }
+  
+  .card-header {
+    @apply flex items-center justify-between mb-4 pb-2 border-b border-kali-gray-800;
+  }
+  
+  .terminal-output {
+    @apply font-mono text-sm bg-black/80 p-4 rounded-lg border border-kali-gray-800 max-h-96 overflow-y-auto;
+  }
+  
+  .status-indicator {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .status-online {
+    @apply bg-kali-green/20 text-kali-green;
+  }
+  
+  .status-offline {
+    @apply bg-red-500/20 text-red-400;
+  }
+  
+  .status-warning {
+    @apply bg-yellow-500/20 text-yellow-400;
+  }
+  
+  .glow-effect {
+    @apply shadow-lg shadow-kali-green/20;
+  }
+  
+  .cyber-border {
+    @apply border border-kali-green/30 shadow-sm shadow-kali-green/10;
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 0 10px currentColor;
+  }
+  
+  .bg-grid {
+    background-image: 
+      linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 65, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .animate-matrix {
+    animation: matrix 20s linear infinite;
+  }
+}
+
+@keyframes matrix {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
