@@ -1,0 +1,22 @@
+{
+  "name": "node-out-master",
+  "version": "1.0.0",
+  "description": "Storm Damage Payment Portal",
+  "main": "CLAUDE_SESSION_STARTUP.js",
+  "scripts": {
+    "start": "node CLAUDE_SESSION_STARTUP.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "firebase": "^10.0.0"
+  },
+  "keywords": [
+    "storm",
+    "damage",
+    "payment",
+    "portal"
+  ],
+  "author": "",
+  "license": "ISC"
+}
