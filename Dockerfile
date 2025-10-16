@@ -1,22 +1,13 @@
-FROM python:3.11-slim
+FROM python:3.9
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PORT=7860 \
-    APP_MODULE=app:app  # <-- we will override this at run time
-
-RUN apt-get update && apt-get install -y --no-install-recommends curl \
-    && rm -rf /var/lib/apt/lists/*
+RUN useradd -m -u 1000 user
+USER user
+ENV PATH="/home/user/.local/bin:$PATH"
 
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
 
-COPY . .
+COPY --chown=user ./requirements.txt requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-EXPOSE 7860
-HEALTHCHECK --interval=30s --timeout=3s --retries=5 \
-  CMD curl -fsS http://127.0.0.1:${PORT}/docs >/dev/null || exit 1
-
-CMD ["sh","-lc","uvicorn ai_crm_backend.main:app --host 0.0.0.0 --port ${PORT}"]
+COPY --chown=user . /app
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
