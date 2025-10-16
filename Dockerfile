@@ -19,4 +19,4 @@ EXPOSE 7860
 HEALTHCHECK --interval=30s --timeout=3s --retries=5 \
   CMD curl -fsS http://127.0.0.1:${PORT}/docs >/dev/null || exit 1
 
-CMD ["sh","-lc","uvicorn ${APP_MODULE} --host 0.0.0.0 --port ${PORT}"]
+CMD ["sh","-lc","uvicorn ai_crm_backend.main:app --host 0.0.0.0 --port ${PORT}"]
