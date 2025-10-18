@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import NmapScanner from './pages/NmapScanner';
 import MetasploitConsole from './pages/MetasploitConsole';
 import Terminal from './pages/Terminal';
+import SecurityCenter from './pages/SecurityCenter';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
             <Route path="nmap" element={<NmapScanner />} />
             <Route path="metasploit" element={<MetasploitConsole />} />
             <Route path="terminal" element={<Terminal />} />
+            <Route path="security" element={<SecurityCenter />} />
           </Route>
           
           {/* Fallback route */}
