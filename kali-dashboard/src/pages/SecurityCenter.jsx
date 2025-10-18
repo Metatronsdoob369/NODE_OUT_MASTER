@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ProxyControl from '../components/ProxyControl';
 import QuickScanTools from '../components/QuickScanTools';
 import SecurityMonitoring from '../components/SecurityMonitoring';
+import AIAssistant from '../components/AIAssistant';
 
 const SecurityCenter = () => {
   const [activeTab, setActiveTab] = useState('monitoring');
@@ -85,6 +86,15 @@ const SecurityCenter = () => {
             </button>
           </div>
         </div>
+
+        {/* AI Assistant */}
+        <AIAssistant 
+          context={activeTab === 'monitoring' ? 'security-monitoring' : activeTab === 'proxy' ? 'proxy-control' : 'scanning'}
+          data={{ activeTab }}
+          onSuggestionApply={(suggestion) => {
+            console.log('Applied security suggestion:', suggestion);
+          }}
+        />
       </div>
     </div>
   );

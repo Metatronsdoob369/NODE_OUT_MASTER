@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAppState, useAppDispatch, actions } from '../contexts/AppContext';
+import AIAssistant from '../components/AIAssistant';
+import SmartInput from '../components/SmartInput';
 
 const NmapScanner = () => {
   const { activeScans } = useAppState();
@@ -218,22 +220,14 @@ const NmapScanner = () => {
 
             <form onSubmit={(e) => { e.preventDefault(); startScan(); }} className="space-y-4">
               {/* Target */}
-              <div>
-                <label className="block text-sm font-medium text-kali-gray-300 mb-2">
-                  Target (IP/CIDR)
-                </label>
-                <input
-                  type="text"
-                  value={scanForm.target}
-                  onChange={(e) => setScanForm({ ...scanForm, target: e.target.value })}
-                  className="input-field w-full"
-                  placeholder="192.168.1.0/24"
-                  disabled={isScanning}
-                />
-                <p className="text-xs text-kali-gray-500 mt-1">
-                  Examples: 192.168.1.1, 10.0.0.0/16, scanme.nmap.org
-                </p>
-              </div>
+              <SmartInput
+                label="Target (IP/CIDR)"
+                value={scanForm.target}
+                onChange={(e) => setScanForm({ ...scanForm, target: e.target.value })}
+                context="nmap-target"
+                placeholder="192.168.1.0/24"
+                disabled={isScanning}
+              />
 
               {/* Scan Type */}
               <div>
@@ -258,22 +252,14 @@ const NmapScanner = () => {
               </div>
 
               {/* Port Range */}
-              <div>
-                <label className="block text-sm font-medium text-kali-gray-300 mb-2">
-                  Port Range (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={scanForm.ports}
-                  onChange={(e) => setScanForm({ ...scanForm, ports: e.target.value })}
-                  className="input-field w-full"
-                  placeholder="1-1000, 22,80,443"
-                  disabled={isScanning}
-                />
-                <p className="text-xs text-kali-gray-500 mt-1">
-                  Leave empty for default ports
-                </p>
-              </div>
+              <SmartInput
+                label="Port Range (Optional)"
+                value={scanForm.ports}
+                onChange={(e) => setScanForm({ ...scanForm, ports: e.target.value })}
+                context="nmap-ports"
+                placeholder="1-1000, 22,80,443"
+                disabled={isScanning}
+              />
 
               {/* Timing */}
               <div>
@@ -463,6 +449,21 @@ const NmapScanner = () => {
           </div>
         </div>
       </div>
+
+      {/* AI Assistant */}
+      <AIAssistant 
+        context="nmap-scan"
+        data={{ target: scanForm.target, results: scanResults }}
+        onSuggestionApply={(suggestion) => {
+          if (suggestion.command.includes('-sV')) {
+            setScanForm(prev => ({ ...prev, scanType: '-sV' }));
+          } else if (suggestion.command.includes('-A')) {
+            setScanForm(prev => ({ ...prev, scanType: '-A' }));
+          } else if (suggestion.command.includes('--script vuln')) {
+            setScanForm(prev => ({ ...prev, scanType: '--script vuln' }));
+          }
+        }}
+      />
     </div>
   );
 };

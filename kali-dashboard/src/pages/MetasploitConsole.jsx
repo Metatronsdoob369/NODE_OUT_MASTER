@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAppState, useAppDispatch, actions } from '../contexts/AppContext';
+import AIAssistant from '../components/AIAssistant';
+import SmartInput from '../components/SmartInput';
 
 const MetasploitConsole = () => {
   const { sessions } = useAppState();
@@ -305,12 +307,12 @@ const MetasploitConsole = () => {
               <div className="card-header">
                 <h3 className="text-lg font-semibold text-white">Exploit Modules</h3>
                 <div className="flex items-center space-x-2">
-                  <input
-                    type="text"
+                  <SmartInput
                     placeholder="Search exploits..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="input-field text-sm py-1 px-3 w-64"
+                    context="metasploit-search"
+                    className="text-sm py-1 px-3 w-64"
                   />
                 </div>
               </div>
@@ -583,6 +585,24 @@ const MetasploitConsole = () => {
           </div>
         </div>
       </div>
+
+      {/* AI Assistant */}
+      <AIAssistant 
+        context="metasploit"
+        data={{ 
+          searchTerm, 
+          selectedModule: selectedModule?.name,
+          activeTab,
+          sessions: mockSessions.length 
+        }}
+        onSuggestionApply={(suggestion) => {
+          if (suggestion.command.includes('search')) {
+            setSearchTerm(suggestion.command.replace('search ', ''));
+          } else if (suggestion.command.includes('use')) {
+            executeCommand(suggestion.command);
+          }
+        }}
+      />
     </div>
   );
 };
