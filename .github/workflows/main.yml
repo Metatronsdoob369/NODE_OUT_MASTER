@@ -1,1 +1,53 @@
+name: Deploy Dashboard to GitHub Pages
 
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'dashboard/**' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'dashboard/**' ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+          
+      - name: Validate dashboard structure
+        run: |
+          echo "Validating dashboard files..."
+          
+          # Check if dashboard directory exists
+          if [ ! -d "dashboard" ]; then
+            echo "❌ Dashboard directory not found"
+            exit 1
+          fi
+          
+          # Check if index.html exists
+          if [ ! -f "dashboard/index.html" ]; then
+            echo "❌ dashboard/index.html not found"
+            exit 1
+          fi
+          
+          # Check if assets directory exists
+          if [ ! -d "dashboard/assets" ]; then
+            echo "❌ dashboard/assets directory not found"
+            exit 1
+          fi
+          
+          echo "✅ Dashboard structure validation passed"
+          echo "📁 Dashboard contents:"
+          find dashboard -type f | head -10
+          
+      - name: Deploy to main branch (main branch only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          echo "🚀 Deploying dashboard to GitHub Pages..."
+          echo "Dashboard will be available at: http://nodeout.stormrelief.com/"
+          echo "Note: Actual deployment happens via GitHub Pages legacy mode from main branch"
