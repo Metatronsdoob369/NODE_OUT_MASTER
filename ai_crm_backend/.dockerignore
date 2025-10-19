@@ -1,0 +1,14 @@
+.git
+**/__pycache__/
+*.pyc
+venv*
+.venv*
+node_modules/
+offline_wheels*
+generated_audio*
+*.pt
+*.safetensors
+*.zip
+*.tar
+*.gz
+Postman Agent.app
