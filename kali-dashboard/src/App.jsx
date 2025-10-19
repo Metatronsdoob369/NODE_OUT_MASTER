@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { Shield, Zap, Target, Network, AlertTriangle, CheckCircle, Clock, Server, Terminal, Wifi, Lock, Database, Key } from 'lucide-react'
+import { Shield, Zap, Target, Network, AlertTriangle, CheckCircle, Clock, Server, Terminal, Wifi, Lock, Database, Key, Bot, Bell, Settings, Moon, Sun } from 'lucide-react'
 import MetasploitConsole from './components/MetasploitConsole.jsx'
 import WiresharkViewer from './components/WiresharkViewer.jsx'
 import BurpSuite from './components/BurpSuite.jsx'
 import SQLMapInterface from './components/SQLMapInterface.jsx'
 import PasswordCracker from './components/PasswordCracker.jsx'
+import AIAssistant from './components/AIAssistant.jsx'
+import NotificationSystem from './components/NotificationSystem.jsx'
 
 function App() {
   const [activeTab, setActiveTab] = useState('overview')
+  const [darkMode, setDarkMode] = useState(true)
+  const [notifications, setNotifications] = useState([])
+  const [aiAssistantOpen, setAiAssistantOpen] = useState(false)
   const [mcpStatus, setMcpStatus] = useState({
     'security-education': 'unknown',
     'kali-info': 'unknown',
@@ -28,43 +33,119 @@ function App() {
     { id: 'kali', name: 'Kali Info', icon: Server }
   ]
 
+  const addNotification = (notification) => {
+    const id = Date.now()
+    setNotifications(prev => [...prev, { ...notification, id }])
+    setTimeout(() => {
+      setNotifications(prev => prev.filter(n => n.id !== id))
+    }, 5000)
+  }
+
+  useEffect(() => {
+    // Welcome notification
+    addNotification({
+      type: 'success',
+      title: 'AI Dashboard Loaded',
+      message: 'Enhanced security dashboard with AI assistance is ready!'
+    })
+  }, [])
+
   return (
-    <div className="min-h-screen bg-gray-900 text-green-400 font-mono">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-green-400 mb-2 flex items-center gap-3">
-            <Shield className="w-10 h-10" />
-            Kali Dashboard
-          </h1>
-          <p className="text-green-300">MCP Security Toolkit - Renegade Runner Integration</p>
+    <div className={`min-h-screen transition-all duration-500 ${darkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black' : 'bg-gradient-to-br from-gray-100 via-white to-gray-50'} ${darkMode ? 'text-green-400' : 'text-gray-800'} font-mono relative overflow-hidden`}>
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-green-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-pulse delay-2000"></div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8 relative z-10">
+        {/* Enhanced Header */}
+        <div className="mb-8 relative">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <Shield className="w-12 h-12 text-green-400 drop-shadow-lg animate-pulse" />
+                <div className="absolute inset-0 w-12 h-12 bg-green-400/20 rounded-full blur-xl"></div>
+              </div>
+              <div>
+                <h1 className="text-5xl font-bold bg-gradient-to-r from-green-400 via-green-300 to-emerald-400 bg-clip-text text-transparent mb-2 drop-shadow-lg">
+                  Kali Dashboard
+                </h1>
+                <p className={`text-lg ${darkMode ? 'text-green-300/80' : 'text-gray-600'} flex items-center gap-2`}>
+                  <Bot className="w-5 h-5" />
+                  AI-Enhanced Security Toolkit - Renegade Runner Integration
+                </p>
+              </div>
+            </div>
+            
+            {/* Control Panel */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setAiAssistantOpen(!aiAssistantOpen)}
+                className={`p-3 rounded-xl transition-all duration-300 ${aiAssistantOpen ? 'bg-green-500/20 text-green-400' : darkMode ? 'bg-gray-800/50 hover:bg-gray-700/50' : 'bg-white/50 hover:bg-gray-100/50'} backdrop-blur-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} hover:scale-105 shadow-lg`}
+                title="AI Assistant"
+              >
+                <Bot className="w-5 h-5" />
+              </button>
+              
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className={`p-3 rounded-xl transition-all duration-300 ${darkMode ? 'bg-gray-800/50 hover:bg-gray-700/50' : 'bg-white/50 hover:bg-gray-100/50'} backdrop-blur-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} hover:scale-105 shadow-lg`}
+                title="Toggle Theme"
+              >
+                {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+              
+              <div className="relative">
+                <button className={`p-3 rounded-xl transition-all duration-300 ${darkMode ? 'bg-gray-800/50 hover:bg-gray-700/50' : 'bg-white/50 hover:bg-gray-100/50'} backdrop-blur-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} hover:scale-105 shadow-lg`}>
+                  <Bell className="w-5 h-5" />
+                </button>
+                {notifications.length > 0 && (
+                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-xs text-white font-bold animate-bounce">
+                    {notifications.length}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Navigation */}
+        {/* Enhanced Navigation */}
         <div className="mb-8">
-          <nav className="flex space-x-1 bg-gray-800 p-1 rounded-lg">
+          <nav className={`flex flex-wrap gap-2 p-2 rounded-2xl backdrop-blur-sm border ${darkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white/50 border-gray-200'} shadow-lg`}>
             {tabs.map((tab) => {
               const Icon = tab.icon
+              const isActive = activeTab === tab.id
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
-                    activeTab === tab.id
-                      ? 'bg-green-600 text-black'
-                      : 'text-green-400 hover:bg-gray-700'
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/25'
+                      : darkMode 
+                      ? 'text-green-400 hover:bg-gray-700/50 hover:text-green-300' 
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
+                  } ${isActive ? 'animate-pulse' : ''}`}
                 >
-                  <Icon className="w-4 h-4" />
-                  {tab.name}
+                  <Icon className={`w-5 h-5 ${isActive ? 'animate-spin' : ''}`} />
+                  <span className="font-medium">{tab.name}</span>
+                  {isActive && (
+                    <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                  )}
                 </button>
               )
             })}
           </nav>
         </div>
 
-        {/* Content */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-green-600">
+        {/* Enhanced Content Area */}
+        <div className={`backdrop-blur-sm rounded-2xl p-8 border shadow-2xl transition-all duration-500 ${
+          darkMode 
+            ? 'bg-gray-800/50 border-gray-700 shadow-black/50' 
+            : 'bg-white/50 border-gray-200 shadow-gray-500/20'
+        }`}>
           {activeTab === 'overview' && <OverviewTab mcpStatus={mcpStatus} />}
           {activeTab === 'nmap' && <NmapTab />}
           {activeTab === 'metasploit' && <MetasploitConsole />}
@@ -77,6 +158,21 @@ function App() {
           {activeTab === 'kali' && <KaliTab />}
         </div>
       </div>
+
+      {/* AI Assistant */}
+      <AIAssistant 
+        isOpen={aiAssistantOpen} 
+        onClose={() => setAiAssistantOpen(false)}
+        darkMode={darkMode}
+        addNotification={addNotification}
+      />
+
+      {/* Notification System */}
+      <NotificationSystem 
+        notifications={notifications}
+        onRemove={(id) => setNotifications(prev => prev.filter(n => n.id !== id))}
+        darkMode={darkMode}
+      />
     </div>
   )
 }
