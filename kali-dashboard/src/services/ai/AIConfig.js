@@ -356,5 +356,5 @@ const aiConfig = new AIConfig();
 // Load from storage on initialization
 aiConfig.loadFromStorage();
 
+export { AIConfig };
 export default aiConfig;
-export { AIConfig, DEFAULT_CONFIG };
